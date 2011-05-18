@@ -1,0 +1,318 @@
+CONTENT OF THIS LIBRARY
+
+(1) DIRECTORIES
+(2) ./CAT
+(3) ./STS
+(4) ./COMP
+(5) ./ORDER
+
+
+(1) DIRECTORIES
+
+  ./CAT : general category theory + examples
+
+  ./STS : category of representations of simply typed signature
+          has an initial object
+
+  ./{ULC,TLC,PCF} : syntax of untyped lambda calculus, simply-typed lc
+	  and PCF, respectively.
+	  the syntaxes are endomonads over Set resp. [T,Set]
+	  they are also relative monads to preorders
+	  in *_terms some constants are defined
+ 
+  ./COMP : 
+	   syntactic compilation, i. e. with change of object types
+	   see further down for which files to view 
+
+  ./ORDER : 
+	    initiality without change of object types
+	    proof for ULC
+	    proof for TLC
+	
+  ./PCF_o_c : compilation of PCF+red to ULC+beta
+	  
+
+(2) ./CAT
+     
+  . contains category theory + examples
+  . description of file content in recommended reading order
+  . naming scheme : instances are given in CAPITAL LETTERS, e. g. 
+       SET is the category of sets
+
+   ./CAT/category.v : 
+        definition of Cat and Category
+	some trivial lemmata
+	heterogeneous equality of morphisms
+
+   ./CAT/monic_epi.v
+	monics
+	epis
+	invertibles
+	composition of monics is monic
+	composition of epis is epi
+	monic (f ;; g) => monic f
+	epi (f ;; g) => epi g
+	uniqueness of inverse
+	inverse is invertible
+	f^{-1}^{-1} = f
+	putting inv. morphism on other side
+	inverse of a composition of invertibles
+
+   ./CAT/product.v
+	definition of product on a category
+	definition of product of morphisms
+	fusion laws of product of morphisms, identity, composition
+	product is assoc up to isomorphism
+	
+   ./CAT/coproduct.v
+	same as product.v, but for coproduct
+
+   ./CAT/functor.v
+	definition of Func and Functor
+	composition and identity of functors
+	EXT heterogeneous equality on functors
+	some lemmata connecting heterogeneous equality of morphisms with
+ 	  EXT het equality of functors
+	instance Cat_CAT
+
+   ./CAT/functor_leibniz_eq.v
+	lemma for proving two functors Leibniz-equal
+	proof of associativity and neutrality of 
+	  composition wrt Leibniz (as opposed to EXT in functor.v)
+	proof that EXT eq implies extensional Leibniz eq on object function
+   	  (assuming functional_extensionality_dep)
+	proof that composition is a setoid morphism wrt EXT equality
+	  (assuming functional_ext_dep and PI)
+	
+   ./CAT/functor_properties.v
+	definition of "full" and "faithful"
+	composition of full / faithful functors is full / faithful
+   
+   ./CAT/NT.v
+	definition of NatTrans and NT
+	extensional equality on natural transformations is equivalence rel
+	vertical composition (for hor. comp. see horcomp.v)
+	neutrality and assoc for vertical composition
+ 
+   ./CAT/CatFunct.v
+	category of functors, nat trans and vertical composition
+	extensionality principle on natural transformations
+	  a : F --> G, b : H --> K, F = H, G = K 
+	  het eq on all morphisms => het eq in cat of functors and nat trans
+            depends on JMeq_eq by dependent induction
+
+   ./CAT/initial_terminal.v
+	definition of Initial and Terminal
+
+   ./CAT/horcomp.v
+   	lemma : no choice in defining horizontal composition
+	definition of horizontal composition
+	def of neutral nat transformation wrt horizontal composition
+	extensional heterogeneous equality for 
+	  a : F -> G and b : F' -> G'
+	setoidal properties for ext het eq
+	neutrality of neutral nat trans wrt to ext het eq
+	record {| F ; G ; alpha : F -> G |}
+	ext het eq is an equivalence relation on above type	
+
+   ./CAT/smon_cats.v
+	functor C -> C x C, c \mapsto (c,e) 
+	ditto with e left
+	functor A x (B x C) -> (A x B) x C
+	definition of strict monoidal category
+	
+	instance End (C) of endofunctors over C
+	  - tensor : on objects (F, G) -> F o G
+	             on morphisms (a,b) -> horcomp a b
+	  - uses PI and functional_ext_dep
+
+   ./CAT/mon_cats.v
+	definition of monoidal cat C
+	  - tens : C x C -> C
+	  - I : C
+	  - composition laws up to isomorphism
+	category SET of sets with cartesian product as tens is monoidal
+
+   ./CAT/enriched_cat.v
+	definition of category enriched over monoidal cat M
+	category enriched over SET is an ordinary category
+
+   ./CAT/limits.v
+	diagonal functor C ---> [J, C]
+	category of cones 
+	definition of limit as terminal object in category of cones
+
+   ./CAT/subcategories.v
+	subcategory given by predicates on obj and mor that are compatible
+	  with identity and composition
+	a subcategory is a category
+	injection functor FINJ : S --> C for S a subcategory
+	FINJ is faithful
+
+   ./CAT/monad_haskell.v
+	definition of monad as kleisli structure
+	join 
+	lift and functoriality
+	
+   ./CAT/monad_h_morphism.v
+	definition of morphism of monads (as in monad_haskell.v)
+	naturality of morphisms of monads
+	category MONAD of monads and their morphisms
+	
+   ./CAT/monad_h_module.v
+	definition of module over a monad (haskell style = kleisli)
+	mlift and functoriality
+	morphisms of modules
+	naturality of module morphisms 
+	category (MOD P D) of modules over P with codomain D
+	tautological module
+	pullback module + functoriality
+	product module + categorical product properties
+	constant module
+	terminal module (if D has terminal object)
+
+   ./CAT/monad_h_morphism_gen.v
+	generalized morphism of monads as in
+	  - P : Monad C
+	  - Q : Monad D
+	  - F : Functor C D
+	  - Tau : forall c, F (P c) --> Q (F c)
+	naturality of Tau
+	pullback along a gen monad morphism
+		
+   ./CAT/monad_def.v
+	definition of monad in terms of eta and mu (multiplication)
+	
+   ./CAT/monad_morphism.v
+	morphism of monads (as in monad_def.v)
+	category MONAD of monads
+	
+	definition of left modules over monads
+	pullback module
+	morphism of left modules
+	category MOD_R of left modules 
+	
+   ./CAT/small_cat.v
+	definition of small cat, obj and mor are sets
+	category of small cats, SMALLCAT
+
+   ./CAT/cat_DISCRETE.v
+	any type T is a discrete category DISCRETE T
+	
+   ./CAT/cat_TYPE.v
+	category where objects are types and morphisms are total functions
+	initial object {}
+	terminal object {*}
+	
+   ./CAT/cat_INDEXED_TYPE.v
+	category ITYPE T for a type T
+	  - obj : families of types indexed by T
+	  - morphisms : families of functions
+	opt monad (adding one element)
+	derivation of modules
+	fibre module
+
+
+(3) ./STS
+	
+   ./STS/STS_arities.v
+	definition of simply typed signature
+	examples of signatures : TLC and PCF
+	multiple addition of variables
+	functoriality of addition of vars
+	lshift, the capture avoiding thing for lists of vars
+	derived module wrt a list of variables
+	the module "of arguments" of a constructor 
+ 	  (prod of fibres of derived mods)
+	source and target modules of an arity
+	representation of an arity
+	representation of a signature
+	the product fibre derived module morphism 
+	  (left vertical of comm diag of morphism of reps)
+	commutative diagram for morphism of representations
+	def of morphism of representations
+
+   ./STS/STS_representations.v
+	identity representation of a signature
+	composition of representations
+	category of representations REPRESENTATION S
+
+   ./STS/STS_initial.v
+	carrier STS of initial monad of REP(S)
+	rename, the functoriality
+	inj, the renaming into terms with one more variable
+	_shift, for avoiding capture
+	subst, simultaneous substitution
+	substar, single value substitution
+	fusion laws for these functions
+	monadicity of STS
+	isomorphism STS_list <-> prod_mod_c STSM
+	representation structure of STSM
+	init, the (carrier of) the initial morphism
+	init commutes with renaming
+	init commutes with shifting
+	init commutes with substitution
+	init is a morphism of representations
+	init is unique 
+	REPRESENTATION S has an initial object
+  
+	
+(4) ./COMP
+   
+   ./COMP/PCF_rep_quant.v
+	representation of PCF consists of f : T -> U etc.
+   
+   ./COMP/PCF_rep_hom_quant.v
+	lemmas about distributivity of arrows
+	morphism of representations of PCF, starting with g : U->U'
+   
+   ./COMP/PCF_rep_eq_quant.v
+	inductive predicate for equality of morphisms of PCF-reps
+	proof of equivalence properties
+	definition of identity representation morphism
+
+   ./COMP/PCF_rep_comp_quant.v
+	composition of representation monad morphisms gives
+	representation
+	
+   ./COMP/PCF_rep_cat_quant.v
+	category of representations of PCF
+	
+   ./COMP/PCF_quant.v
+	monad of PCF + its constructors give a representation of PCF
+	carrier of initial morphism
+	init commutes with lift and substitution
+	init is a morphism of reps
+	init is unique
+	PCF is initial
+
+   ./COMP/PCF_ULC_nounit.v
+	equipping uULC with a rep of PCF, yielding rep PCF_ULC
+	
+   ./COMP/PCF_ULC_comp.v
+	some examples of PCF terms compiled to ULC via initial morph
+
+(5) ./ORDER
+
+   ./ORDER/ulc_order_rep.v
+	representation of ULC+beta
+	morphisms of ULC+beta
+	
+   ./ORDER/ulc_order_rep_eq.v
+	equality on morphisms of ULC+beta
+	identity morphisms
+	composition of morphisms
+	category of representations of ULC+beta
+
+   ./ORDER/ulc.v
+	relative monad of ULC with constructors 
+	  yield rep of ULC+beta
+	
+   ./ORDER/ulc_init.v
+	carrier of initial morphism
+	compatibility with renaming and substitution
+	compatibility with beta relations (several steps)
+	init is a morph of reps
+	init is unique
+	ULCbeta is initial rep
+	
