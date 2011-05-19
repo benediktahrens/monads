@@ -11,11 +11,11 @@ Unset Strict Implicit.
 Unset Transparent Obligations.
 Unset Automatic Introduction.
 
-Notation "[ T ]" := (list T) (at level 5).
+Notation "[[ T ]]" := (list T) (at level 5).
 
 Record Signature : Type := {
   sig_index : Type ;
-  sig : sig_index -> [nat]
+  sig : sig_index -> [[nat]]
 }.
 
 
@@ -303,13 +303,13 @@ Variable M : TYPE -> PO.
 
 (** the carrier of the module as an inductive type *)
 
-Inductive prod_mod_c (V : TYPE) : [nat] -> Type :=
+Inductive prod_mod_c (V : TYPE) : [[nat]] -> Type :=
   | TTT :  prod_mod_c V nil 
   | CONSTR : forall b bs, 
          M (V ** b)-> prod_mod_c V bs -> prod_mod_c V (b::bs) .
 
 Lemma CONSTR_eq (V : TYPE) (b : nat) 
-       (bs : [nat]) 
+       (bs : [[nat]]) 
        (elem elem' : M (V ** b)) 
        (elems elems' : prod_mod_c V bs) :
         elem = elem' -> elems = elems' -> 
@@ -480,7 +480,7 @@ Variable M : RModule P PO.
 
 (** to each arity we associate a type of module morphisms *)
 
-Definition modhom_from_arity (ar : [nat]) : Type :=
+Definition modhom_from_arity (ar : [[nat]]) : Type :=
   RModule_Hom (prod_mod M ar) M.
 
 End arity_rep.
@@ -553,6 +553,16 @@ Notation "'f*' M" := (PbRMOD f _ M) (at level 5).
 (** the left morphism of the commutative diagram *)
 (** at first its carrier *)
 
+Fixpoint Prod_mor_c1 (l : [[nat]]) (V : TYPE) (X : prod_mod_c P V l) : 
+                   (prod_mod_c Q V l) :=
+  match X in prod_mod_c _ _ l 
+  return f* (prod_mod Q l) V with
+  | TTT => TTT _ _
+  | CONSTR b bs elem elems => 
+    CONSTR (f  _ elem) (Prod_mor_c1 elems)
+  end.
+
+(*
 Fixpoint Prod_mor_c (l : [nat]) (V : TYPE) (X : prod_mod P l V) : 
                   f* (prod_mod Q l) V :=
   match X in prod_mod_c _ _ l 
@@ -561,8 +571,10 @@ Fixpoint Prod_mor_c (l : [nat]) (V : TYPE) (X : prod_mod P l V) :
   | CONSTR b bs elem elems => 
     CONSTR (f  _ elem) (Prod_mor_c elems)
   end.
+*)
 
-Program Instance prod_mor_struct l V : PO_mor_struct (@Prod_mor_c l V).
+Program Instance prod_mor_struct l V : PO_mor_struct 
+  (a:=prod_mod P l V) (b:=f* (prod_mod Q l) V) (@Prod_mor_c1 l V).
 Next Obligation.
 Proof.
   unfold Proper; red.
@@ -577,11 +589,11 @@ Qed.
 
 Definition prod_mor_po l V := Build_PO_mor (prod_mor_struct l V).
 
-Lemma prod_mod_c_kl (ar : [nat]) V (x : prod_mod_c P V ar):
+Lemma prod_mod_c_kl (ar : [[nat]]) V (x : prod_mod_c P V ar):
 forall (W : TYPE) (g : SM_po V ---> P W),
- Prod_mor_c (l:=ar) (V:=W) (pm_mkl (M:=P) (W:=W) g x) =
+ Prod_mor_c1 (l:=ar) (V:=W) (pm_mkl (M:=P) (W:=W) g x) =
      pm_mkl (M:=Q) (W:=W) (Sm_ind (fun (x0 : V) => f W (g x0)))
-             (Prod_mor_c (l:=ar) (V:=V) x).
+             (Prod_mor_c1 (l:=ar) (V:=V) x).
 Proof. 
   induction x; 
   repeat (opt || apply CONSTR_eq ||
@@ -608,7 +620,7 @@ Definition Prod_mor ar := Build_RModule_Hom (prod_mor_s ar).
 
 (** at first for ONE arity *)
 
-Variable a : [nat].
+Variable a : [[nat]].
 Variable RepP : modhom_from_arity P a.
 Variable RepQ : modhom_from_arity Q a.
 

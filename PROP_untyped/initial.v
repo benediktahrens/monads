@@ -847,7 +847,7 @@ Canonical Structure init_mon := Build_RMonad_Hom init_monadic.
 
 Lemma prod_mor_eq_init_list (i : sig_index Sig) V 
        (x : prod_mod_c UTS_sm V (sig i)) :
-  Prod_mor_c init_mon  x = init_list (STSl_f_pm x).
+  Prod_mor_c1 init_mon  x = init_list (STSl_f_pm x).
 Proof.
   induction x; fin.
 Qed.
