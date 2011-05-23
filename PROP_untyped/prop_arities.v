@@ -85,17 +85,34 @@ Section S_Mods_and_Eqs.
 
 Variable Sig : Signature.
 
-Record S_Module := {
-  s_mod_rep : forall R : REPRESENTATION Sig, RMOD R wPO ;
-  s_mod_hom : forall R S (f : R ---> S), 
+Class S_Module_s (s_mod_rep : forall R : REPRESENTATION Sig, RMOD R wPO) := {
+   S_Mod_Hom : forall (R S : REPRESENTATION Sig) (f : R ---> S), 
       s_mod_rep R ---> PbRMod f (s_mod_rep S)  }.
 
-Record half_equation (U V : S_Module) := {
-  half_eq : forall R : REPRESENTATION Sig, 
-         s_mod_rep U R ---> s_mod_rep V R ;
-  comm_eq : forall R S (f : R ---> S), 
-     s_mod_hom U f ;; PbRMod_Hom _ (half_eq S) == half_eq R ;; s_mod_hom V f }.
+Record S_Module := {
+  s_mod_rep :> forall R : REPRESENTATION Sig, RMOD R wPO ;
+  s_mod_hom :> S_Module_struct s_mod_rep }.
+(*
+ forall R S (f : R ---> S), 
+      s_mod_rep R ---> PbRMod f (s_mod_rep S)  }.
+*)
 
+Print S_Mod_Hom. 
+Class half_equation_struct (U V : S_Module) 
+    (half_eq : forall R : REPRESENTATION Sig, s_mod_rep U R ---> s_mod_rep V R) := {
+  comm_eq_s : forall (R S : REPRESENTATION Sig)  (f : R ---> S), 
+     S_Mod_Hom (S_Module_struct := U) f ;; PbRMod_Hom _ (half_eq S) == 
+                half_eq R ;; S_Mod_Hom (S_Module_struct := V) f }.
+
+
+Record half_equation (U V : S_Module) := {
+  half_eq :> forall R : REPRESENTATION Sig, 
+         s_mod_rep U R ---> s_mod_rep V R ;
+  half_eq_s :> half_equation_struct half_eq }.
+(*
+  comm_eq : forall R S (f : R ---> S), 
+     S_Mod_Hom (S_Module_struct := U) f ;; PbRMod_Hom _ (half_eq S) == half_eq R ;; S_Mod_Hom f }.
+*)
 
 Section S_Module_algebraic.
 
@@ -145,12 +162,23 @@ Definition S_Mod_alg_mor := Build_RModule_Hom S_Mod_alg_mor_s.
 End mor.
 
 End S_Module_algebraic.
+Check S_Module_struct.
+
+
+Definition S_Mod_alg l := S_Module_struct (fun R => S_Mod_alg_ob l R).
+
+Definition S_Mod_alg l (T : S_Mod_alg_struct l) := Build_S_Module T.
+
+Check S_Module.
+(*
+Definition S_Mod_alg := S_Module 
 
 Definition S_Mod_alg l : S_Module := 
   {| s_mod_rep := fun R => S_Mod_alg_ob l R ; 
      s_mod_hom := fun R S f => S_Mod_alg_mor l f |}.
+*)
 
-
+(* example substar : P^* x P ---> P *)
 Section substitution.
 
 Check S_Mod_alg_ob.
@@ -161,7 +189,7 @@ simpl.
 intros.
 simpl in *.
 inversion X.
-simpl in *. Check Rsubstar_not.
+simpl in *.
 inversion X1.
 simpl in X2.
 constructor.
@@ -171,9 +199,14 @@ apply TTT.
 Defined.
 Print bla.
 
+(*
 Definition extract_head P l a c (x : prod_mod_c P c (a::l)) : P (c ** a).
 simpl.
 intros.
+inversion x.
+apply X.
+Defined.
+Print extract_head.
 induction x. simpl.
 induction l; 
 simpl.
@@ -181,8 +214,9 @@ intros.
 destruct x.
 
 intros
+*)
 
-Program Instance sub (P : Representation Sig) : RModule_Hom_struct 
+Program Instance sub_struct (P : Representation Sig) : RModule_Hom_struct 
   (M:=S_Mod_alg_ob [1;0] P) (N:=S_Mod_alg_ob [0] P) (bla (P:=P)).
 Next Obligation.
 Proof.
@@ -207,32 +241,63 @@ Proof.
   rew (retakl P).
 Qed.
 
-Print Assumptions sub.
+Print Assumptions sub_struct.
 
+Definition sub (P : REPRESENTATION Sig) := Build_RModule_Hom (sub_struct P).
 
-
-  simpl.
-  rew (rkleta P).
-  app (rkl_eq P).
-  elim_option.
-  simpl.
-  simpl.
-  apply f_equal.
-  simpl.
-  dependent induction x.
-  apply IHx.
-  simpl.
-  unfold bla.
-  simpl.
-  (fun V y => Rsubstar_not (snd y) (fst y)).
-
-Check half_equation.
-
+Check half_equation_struct.
+(*
 Check (fun R : REPRESENTATION Sig => Rsubstar_mod_hom R).
+*)
 
-Program Definition subst_half : half_equation (S_Mod_alg [1 ; 0]) (S_Mod_alg [0]) :=
-   {| half_eq := fun R => Rsubstar_mod_hom  R ;
-      half_comm := _ |}.
+
+
+Program Instance subst_half_s : half_equation_struct 
+      (U:=Build_S_Module (S_Mod_alg_struct [1 ; 0])) (V:=S_Mod_alg [0]) :=
+          Build_half_equation (half_eq := sub) _ .
+Next Obligation.
+Proof.
+  
+  dependent destruction x.
+  dependent destruction x.
+  dependent destruction x.
+  
+  simpl.
+  apply CONSTR_eq; auto.
+  unfold Rsubstar_not.
+  
+  rew (rmon_hom_rkl f).
+  app (rkl_eq S).
+  intros. 
+  match goal with [H:option _ |- _]=>destruct H end;
+  simpl.
+  rew (rmon_hom_rweta f).
+  auto.
+Qed.
+
+Check subst_half.
+
+End substitution.
+
+Definition half_eq_alg (doml codl : [[nat]]) := 
+      half_equation (S_Mod_alg doml) (S_Mod_alg codl).
+
+Record eq_alg (doml codl : [[nat]]) := {
+  eq1 : half_eq_alg doml codl ;
+  eq2 : half_eq_alg doml codl }.
+
+Check eq1.
+
+
+Definition verifies_eq l l' (e : eq_alg l l') (P : REPRESENTATION Sig) :=
+  forall x , eq1  x << eq2  x.
+
+Check eq_alg.
+
+End S_Mods_and_Eqs.
+
+Check eq_alg.
+
 
 (*
 Coercion wPO_RMod : RModule >-> RModule.
