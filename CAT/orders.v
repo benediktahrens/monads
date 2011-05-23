@@ -172,6 +172,21 @@ Variables y z : V.
 Lemma PO_trans:  x << y -> y << z -> x << z.
 Proof. apply POprf. Qed.
 
+Lemma PO_refl_eq : x = y -> x << y.
+Proof. 
+ intros; subst; reflexivity.
+Qed.
+
+Lemma PO_trans_eq_r : x << y -> y = z -> x << z.
+Proof.
+  intros; subst; auto.
+Qed.
+
+Lemma PO_trans_eq_l : x = y -> y << z -> x << z.
+Proof.
+  intros; subst; auto.
+Qed.
+
 End PO_lemmata.
 
 

@@ -27,7 +27,7 @@ Variable P : Representation S.
 
 Hint Extern 1 (CONSTR _ _ = CONSTR _ _) => apply CONSTR_eq.
 
-Lemma Prod_mor_c_id V i (x : prod_mod_c P V (sig (s:= S) i)):
+Lemma Prod_mor_c_id V i (x : prod_mod_c _ V (sig (s:= S) i)):
  Prod_mor_c1 (RMonad_id P) (l:=sig (s:=S) i) (V:=V) x = x.
 Proof.
   induction x; simpl; intros; auto.
@@ -59,7 +59,7 @@ Variable g : RMonad_Hom Q R.
 
 Lemma prod_ind_mod_mor_comp l
  (c : TYPE)
- (t : prod_mod_c P c l) :
+ (t : prod_mod_c _ c l) :
     Prod_mor_c1 (RMonad_comp f g) t =
     Prod_mor_c1 g (Prod_mor_c1 f t).
 Proof.

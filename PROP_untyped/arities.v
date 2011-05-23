@@ -299,7 +299,8 @@ Section prod_mod_built_from_scratch_carrier.
 (*
 Variable M : TYPE -> TYPE.
 *)
-Variable M : TYPE -> PO.
+
+Variable M : TYPE -> TYPE.
 
 (** the carrier of the module as an inductive type *)
 
@@ -318,12 +319,20 @@ Proof.
   intros; subst; auto.
 Qed.
 
-Inductive prod_mod_c_rel (V : TYPE) : forall n, relation (prod_mod_c V n) :=
-  | TTT_rel : forall x y : prod_mod_c V nil, prod_mod_c_rel x y 
+End prod_mod_built_from_scratch_carrier.
+
+Section order_prod_mod.
+
+Variable M : TYPE -> PO.
+
+Inductive prod_mod_c_rel (V : TYPE) : forall n, relation (prod_mod_c M V n) :=
+  | TTT_rel : forall x y : prod_mod_c M V nil, prod_mod_c_rel x y 
   | CONSTR_rel : forall n l, forall x y : M (V ** n), 
-          forall a b : prod_mod_c V l,
+          forall a b : prod_mod_c M V l,
           x << y -> prod_mod_c_rel a b -> 
           prod_mod_c_rel (CONSTR x a) (CONSTR y b).
+
+
 
 (*
 
@@ -332,7 +341,7 @@ Proof.
 *)
 
 Program Instance prod_mod_c_rel_po_struct V n : 
-    PO_obj_struct (prod_mod_c V n) := {Rel := @prod_mod_c_rel V n }.
+    PO_obj_struct (prod_mod_c M V n) := {Rel := @prod_mod_c_rel V n }.
 Next Obligation.
 Proof.
   intros.
@@ -357,29 +366,33 @@ Qed.
 Print Assumptions prod_mod_c_rel_po_struct.
  
 Definition prod_mod_po V n : PO := Build_PO_obj (prod_mod_c_rel_po_struct V n).
+End order_prod_mod.
 
-End prod_mod_built_from_scratch_carrier.
 
 (** if M is a module, then the product of fibres of derived M also is *)
 
 Section prod_mod_carrier_is_mod.
 
-Variable M : RModule P PO.
+Variable M : RMOD P PO.
 
 (** the product module mkleisli is defined by structural recursion *)
 
 Fixpoint pm_mkl l V W (f : SM_po V ---> P W) 
-      (X : prod_mod_po M V l) : prod_mod_po M W l :=
-     match X in prod_mod_c _ _ l return prod_mod_c M W l with
-     | TTT => TTT M W 
+      (X : prod_mod_c (fun V => M V) V l) : prod_mod_c _ W l :=
+     match X in prod_mod_c _ _ l return prod_mod_c (fun V => M V) W l with
+     | TTT => TTT _ W 
      | CONSTR b bs elem elems => 
-            CONSTR (M:=M) (V:=W)
+            CONSTR  (V:=W)
      (rmkleisli (RModule_struct := M) (lshift _ f)  elem)
       (pm_mkl f elems)
      end.
 
+
+
 Program Instance pm_mkl_struct l V W (f : SM_po V ---> P W) :
- PO_mor_struct (pm_mkl (l:=l) f).
+ PO_mor_struct   (a := prod_mod_po M V l)  
+                  (b := prod_mod_po M W l)  
+ (pm_mkl (l:=l) f).
 Next Obligation.
 Proof.
   unfold Proper; red.
@@ -409,13 +422,13 @@ Ltac t x := induction x;
    end; repeat (cat || opt || rew kleisli_lshift).
 
 Lemma pm_mkl_eq l V W (f g : SM_po V ---> P W) 
-    (H : forall  x, f x = g x) (x : prod_mod_c M V l) : 
+    (H : forall  x, f x = g x) (x : prod_mod_c _ V l) : 
                pm_mkl f x = pm_mkl g x.
 Proof.
   t x.
 Qed.
 
-Lemma pm_mkl_mkl l V (x : prod_mod_c M V l) W (f : SM_po V ---> P W)
+Lemma pm_mkl_mkl l V (x : prod_mod_c _ V l) W (f : SM_po V ---> P W)
  X (g : SM_po W ---> P X) :
   pm_mkl g (pm_mkl f x) = 
      pm_mkl (Sm_ind (fun (x0 : V) => rkleisli g (f x0))) x .
@@ -423,7 +436,7 @@ Proof.
   t x. 
 Qed.
 
-Lemma pm_mkl_weta l V (v : prod_mod_c M V l) :
+Lemma pm_mkl_weta l V (v : prod_mod_c _ V l) :
          pm_mkl (rweta V) v = v.
 Proof.
   t v; app (rmkleta_id_eq M); opt; rew lshift_weta'.
@@ -436,14 +449,16 @@ Obligation Tactic := unfold Proper; red; opt.
 
 Program Instance pm_mkl_oid l V W : Proper 
  (A:= (SM_po V ---> P W) -> 
-        (prod_mod_c M V l ---> prod_mod_c M W l))
-   (equiv ==> equiv) (@pm_mkl l V W).
+        (prod_mod_po _ V l ---> prod_mod_po _ W l))
+   (equiv ==> equiv) (@pm_mkl_po l V W).
+(*
 Next Obligation.
 Proof.
   simpl in *.
   rewrite (pm_mkl_eq H).
   auto.
 Qed.
+*)
 
 Obligation Tactic := opt || apply pm_mkl_oid.
 
@@ -457,10 +472,12 @@ Proof.
   rewrite (pm_mkl_eq H).
   auto.
 Qed.
+(*
 Next Obligation.
 Proof.
   app (pm_mkl_eq).
 Qed.
+*)
 
 Definition prod_mod l := Build_RModule (prod_mod_struct l).
 
@@ -553,8 +570,8 @@ Notation "'f*' M" := (PbRMOD f _ M) (at level 5).
 (** the left morphism of the commutative diagram *)
 (** at first its carrier *)
 
-Fixpoint Prod_mor_c1 (l : [[nat]]) (V : TYPE) (X : prod_mod_c P V l) : 
-                   (prod_mod_c Q V l) :=
+Fixpoint Prod_mor_c1 (l : [[nat]]) (V : TYPE) (X : prod_mod_c (fun V => P V) V l) : 
+                   (prod_mod_c _ V l) :=
   match X in prod_mod_c _ _ l 
   return f* (prod_mod Q l) V with
   | TTT => TTT _ _
@@ -589,7 +606,7 @@ Qed.
 
 Definition prod_mor_po l V := Build_PO_mor (prod_mor_struct l V).
 
-Lemma prod_mod_c_kl (ar : [[nat]]) V (x : prod_mod_c P V ar):
+Lemma prod_mod_c_kl (ar : [[nat]]) V (x : prod_mod_c _ V ar):
 forall (W : TYPE) (g : SM_po V ---> P W),
  Prod_mor_c1 (l:=ar) (V:=W) (pm_mkl (M:=P) (W:=W) g x) =
      pm_mkl (M:=Q) (W:=W) (Sm_ind (fun (x0 : V) => f W (g x0)))

@@ -550,7 +550,7 @@ Canonical Structure UTSM_sm := Build_RMonad UTS_sm_rmonad.
 (** as said before, STS_list is actually the same as 
     prod_mod_glue STS_monad. we give a module morphism translation *)
 
-Fixpoint STSl_f_pm l V (x : prod_mod UTSM_sm l V)
+Fixpoint STSl_f_pm l V (x : prod_mod_c (fun V => UTS V) V l)
          : UTS_list V l :=
     match x in prod_mod_c _ _ l return UTS_list V l with
     | TTT =>  TT V 
@@ -558,8 +558,8 @@ Fixpoint STSl_f_pm l V (x : prod_mod UTSM_sm l V)
     end.
 
 Fixpoint pm_f_STSl l V (v : UTS_list V l) :
-       prod_mod UTSM_sm l V :=
- match v in UTS_list _ l return prod_mod UTSM_sm l V with
+       prod_mod_c (fun V => UTS V) V l :=
+ match v in UTS_list _ l return prod_mod_c _ V l with
  | TT => TTT _ _ 
  | constr b bs elem elems => 
         CONSTR elem (pm_f_STSl elems)
@@ -571,7 +571,7 @@ Proof.
   induction v; fin.
 Qed.
 
-Lemma or_another l V (v : prod_mod UTSM_sm l V) : 
+Lemma or_another l V (v : prod_mod_c (fun V => UTS V) l V) : 
        pm_f_STSl (STSl_f_pm v) = v.
 Proof.
   induction v; fin.
@@ -636,9 +636,9 @@ Hint Resolve _lshift_lshift_eq : fin.
 
 Notation "v >>>= f" := (pm_mkl f v) (at level 67).
           
-Lemma sts_list_subst l V (v : prod_mod UTSM_sm l V) 
-       W (f : SM_po V ---> UTS_sm W):
-  STSl_f_pm  (v >>>= f) = (STSl_f_pm v) >>== f.
+Lemma sts_list_subst l X (v : prod_mod (UTSM_sm) l X) 
+       W (f : SM_po X ---> UTS_sm W):
+  STSl_f_pm  (pm_mkl f v ) = (STSl_f_pm v) >>== f.
 Proof.
   induction v; repeat (t5 ||
   rew _lshift_lshift_eq ) .
@@ -646,6 +646,8 @@ Qed.
 
 Hint Resolve sts_list_subst : fin.
 Hint Rewrite sts_list_subst : fin.
+
+
 
 (** we define the Representation Structure, i.e. for every arity
     a module morphism *)
@@ -684,8 +686,12 @@ Proof.
   constructor.
 Qed.
 
+Check STSl_f_pm.
+
 Program Instance bla (i : sig_index Sig) V : PO_mor_struct
-  (fun X => Build (i:=i) (STSl_f_pm (V:=V) X)).
+  (a:= prod_mod UTSM_sm (sig i) V)
+  (b:= UTSM_sm V)
+  (fun (X : prod_mod_c _ V (sig i)) => Build (i:=i) (STSl_f_pm (V:=V) X)).
 Next Obligation.
 Proof.
   unfold Proper; red.
@@ -700,6 +706,7 @@ Program Instance STS_arity_rep (i : sig_index Sig) :
        (M := prod_mod UTSM_sm (sig i))
        (N := UTSM_sm) 
        (fun V => Build_PO_mor (bla i V)).
+  
 
 (**  STS has a structure as a representation of Sig *)
 
