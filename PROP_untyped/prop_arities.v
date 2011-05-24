@@ -757,10 +757,10 @@ Proof.
 Qed.
 
 
-Definition init_prop V := Build_PO_mor (init_prop_s V).
+Definition init_prop_po V := Build_PO_mor (init_prop_s V).
 
 Program Instance init_prop_mon_s : RMonad_Hom_struct
-      (P:=FINJ _ UTSPREPR)(Q:=FINJ _ R) init_prop.
+      (P:=FINJ _ UTSPREPR)(Q:=FINJ _ R) init_prop_po.
 Next Obligation.
 Proof.
   rewrite init_kleisli2.
@@ -769,42 +769,80 @@ Qed.
  
 
 Definition init_prop_mon := Build_RMonad_Hom init_prop_mon_s.
+Check Representation_Hom_struct.
 
-Program Instance init_prop_rep : Representation_Hom_struct init_prop_mon.
+Lemma prod_mor_eq_init_list2 (i : sig_index Sig) V
+       (x : prod_mod_c (fun V => UTS Sig V) V (sig i)) :
+  Prod_mor_c1 init_prop_mon x = init_list _ (STSl_f_pm x).
+Proof.
+  induction x;
+  simpl; auto.
+  unfold FINJ in IHx. simpl in *.
+  rewrite  IHx.
+  simpl. auto.
+Qed.
+
+
+Program Instance init_prop_rep : Representation_Hom_struct 
+       init_prop_mon.
 Next Obligation.
 Proof.
   unfold commute.
   simpl; intros.
+  rewrite prod_mor_eq_init_list2.
+  auto.
+Qed.
+
+Definition init_prop_re := Build_Representation_Hom init_prop_rep.
+
+Definition init_prop : UTSPREPR ---> R := 
+        exist _ init_prop_re I.
+
+Section unique.
+
+Variable f : UTSPREPR ---> R.
+
+Lemma init_prop_unique : f == init_prop.
+Proof.
+  simpl. intros.
+  destruct f.
+  simpl in *.
+  clear t.
+  clear f.
+  unfold SC_inj_ob in x1.
+  simpl in x1.
+  destruct R.
+  simpl in *.
+  clear R.
   
-
-
-
-
-
-Check Sm_ind.
-
-  rew (init_kleisli (SC_inj_ob R)).
+  apply (@STSind Sig
+     (fun V v => x1 V v = init x2 v)
+     (fun V l v => Prod_mor x1 l V (pm_f_STSl v) = init_list _ v));
+  simpl; intros;
+  auto.
+  rew (rmon_hom_rweta x1).
+  rewrite <- (one_way u).
+  assert (H':=@repr_hom_s _ _ _ x1 x1).
+  unfold commute in H'.
+  simpl in H'.
+  rewrite <- H'.
   
+  rewrite one_way.
+  rewrite H. auto.
+  rewrite H0. simpl.
+  rewrite H.
+  auto.
+Qed.
+
+End unique.
+
+End init.
+
+Program Instance INITIAL_PROP : Initial PROP_REP := {
+  Init := UTSPREPR ;
+  InitMor := init_prop ;
+  InitMorUnique := init_prop_unique
+}.
 
 End subcat.
-
 End S_Mods_and_Eqs.
-
-Check eq_alg.
-
-
-(*
-Coercion wPO_RMod : RModule >-> RModule.
-Coercion wPO_RMod : obj >-> obj.
-*)
-
-Variable obC : Type.
-Variable morC : obC -> obC -> Type.
-Variable C : Cat_struct morC.
-
-
-
-(* first test : monadic subsitution is a half-equation *)
-
-
-
