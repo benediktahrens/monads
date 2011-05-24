@@ -5,6 +5,7 @@ CONTENT OF THIS LIBRARY
 (3) ./STS
 (4) ./COMP
 (5) ./ORDER
+(6) ./PROP_untyped
 
 
 (1) DIRECTORIES
@@ -315,4 +316,88 @@ CONTENT OF THIS LIBRARY
 	init is a morph of reps
 	init is unique
 	ULCbeta is initial rep
+
+(6) ./PROP_untyped
 	
+	the 3 files arities.v, representations.v, 
+	 initial.v are actually similar to their 
+	 friends in ./STS
+	 difference : only untyped arities, 
+	   representations in *relative* monads
+
+   ./PROP_untyped/arities.v
+	definition of untyped signature
+	multiple addition of variables
+	functoriality of addition of vars
+	lshift, the capture avoiding thing for lists of vars
+	derived module wrt a list of variables
+	the module "of arguments" of a constructor 
+ 	  (prod of derived mods)
+	source and target modules of an arity
+	representation of an arity
+	representation of a signature
+	the product derived module morphism 
+	  (left vertical of comm diag of morphism of reps)
+	commutative diagram for morphism of representations
+	def of morphism of representations
+
+   ./PROP_untyped/representations.v
+	identity representation of a signature
+	composition of representations
+	category of representations REPRESENTATION S
+
+   ./PROP_untyped/initial.v
+	** the initial object in the category of representations 
+	   without any equations is given by the type UTS, 
+	   equipped with the diagonal order, i.e. the smallest 
+	   possible preorder.
+	   
+	carrier UTS of initial monad of REP(S)
+	rename, the functoriality
+	inj, the renaming into terms with one more variable
+	_shift, for avoiding capture
+	subst, simultaneous substitution
+	substar, single value substitution
+	fusion laws for these functions
+	monadicity of UTS
+	isomorphism UTS_list <-> prod_mod_c UTS
+	representation structure of UTSM
+	init, the (carrier of) the initial morphism
+	init commutes with renaming
+	init commutes with shifting
+	init commutes with substitution
+	init is a morphism of representations
+	init is unique 
+	REPRESENTATION S has an initial object	
+   
+   ./PROP_untyped/prop_initial.v
+	definition of half-equation, propositional arity,
+	  algebraic equation
+	subcategory PROP_REP of representations verifying a set of 
+	  inequations, 
+	definition of the order on terms of UTS, giving UTSP
+	representation structure on UTSP -> UTSPREPR
+	initiality of UTSPREPR in PROP_REP
+	
+	
+	 	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
