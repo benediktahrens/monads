@@ -14,7 +14,7 @@ match t as u return (c u -> R (c tt)) with
 | tt => fun X0 : c tt => (weta (Monad_struct:=R)(c tt)) X0
 end X.
 
-Check unit_weta_car.
+
 
 
 Definition unit_kleisli : 

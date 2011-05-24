@@ -833,6 +833,18 @@ Proof.
   rerew init_lshift.
 Qed.
 
+Lemma init_kleisli2 V (v : UTS V) W (f : V ---> UTS W) :
+  init (v >== f) =
+  rkleisli (RMonad_struct := R) (Sm_ind f ;; @init_sm _ ) (init v).
+Proof.
+  simpl.
+  intros.
+  assert (H:=init_kleisli v (#SM_po f)).
+  simpl in H.
+  rewrite H.
+  app (rkl_eq R).
+Qed.
+
 Hint Rewrite init_kleisli : fin.
 Hint Resolve init_kleisli : fin.
 

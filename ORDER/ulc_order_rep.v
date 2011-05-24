@@ -53,7 +53,7 @@ Variables P R : ULCPO_rep.
 Section Rep_Hom_Class.
 
 Variable S : RMonad_Hom P R.
-Check PbRMod_ind_Hom.
+
 Notation "'ST'":= (PbRMod_ind_Hom S).
 
 

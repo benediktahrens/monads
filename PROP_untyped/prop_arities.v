@@ -717,35 +717,68 @@ Proof.
   assert (H5:=H4 _ _ (init_rep (SC_inj_ob R))).
   simpl in H5.
   clear H4.
-  rewrite debi3s.
+  rerew (debi3s x (eq2 (T a)) ).
+  rerew (debi3s x (eq1 (T a))).
+  rewrite <- H5.
+  clear H5.
+  assert (H4:=comm_eq_s (half_equation_struct := eq2 (T a))).
+  assert (H5:=H4 _ _ (init_rep (SC_inj_ob R))).
+  simpl in H5.
+  rewrite <- H5.
+  clear H5 H4.
+  simpl in *.
+  destruct R; simpl in *.
+  unfold verifies_prop_sig in v.
+  unfold verifies_eq in v.
+  simpl in v.
+  apply v.
+Qed.
+
+Definition UTSPREPR : PROP_REP := 
+ exist (fun a : Representation Sig => verifies_prop_sig (A:=A) T a) UTSPRepr
+  UTSPRepr_sig_prop.
+
+
+Section init.
+
+Variable R : PROP_REP.
+
+
+
+Program Instance init_prop_s V : PO_mor_struct
+    (a:=(FINJ _ UTSPREPR) V) (b:=(FINJ _ R) V) (init (FINJ _ R) (V:=V)).
+Next Obligation.
+Proof.
+  unfold Proper, respectful.
+  intros.
+  unfold prop_rel_c in H.
+  simpl in H.
+  apply H.
+Qed.
+
+
+Definition init_prop V := Build_PO_mor (init_prop_s V).
+
+Program Instance init_prop_mon_s : RMonad_Hom_struct
+      (P:=FINJ _ UTSPREPR)(Q:=FINJ _ R) init_prop.
+Next Obligation.
+Proof.
+  rewrite init_kleisli2.
+  app (rkl_eq (proj1_sig R)).
+Qed.
+ 
+
+Definition init_prop_mon := Build_RMonad_Hom init_prop_mon_s.
+
+Program Instance init_prop_rep : Representation_Hom_struct init_prop_mon.
+Next Obligation.
+Proof.
+  unfold commute.
+  simpl; intros.
   
-  assert (H: eq1 (T a) (STSRepr Sig) c x = eq1 (T a) (UTSPRepr) c x).
-  generalize (eq1 (T a)).
-  
-  
-  Print eq1.
-  
-  Focus 2.
-  
-  transitivity 
-  (Prod_mor_c1
-                             (init_mon (Sig:=Sig)
-                                (SC_inj_ob
-                                   (subobP:=fun P : Representation Sig =>
-                                            verifies_prop_sig (A:=A) T P) R))
-                             (((eq1 (T a)) (STSRepr Sig)) c x)).
-  apply PO_refl_eq.
-  apply f_equal.
-  auto.
-  transitivity (
-                             
-  rerew ( H5 c x).
-  
-  (******   rewrite with comm_eq_s  **)
-  rewrite <- H2.
-  assert (H:= 
-  simpl.
-  
+
+
+
 
 
 Check Sm_ind.
