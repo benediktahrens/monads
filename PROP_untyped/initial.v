@@ -9,8 +9,8 @@ Unset Transparent Obligations.
 Unset Automatic Introduction.
 
 (** in this file we define 
-    - STS, the initial monad
-    - Var, a constructor of STS
+    - UTS, the (carrier of the) initial monad
+    - Var, a constructor of UTS
     - rename, the functoriality
     - inj, renaming with (v => Some v)
     - shift, taking the substitution function and changing it in a capture
@@ -18,7 +18,7 @@ Unset Automatic Introduction.
     - subst, the substitution
 
     correspondences to the general monad definitions 
-        (STS left, Monad right):
+        (UTS left, Monad right):
     - Var = weta
     - rename f = lift f
     - inj = lift weta
@@ -32,6 +32,15 @@ Unset Automatic Introduction.
     - shift = opt_inj
 *)
 
+
+(** afterwards we prove that an initial object exists in the category of representations
+  associated to a signature [Sig]. this result is actually the same (via an adjunction)
+   as the one proved in ../STS (even for simply--typed syntax *)
+(** only in the next file  ./prop_arities.v will we talk about propositional arities.
+    we still need initiality for the empty set of prop. arities, since the order 
+    on UTS induced by a set on inequations is defined in terms of this initial 
+    morphism *)
+
 Section initial_type.
 
 Ltac fin := simpl in *; intros; autorewrite with fin; auto with fin.
@@ -44,12 +53,16 @@ Notation "^ f" := (lift (M:= option_monad) f) (at level 5).
 Notation "[ T ]" := (list T) (at level 5).
 
 
-(** STS will be the initial monad, STS_list represents the arguments of
+(** UTS will be the (carrier of the) initial monad, UTS_list represents the arguments of
      a constructor *)
-(** STS_list is actually isomorphic to [prod_mod_carrier STS], but 
+(** UTS_list is actually isomorphic to [prod_mod_carrier UTS], but 
     we wouldn't get such a nice induction scheme with a non-mutual
     inductive type
 *)
+
+(** later we equip UTS with two different preorders:
+      - the diagonal, yielding the initial representation without any inequations 
+      - the preorder induced by a set of inequations A (cf. file ./prop_arities.v) *)
 
 
 Inductive UTS (V : TYPE) : TYPE :=
@@ -62,13 +75,19 @@ UTS_list (V : TYPE) : [nat] -> Type :=
   | constr : forall b bs, 
       UTS (V ** b) -> UTS_list V bs -> UTS_list V (b::bs).
 
+(** at first the diagonal preorder *)
+
 Definition UTS_sm V := SM_po (UTS V).
 
-Scheme STSind := Induction for UTS Sort Prop with
-       STSlistind := Induction for UTS_list Sort Prop.
+(** mutual induction and recursion schemes
+    we won't make use of the latter *)
 
-Scheme STSrect := Induction for UTS Sort Type with
-       STSlistrect := Induction for UTS_list Sort Type.
+Scheme UTSind := Induction for UTS Sort Prop with
+       UTSlistind := Induction for UTS_list Sort Prop.
+
+
+Scheme UTSrect := Induction for UTS Sort Type with
+       UTSlistrect := Induction for UTS_list Sort Type.
 
 Lemma constr_eq : forall (V : TYPE) (b : nat) 
             (bs : [nat]) (x y : UTS _ )
@@ -103,8 +122,8 @@ with
 where "x //- f" := (rename f x) 
 and "x //-- f" := (list_rename x f).
 
-Definition rename_sm V W (f : V ---> W) : UTS_sm V ---> UTS_sm W :=
-      #SM_po (rename f).
+Definition rename_sm V W (f : V ---> W) : 
+    UTS_sm V ---> UTS_sm W := #SM_po (rename f).
 
 (** functoriality of renaming for STS *)
 
@@ -119,7 +138,7 @@ Lemma rename_eq : forall (V : TYPE) (v : UTS V)
          (W : TYPE) (f g : V ---> W),
      (forall x, f x = g x) -> v //- f = v //- g.
 Proof.
-  app (@STSind 
+  app (@UTSind 
        (fun (a : Type) (v : UTS a) => 
             forall (b : Type)(f g : a ---> b),
          (f == g) ->
@@ -144,7 +163,7 @@ Hint Extern 1 (?f ^^ _ _ ?x = ?x) => apply pow_eq_id.
 Lemma rename_eq_id V (x : UTS V) (f : V ---> V) :
      f == id _ -> x //- f = x.
 Proof.
-  apply (@STSind
+  apply (@UTSind
        (fun a (x : UTS a) => forall f, f == id _ ->
                x //- f = x)
        (fun a t (l : UTS_list a t) => forall f, f == id _ ->
@@ -159,13 +178,12 @@ Qed.
 Ltac tt := repeat (t || 
       match goal with [|- ?s //- _ = ?s //- _] => 
               apply rename_eq end ||
-      elim_option ||
-      rew pow_comp).
+      elim_option || rew pow_comp).
 
 Lemma rename_comp V (x : UTS V) W (f : V ---> W) X (g : W ---> X):
     x //- f //- g = x //- (fun y => g (f y)).
 Proof.
-  apply (@STSind 
+  apply (@UTSind 
    (fun a (x : UTS a) => 
      forall b (f : a ---> b) c (g : b ---> c),
       x //- f //- g = x //- (fun y => g (f y)))
@@ -283,8 +301,7 @@ Hint Rewrite _lshift_eq : fin.
 Program Instance _lshift_oid l V W : 
     Proper (equiv ==> equiv) (@_lshift l V W).
 
-Lemma shift_var (V : TYPE) (x : V*) :
-       x >- @Var _ = Var x .
+Lemma shift_var (V : TYPE) (x : V*) : x >- @Var _ = Var x .
 Proof.
   tt.
 Qed.
@@ -294,8 +311,7 @@ Hint Rewrite shift_var : fin.
 
 Ltac ttinv := repeat (tt || rerew_all; fin).
 
-Lemma shift_l_var l V (x : V ** l) : 
-      x >>-- @Var _ = Var x .
+Lemma shift_l_var l V (x : V ** l) : x >>-- @Var _ = Var x .
 Proof.
   induction l;  ttinv.
 Qed.
@@ -307,8 +323,7 @@ Proof.
   tt.
 Qed.
   
-Lemma var_lift_shift V W (f : V ---> W) (x : option V) :
-     Var (^f x) = x >- (f ;; @Var _ ).
+Lemma var_lift_shift V W (f : V ---> W) (x : V*) : Var (^f x) = x >- (f ;; @Var _ ).
 Proof.
   induction x; tt.
 Qed.
@@ -322,13 +337,12 @@ Ltac elim_lshift := match goal with
 Ltac t4 := repeat (tt || elim_lshift).
 
 Lemma var_lift_shift_l (l : nat) V W (f : V ---> W) x : 
-       Var ((f ^^ l) x)  =  x >>-- (f ;; @Var _ ) .
+         Var ((f ^^ l) x)  =  x >>-- (f ;; @Var _ ) .
 Proof.
   induction l; t4.
 Qed.
 
-Lemma shift_lift V W X (f : V ---> W) 
-         (g : W ---> UTS X) (x : V*) :
+Lemma shift_lift V W X (f : V ---> W) (g : W ---> UTS X) (x : V*) :
       (^f x) >- g = x >- (f ;; g).
 Proof.
   induction x; fin.
@@ -346,7 +360,7 @@ Qed.
 Lemma subst_eq V (x : UTS V) W (f g : V ---> UTS W) 
        (H : forall x, f x = g x):  x >== f = x >== g.
 Proof.
-  app (@STSind 
+  app (@UTSind 
       (fun V x => forall W (f g : V ---> UTS W)
               (H:f == g), x >== f = x >== g)
       (fun V l (v : UTS_list V l) => 
@@ -359,7 +373,7 @@ Lemma lsubst_eq V l (x : UTS_list V l)
       W (f g : V ---> UTS W) 
        (H : forall x, f x = g x):  x >>== f = x >>== g.
 Proof.
-  app (@STSlistind 
+  app (@UTSlistind 
       (fun V x => forall W (f g : V ---> UTS W)
               (H:f == g), x >== f = x >== g)
       (fun V l (v : UTS_list V l) => 
@@ -394,7 +408,7 @@ Ltac t5 := repeat (elim_fun || tt || unfold inj, substar).
 
 Lemma subst_var (V : TYPE) : forall (v : UTS V), v >== (@Var V) = v .
 Proof.
-  apply (@STSind
+  apply (@UTSind
       (fun V (v : UTS V) =>  v >== (Var (V:=V)) = v)
       (fun V l (v : UTS_list V l) => v >>== (Var (V:=V)) = v)); 
   repeat (t5 ||
@@ -405,7 +419,7 @@ Qed.
 Lemma subst_eq_rename V (v : UTS V) W (f : V ---> W)  : 
      v //- f  = v >== f ;; Var (V:=W).
 Proof.
-  apply (@STSind 
+  apply (@UTSind 
     (fun V (v : UTS V) => forall W (f : V ---> W),
        v //- f = v >== (f;;Var (V:=W)))
     (fun V l (v : UTS_list V l) => forall W (f : V ---> W),
@@ -438,7 +452,7 @@ Lemma rename_subst V (v : UTS V) W X (f : V ---> UTS W)
       (g : W ---> X) : 
       (v >== f) //- g  = v >== (f ;; rename g).
 Proof.
-  apply (@STSind  
+  apply (@UTSind  
     (fun V (v : UTS V) => forall W X (f : V ---> UTS W)
                                          (g : W ---> X),
       (v >== f) //- g = v >== (f ;; rename g))
@@ -452,7 +466,7 @@ Lemma subst_rename V (v : UTS V) W X (f : V ---> W)
       (g : W ---> UTS X) : 
       v //- f >== g = v >== (f ;; g).
 Proof.
-  apply (@STSind  
+  apply (@UTSind  
     (fun V (v : UTS V) => forall W X (f : V ---> W)
                                          (g : W ---> UTS X),
       v //- f >== g = v >== (f ;; g))
@@ -499,7 +513,7 @@ Lemma subst_subst V (v : UTS V) W X (f : V ---> UTS W)
              (g : W ---> UTS X) :
      v >== f >== g = v >== f;; subst g.
 Proof.
-  apply (@STSind   
+  apply (@UTSind   
     (fun (V : Type) (v : UTS V) => forall (W X : Type)
           (f : V ---> UTS W) (g : W ---> UTS X),
         v >== f >== g = v >== (f;; subst g))
@@ -518,7 +532,7 @@ Ltac tinv := t5; repeat (rerew_all || elim_fun); t5.
 Lemma lift_rename V (s : UTS V) W (f : V ---> W) :
           s >== (f ;; @Var _) = s //- f.
 Proof.
-  app (@STSind 
+  app (@UTSind 
     (fun V s => forall W f,
        subst (f ;; Var (V:=W)) s =
                rename  f s)
@@ -530,25 +544,19 @@ Qed.
 
 (** END OF FUSION LAWS *)
 
-(** STS is a monad *)
+(** UTS equipped with diagonal preorder is a relative monad over Delta *)
 
-Obligation Tactic := fin.
+Obligation Tactic := unfold Proper, respectful; fin.
 
-Program Instance UTS_sm_rmonad : 
-     RMonad_struct SM_po UTS_sm := {
+Program Instance UTS_sm_rmonad : RMonad_struct SM_po UTS_sm := {
   rweta c := #SM_po (@Var c);
   rkleisli := subst_sm
 }.
-Next Obligation.
-Proof.
-  unfold Proper; red.
-  fin.
-Qed.
 
 Canonical Structure UTSM_sm := Build_RMonad UTS_sm_rmonad.
 
-(** as said before, STS_list is actually the same as 
-    prod_mod_glue STS_monad. we give a module morphism translation *)
+(** as said before, UTS_list is actually the same as 
+    prod_mod_c UTSM_sm. we give a module morphism translation *)
 
 Fixpoint STSl_f_pm l V (x : prod_mod_c (fun V => UTS V) V l)
          : UTS_list V l :=
@@ -584,11 +592,10 @@ Qed.
     - _ shift = shift
 *)
 
-Lemma list_subst_eq V l (v : UTS_list V l) W 
-       (f g : V ---> UTS W) (H : f == g) : 
-          v >>== f =  v >>== g.
+Lemma list_subst_eq V l (v : UTS_list V l) W (f g : V ---> UTS W) :
+            f == g -> v >>== f =  v >>== g.
 Proof.
-  apply (@STSlistind 
+  apply (@UTSlistind 
       (fun V x => forall W (f g : V ---> UTS W)
               (H:f == g), x >== f = x >== g)
       (fun V l (v : UTS_list V l) => 
@@ -617,7 +624,7 @@ Qed.
 Hint Resolve _shift_shift_eq : fin.
 
 Lemma _lshift_lshift_eq (l : nat) V (x : V ** l) W (f : SM_po V ---> UTS_sm W):
-       x >-- f = x >>-- f. 
+                x >-- f = x >>-- f. 
 Proof.
   induction l; t5.
 Qed.
@@ -625,7 +632,7 @@ Qed.
 (**   rename = lift *)
 
 Lemma lift_rename2 V (s : UTS_sm V) W (f : V ---> W): 
-        rlift UTSM_sm f s = s //- f.
+          rlift UTSM_sm f s = s //- f.
 Proof.
   fin.
 Qed.
@@ -640,13 +647,11 @@ Lemma sts_list_subst l X (v : prod_mod (UTSM_sm) l X)
        W (f : SM_po X ---> UTS_sm W):
   STSl_f_pm  (pm_mkl f v ) = (STSl_f_pm v) >>== f.
 Proof.
-  induction v; repeat (t5 ||
-  rew _lshift_lshift_eq ) .
+  induction v; repeat (t5 || rew _lshift_lshift_eq ) .
 Qed.
 
 Hint Resolve sts_list_subst : fin.
 Hint Rewrite sts_list_subst : fin.
-
 
 
 (** we define the Representation Structure, i.e. for every arity
@@ -655,66 +660,60 @@ Hint Rewrite sts_list_subst : fin.
 Obligation Tactic := t.
 
 
+Lemma bba (l : [nat]) V (x y : prod_mod_c UTS_sm V l) 
+          (H : prod_mod_c_rel x y) : x = y.
+Proof.
+  induction 1;
+  simpl in *.
+  dependent destruction x.
+  dependent destruction y.
+  constructor.
+  inversion IHprod_mod_c_rel.
+  inversion H.
+  constructor.
+Qed.
+
 Lemma bbb (l : [nat]) V (x y : prod_mod_c UTS_sm V l) :
               prod_mod_c_rel x y -> smallest_rel x y.
 Proof.
-intros.
-induction H.
-dependent induction x.
-dependent induction y.
-constructor.
-inversion IHprod_mod_c_rel.
-inversion H.
-constructor.
-Qed.
-
-Lemma bba (l : [nat]) V (x y : prod_mod_c UTS_sm V l) :
-              prod_mod_c_rel x y -> x = y.
-Proof.
-  intros.
-  assert (H' := bbb H).
-  inversion H'.
-  auto.
+  intros;
+  rewrite (bba H);
+  constructor.
 Qed.
 
 Lemma bbba (l : [nat]) V (x y : prod_mod_c UTS_sm V l) 
      (f : prod_mod_c UTS_sm V l -> UTSM_sm V):
               prod_mod_c_rel x y -> f x << f y.
 Proof.
-  simpl; intros.
-  rewrite (bba H).
+  simpl; intros;
+  rewrite (bba H);
   constructor.
 Qed.
 
-Check STSl_f_pm.
+Obligation Tactic :=   unfold Proper, respectful; intros; simpl; 
+        repeat (match goal with [H:_|-_]=>rewrite (bba H) end); constructor.
 
-Program Instance bla (i : sig_index Sig) V : PO_mor_struct
+Program Instance UTS_arity_rep_po (i : sig_index Sig) V : PO_mor_struct
   (a:= prod_mod UTSM_sm (sig i) V)
   (b:= UTSM_sm V)
   (fun (X : prod_mod_c _ V (sig i)) => Build (i:=i) (STSl_f_pm (V:=V) X)).
-Next Obligation.
-Proof.
-  unfold Proper; red.
-  intros; simpl.
-  rewrite (bba H).
-  constructor.
-Qed.
 
+Obligation Tactic := t5.
 
-Program Instance STS_arity_rep (i : sig_index Sig) : 
+Program Instance UTS_arity_rep (i : sig_index Sig) : 
   RModule_Hom_struct 
        (M := prod_mod UTSM_sm (sig i))
        (N := UTSM_sm) 
-       (fun V => Build_PO_mor (bla i V)).
-  
+       (fun V => Build_PO_mor (UTS_arity_rep_po i V)).
+ 
 
 (**  STS has a structure as a representation of Sig *)
 
-Canonical Structure STSrepr : Repr Sig UTSM_sm :=
-       fun i => Build_RModule_Hom (STS_arity_rep i).
+Canonical Structure UTSrepr : Repr Sig UTSM_sm :=
+       fun i => Build_RModule_Hom (UTS_arity_rep i).
 
-Canonical Structure STSRepr : REPRESENTATION Sig := 
-       Build_Representation (@STSrepr).
+Canonical Structure UTSRepr : REPRESENTATION Sig := 
+       Build_Representation (@UTSrepr).
 
 (** now INITIALITY *)
 
@@ -753,7 +752,7 @@ Ltac tt := t5; unfold rlift, rmlift;
 Lemma init_lift V x W (f : V ---> W) : 
    init (x //- f) = rlift R f (init x).
 Proof.
-  apply (@STSind 
+  apply (@UTSind 
     (fun V (x : UTS V) => forall W (f : V ---> W),
         init (x //- f) = rlift R f (init x))
     (fun V l (s : UTS_list V l) => forall 
@@ -784,12 +783,13 @@ Ltac t6 := repeat (t5 || elim_option || apply lshift_eq || app init_lift).
 Lemma init_lshift (l : nat) V W (f : SM_po V ---> UTS_sm W) (x : V ** l) :
      init (x >-- f) = x >-- (f ;; @init_sm _).
 Proof.
-  induction l; t6. t5. tt. 
-  assert (H' := init_lift).
-  unfold rlift in H'.
-  simpl in H'.
-  rewrite <- H'. 
-  apply f_equal.
+  induction l; t6; tt;
+  let H':= fresh in 
+       (assert (H' := init_lift);
+        unfold rlift in H';
+        simpl in H';
+        rewrite <- H');
+  apply f_equal;
   rew lift_rename.
 Qed.
 
@@ -801,7 +801,7 @@ Lemma init_kleisli V (v : UTS V) W (f : SM_po V ---> UTS_sm W) :
   init (v >== f) =
   rkleisli (f ;; @init_sm _ ) (init v).
 Proof.
-  apply (@STSind 
+  apply (@UTSind 
      (fun X (v : UTS X) => 
          forall Y (f : SM_po X ---> UTS_sm Y),
       init (v >== f) =
@@ -837,24 +837,17 @@ Lemma init_kleisli2 V (v : UTS V) W (f : V ---> UTS W) :
   init (v >== f) =
   rkleisli (RMonad_struct := R) (Sm_ind f ;; @init_sm _ ) (init v).
 Proof.
-  simpl.
-  intros.
-  assert (H:=init_kleisli v (#SM_po f)).
-  simpl in H.
-  rewrite H.
+  simpl; intros;
+  match goal with [f : _  , v :  _ |-_] => rew (init_kleisli v (#SM_po f)) end;
   app (rkl_eq R).
 Qed.
 
 Hint Rewrite init_kleisli : fin.
 Hint Resolve init_kleisli : fin.
 
-Obligation Tactic := fin.
+Obligation Tactic := fin; rew init_kleisli.
 
 Program Instance init_monadic : RMonad_Hom_struct (P:=UTSM_sm) init_sm.
-Next Obligation.
-Proof.
-  rew init_kleisli.
-Qed.
 
 Canonical Structure init_mon := Build_RMonad_Hom init_monadic.
 
@@ -871,11 +864,10 @@ Proof.
   induction x; fin.
 Qed.
 
-Obligation Tactic := 
-        unfold commute; fin; try rew prod_mor_eq_init_list.
+Obligation Tactic := unfold commute; fin; try rew prod_mor_eq_init_list.
 
 Program Instance init_representic : Representation_Hom_struct
-        (P:=STSRepr) init_mon (*init*).
+        (P:=UTSRepr) init_mon .
 
 Definition init_rep := Build_Representation_Hom init_representic.
 
@@ -883,16 +875,16 @@ Definition init_rep := Build_Representation_Hom init_representic.
 
 Section init.
 
-Variable f : Representation_Hom STSRepr R.
+Variable f : Representation_Hom UTSRepr R.
 
 Hint Rewrite one_way : fin.
 
-Ltac ttt := tt;
-            (try match goal with [ s : UTS_list _ _ |-_] =>
+Ltac ttt := tt; try rew (rmon_hom_rweta f);
+            (try match goal with [ s : _ |-_] =>
              rewrite <- (one_way s);
-             let H:=fresh in assert (H:=repr_hom f );
+             let H:=fresh in assert (H:=repr_hom_s _ _ _ f f );
              unfold commute in H; simpl in H end);
-             repeat (app (mh_weta f) || tinv || tt).
+             repeat (rewrite one_way || apply f_equal || tinv || tt).
 
 (*
 
@@ -907,19 +899,17 @@ tt; try app (mh_weta f);
 
 Lemma init_unique_prepa V (v : UTS V) : f V v = init v.
 Proof.
-  apply (@STSind
+  apply (@UTSind
      (fun V v => f V v = init v)
      (fun V l v => Prod_mor f l V (pm_f_STSl v) = init_list v));
-  ttt.
-  rew (rmon_hom_rweta f).
-  rewrite <- (one_way u).
+  ttt;
+  match goal with [H:_|-_]=>rewrite <- (one_way H) end;
   let H:=fresh in (assert (H:=@repr_hom_s _ _ _ f f);
                     unfold commute in H; 
                     unfold commute_left, commute_right in H ;
                     simpl in *;
-                    rewrite <- H).
-  rewrite one_way.
-  apply f_equal.
+                    rewrite <- H);
+  rewrite one_way; apply f_equal;
   auto.
 Qed.
 
@@ -927,7 +917,7 @@ End init.
 
 Hint Rewrite init_unique_prepa : fin.
 
-Lemma init_unique :forall f : STSRepr ---> R , f == init_rep.
+Lemma init_unique :forall f : UTSRepr ---> R , f == init_rep.
 Proof.
   fin.
 Qed.
@@ -938,8 +928,8 @@ Hint Rewrite init_unique : fin.
 
 Obligation Tactic := fin.
 
-Program Instance STS_initial : Initial (REPRESENTATION Sig) := {
-  Init := STSRepr ;
+Program Instance UTS_initial : Initial (REPRESENTATION Sig) := {
+  Init := UTSRepr ;
   InitMor R := init_rep R }.
 
 End initial_type.

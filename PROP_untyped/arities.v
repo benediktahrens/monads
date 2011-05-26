@@ -13,10 +13,12 @@ Unset Automatic Introduction.
 
 Notation "[[ T ]]" := (list T) (at level 5).
 
+
+(** A Signature is a family of lists of naturals, indexed by the type [sig_index] *)
+
 Record Signature : Type := {
   sig_index : Type ;
-  sig : sig_index -> [[nat]]
-}.
+  sig : sig_index -> [[nat]] }.
 
 
 Notation "V *" := (option V) (at level 5).
@@ -24,6 +26,9 @@ Notation "^ f" := (lift (M:= option_monad) f) (at level 5).
 
 Ltac opt := simpl; intros; 
    repeat (cat || autorewrite with opt || auto with opt).
+
+
+(** To a set of variables [V] we add [n] fresh variables *)
 
 Fixpoint pow (n : nat) (V : TYPE) : TYPE :=
   match n with
@@ -146,8 +151,7 @@ Fixpoint lshift_c (l : nat) (V W : TYPE) (f : SM_po V ---> P W) :
     end.
 
 Definition lshift (l : nat) V W (f : SM_po V ---> P W) : 
-              SM_po (V ** l) ---> P (W ** l) := 
-                     Sm_ind (lshift_c f).
+     SM_po (V ** l) ---> P (W ** l) := Sm_ind (lshift_c f).
 (*
 Program Instance lshift_c_po l V W (f : SM_po V ---> P W):
      PO_mor_struct (lshift_c (l:=l) f).
@@ -177,8 +181,7 @@ Ltac tt l := induction l;
          match goal with [H:_|-_] => rewrite <- H end ||
          apply lshift_eq || t || rew (rlift_rweta P)).
 
-Lemma lshift_weta (l : nat) V (x : V ** l) :
-      x >>- (rweta _) = Var x.
+Lemma lshift_weta (l : nat) V (x : V ** l) : x >>- (rweta _) = Var x.
 Proof.
   tt l. 
 Qed.
@@ -243,11 +246,7 @@ Qed.
     but we use parts of the properties *)
 
 Section many_derivs.
-(*
-Variable obD : Type.
-Variable morD : obD -> obD -> Type.
-Variable D : Cat morD.
-*)
+
 Variable D : Cat.
 Variable M : RMOD P D.
 
@@ -286,7 +285,7 @@ Definition D_mod (l : nat) := Build_RModule (der_mod_struct l).
 End many_derivs.
 
 (** now for 
-      - M a module
+      - M a relative module
       - l an arity 
    we build the product of fibres of derived modules of M wrt to l 
 
@@ -295,10 +294,6 @@ End many_derivs.
 
 
 Section prod_mod_built_from_scratch_carrier.
-
-(*
-Variable M : TYPE -> TYPE.
-*)
 
 Variable M : TYPE -> TYPE.
 
@@ -309,8 +304,7 @@ Inductive prod_mod_c (V : TYPE) : [[nat]] -> Type :=
   | CONSTR : forall b bs, 
          M (V ** b)-> prod_mod_c V bs -> prod_mod_c V (b::bs) .
 
-Lemma CONSTR_eq (V : TYPE) (b : nat) 
-       (bs : [[nat]]) 
+Lemma CONSTR_eq (V : TYPE) (b : nat) (bs : [[nat]]) 
        (elem elem' : M (V ** b)) 
        (elems elems' : prod_mod_c V bs) :
         elem = elem' -> elems = elems' -> 
@@ -320,6 +314,8 @@ Proof.
 Qed.
 
 End prod_mod_built_from_scratch_carrier.
+
+(** if [T : TYPE -> PO] then there is a natural order on [prod_mod_c T nl]  *)
 
 Section order_prod_mod.
 
@@ -332,13 +328,8 @@ Inductive prod_mod_c_rel (V : TYPE) : forall n, relation (prod_mod_c M V n) :=
           x << y -> prod_mod_c_rel a b -> 
           prod_mod_c_rel (CONSTR x a) (CONSTR y b).
 
-
-
-(*
-
-Lemma prod_mod_nil_TTT : forall V (m : prod_mod_c V nil), m = TTT _ .
-Proof.
-*)
+(** this product order is indeed a preorder. proof uses dependent induction/destruction,
+      hence axioms *)
 
 Program Instance prod_mod_c_rel_po_struct V n : 
     PO_obj_struct (prod_mod_c M V n) := {Rel := @prod_mod_c_rel V n }.
@@ -363,19 +354,22 @@ Proof.
   apply IHprod_mod_c_rel.
   auto.
 Qed.
+
+(*
 Print Assumptions prod_mod_c_rel_po_struct.
- 
+*)
+
 Definition prod_mod_po V n : PO := Build_PO_obj (prod_mod_c_rel_po_struct V n).
+
 End order_prod_mod.
 
-
-(** if M is a module, then the product of fibres of derived M also is *)
+(** if M is a module, then the product of derived M w.r.t. a list [l:[nat]] also is *)
 
 Section prod_mod_carrier_is_mod.
 
 Variable M : RMOD P PO.
 
-(** the product module mkleisli is defined by structural recursion *)
+(** the product module substitution is defined by structural recursion *)
 
 Fixpoint pm_mkl l V W (f : SM_po V ---> P W) 
       (X : prod_mod_c (fun V => M V) V l) : prod_mod_c _ W l :=
@@ -451,33 +445,13 @@ Program Instance pm_mkl_oid l V W : Proper
  (A:= (SM_po V ---> P W) -> 
         (prod_mod_po _ V l ---> prod_mod_po _ W l))
    (equiv ==> equiv) (@pm_mkl_po l V W).
-(*
-Next Obligation.
-Proof.
-  simpl in *.
-  rewrite (pm_mkl_eq H).
-  auto.
-Qed.
-*)
 
-Obligation Tactic := opt || apply pm_mkl_oid.
+Obligation Tactic := repeat (unfold Proper, respectful || opt || 
+                apply pm_mkl_oid || rew (pm_mkl_eq _ )).
 
 Program Instance prod_mod_struct l : RModule_struct (F:=SM_po) P (D:=PO) PO  
    (fun V => prod_mod_po M V l) := {
   rmkleisli := pm_mkl_po l }.
-Next Obligation.
-Proof.
-  unfold Proper; red.
-  simpl. intros.
-  rewrite (pm_mkl_eq H).
-  auto.
-Qed.
-(*
-Next Obligation.
-Proof.
-  app (pm_mkl_eq).
-Qed.
-*)
 
 Definition prod_mod l := Build_RModule (prod_mod_struct l).
 
@@ -485,20 +459,14 @@ End prod_mod_carrier_is_mod.
 
 
 (** we are now ready to define what the representation of an arity is *)
-(*
-Notation "M [( s )]" := (ITFIB_MOD _ s M) (at level 60).
-*)
+
 Section arity_rep.
-
-
-(*Variable P : Monad (ITYPE T).*)
 
 Variable M : RModule P PO.
 
 (** to each arity we associate a type of module morphisms *)
 
-Definition modhom_from_arity (ar : [[nat]]) : Type :=
-  RModule_Hom (prod_mod M ar) M.
+Definition modhom_from_arity (ar : [[nat]]) : Type := RModule_Hom (prod_mod M ar) M.
 
 End arity_rep.
 
@@ -522,11 +490,9 @@ Definition Repr := forall i : sig_index S,
 
 End rep_struct.
  
-
 Record Representation := {
   rep_monad :> RMonad SM_po ;
-  repr : Repr rep_monad
-}.
+  repr : Repr rep_monad }.
 
 
 (** now we come to the MORPHISMS OF REPRESENTATIONS *)
@@ -540,8 +506,6 @@ Section arrows.
 
 Variables P Q : RMonad SM_po.
 Variable f : RMonad_Hom P Q.
-
-
 
 Notation "x >>- f" := (shift_not f x)(at level 60).
 Notation "x >-- f" := (lshift _ f x)(at level 60).
@@ -579,17 +543,6 @@ Fixpoint Prod_mor_c1 (l : [[nat]]) (V : TYPE) (X : prod_mod_c (fun V => P V) V l
     CONSTR (f  _ elem) (Prod_mor_c1 elems)
   end.
 
-(*
-Fixpoint Prod_mor_c (l : [nat]) (V : TYPE) (X : prod_mod P l V) : 
-                  f* (prod_mod Q l) V :=
-  match X in prod_mod_c _ _ l 
-  return f* (prod_mod Q l) V with
-  | TTT => TTT _ _
-  | CONSTR b bs elem elems => 
-    CONSTR (f  _ elem) (Prod_mor_c elems)
-  end.
-*)
-
 Program Instance prod_mor_struct l V : PO_mor_struct 
   (a:=prod_mod P l V) (b:=f* (prod_mod Q l) V) (@Prod_mor_c1 l V).
 Next Obligation.
@@ -615,15 +568,16 @@ Proof.
   induction x; 
   repeat (opt || apply CONSTR_eq ||
           rew (rmonad_hom_rkl (RMonad_Hom_struct := f)) ||
-          app (rkl_eq Q)).
-  rew (lshift_monad_hom).
-  apply lshift_eq.
+          app (rkl_eq Q));
+  rew (lshift_monad_hom);
+  apply lshift_eq;
   auto.
 Qed.
 
 Obligation Tactic := simpl; intros; rew prod_mod_c_kl.
 
 (** the left morphism has a module morphism structure *)
+
 Program Instance prod_mor_s l : RModule_Hom_struct 
    (M:=prod_mod P l) (N:=f* (prod_mod Q l))
        (prod_mor_po l).
@@ -679,8 +633,7 @@ Class Representation_Hom_struct (f : RMonad_Hom P Q) :=
 
 Record Representation_Hom : Type := {
   repr_hom_c :> RMonad_Hom P Q;
-  repr_hom :> Representation_Hom_struct repr_hom_c
-}.
+  repr_hom :> Representation_Hom_struct repr_hom_c }.
 
 End signature_rep.
 

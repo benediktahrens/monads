@@ -6,8 +6,8 @@ Unset Transparent Obligations.
 Unset Automatic Introduction.
 
 
-(** we define a category of representations of a signature Sig over T *)
-(** main work has been done in STS_arities, remains to do:
+(** we define a category of representations of a signature Sig  *)
+(** main work has been done in ./arities.v , remains to do:
 	- identity representation morphism
 	- composition of rep morphs
 *)
@@ -40,8 +40,7 @@ Obligation Tactic := unfold commute, commute_left, commute_right;
 
 Hint Extern 1 (_ = _) => apply f_equal.
 
-Program Instance Rep_Id_struct : 
-       Representation_Hom_struct (RMonad_id P).
+Program Instance Rep_Id_struct : Representation_Hom_struct (RMonad_id P).
 
 Definition Rep_Id := Build_Representation_Hom Rep_Id_struct.
 
@@ -57,11 +56,8 @@ Variables P Q R : RMonad SM_po.
 Variable f : RMonad_Hom P Q.
 Variable g : RMonad_Hom Q R.
 
-Lemma prod_ind_mod_mor_comp l
- (c : TYPE)
- (t : prod_mod_c _ c l) :
-    Prod_mor_c1 (RMonad_comp f g) t =
-    Prod_mor_c1 g (Prod_mor_c1 f t).
+Lemma prod_ind_mod_mor_comp l (V : TYPE) (t : prod_mod_c _ V l) :
+    Prod_mor_c1 (RMonad_comp f g) t = Prod_mor_c1 g (Prod_mor_c1 f t).
 Proof.
   induction t; simpl; auto.
 Qed.
@@ -78,8 +74,8 @@ Lemma comp_hophop l
 Proof.
   intros;
   unfold commute, commute_left in *;
-  simpl in *; intros.
-  rerew_all.
+  simpl in *; intros;
+  rerew_all;
   autorewrite with bla; auto.
 Qed.
     
@@ -143,8 +139,7 @@ Program Instance REPRESENTATION_struct :
          Cat_struct (@Representation_Hom S) := {
   mor_oid a c := eq_Rep_oid a c;
   id a := Rep_Id a;
-  comp P Q R f g := Rep_Comp f g
-}.
+  comp P Q R f g := Rep_Comp f g }.
 
 Definition REPRESENTATION := Build_Cat REPRESENTATION_struct.
 
