@@ -8,8 +8,17 @@ Unset Strict Implicit.
 Unset Transparent Obligations.
 Unset Automatic Introduction.
 
+(** ** Initial Representation Without Inequations
+   we show that the category of representations has an initial object.
+   However, no propositional arities here yet.
+   The set of terms we construct now will stay the same for the initiality
+   with inequations, but the relation on terms will change. It is in fact 
+   defined using the initial morphisms from the case without inequations.
+*)
+
+
 (** in this file we define 
-    - UTS, the (carrier of the) initial monad
+    - UTS, the (carrier of the) initial monad (set of terms)
     - Var, a constructor of UTS
     - rename, the functoriality
     - inj, renaming with (v => Some v)
@@ -79,7 +88,7 @@ UTS_list (V : TYPE) : [nat] -> Type :=
 
 Definition UTS_sm V := SM_po (UTS V).
 
-(** mutual induction and recursion schemes
+(** mutual induction and recursion schemes.
     we won't make use of the latter *)
 
 Scheme UTSind := Induction for UTS Sort Prop with
@@ -103,6 +112,10 @@ Hint Resolve constr_eq f_equal pow_map_eq : fin.
 Reserved Notation "x //- f" (at level 42, left associativity).
 Reserved Notation "x //-- f" (at level 42, left associativity).
 
+(** ** Renaming, Substitution, Fusion laws 
+  We prepare the monadic structure on [UTS]. Substitution is 
+	defined making use of the simpler renaming, and shifting (under binders)
+*)
 
 (** renaming is a mutually recursive function *)
 
@@ -544,6 +557,8 @@ Qed.
 
 (** END OF FUSION LAWS *)
 
+(** ** Monad structure on [UTS] *)
+
 (** UTS equipped with diagonal preorder is a relative monad over Delta *)
 
 Obligation Tactic := unfold Proper, respectful; fin.
@@ -555,7 +570,9 @@ Program Instance UTS_sm_rmonad : RMonad_struct SM_po UTS_sm := {
 
 Canonical Structure UTSM_sm := Build_RMonad UTS_sm_rmonad.
 
-(** as said before, UTS_list is actually the same as 
+(** ** Bijections
+
+as said before, UTS_list is actually the same as 
     prod_mod_c UTSM_sm. we give a module morphism translation *)
 
 Fixpoint STSl_f_pm l V (x : prod_mod_c (fun V => UTS V) V l)
@@ -604,7 +621,8 @@ Proof.
   fin.
 Qed.
 
-(** we establish some equalities *)
+(** ** Some more lemmas
+we establish some equalities *)
 
 Hint Rewrite subst_eq_rename : fin.
 
@@ -654,11 +672,13 @@ Hint Resolve sts_list_subst : fin.
 Hint Rewrite sts_list_subst : fin.
 
 
-(** we define the Representation Structure, i.e. for every arity
+(** ** Representation structure on [UTS]
+we define the Representation Structure, i.e. for every arity
     a module morphism *)
 
 Obligation Tactic := t.
 
+(** the diagonal propagates to products in the expected way *)
 
 Lemma bba (l : [nat]) V (x y : prod_mod_c UTS_sm V l) 
           (H : prod_mod_c_rel x y) : x = y.
@@ -672,7 +692,7 @@ Proof.
   inversion H.
   constructor.
 Qed.
-
+(*
 Lemma bbb (l : [nat]) V (x y : prod_mod_c UTS_sm V l) :
               prod_mod_c_rel x y -> smallest_rel x y.
 Proof.
@@ -680,7 +700,8 @@ Proof.
   rewrite (bba H);
   constructor.
 Qed.
-
+*)
+(*
 Lemma bbba (l : [nat]) V (x y : prod_mod_c UTS_sm V l) 
      (f : prod_mod_c UTS_sm V l -> UTSM_sm V):
               prod_mod_c_rel x y -> f x << f y.
@@ -689,7 +710,7 @@ Proof.
   rewrite (bba H);
   constructor.
 Qed.
-
+*)
 Obligation Tactic :=   unfold Proper, respectful; intros; simpl; 
         repeat (match goal with [H:_|-_]=>rewrite (bba H) end); constructor.
 
@@ -715,7 +736,8 @@ Canonical Structure UTSrepr : Repr Sig UTSM_sm :=
 Canonical Structure UTSRepr : REPRESENTATION Sig := 
        Build_Representation (@UTSrepr).
 
-(** now INITIALITY *)
+(** ** INITIALITY 
+   the representation [UTSRepr] we've just defined is initial: *)
 
 Section initiality.
 
@@ -736,7 +758,9 @@ with
          CONSTR (init elem) (init_list elems)
     end.
 
-(** now for init to be a morphism of monads we need to establish
+(** *** [init] commutes with renaming, substitution 
+
+now for init to be a morphism of monads we need to establish
     commutativity with substitution
 
     the following lead towards this goal 
@@ -795,6 +819,7 @@ Qed.
 
 Hint Rewrite init_lshift : fin.
 Hint Resolve init_lshift : fin.
+
 (** init is a morphism of monads *)
 
 Lemma init_kleisli V (v : UTS V) W (f : SM_po V ---> UTS_sm W) :
@@ -847,14 +872,17 @@ Hint Resolve init_kleisli : fin.
 
 Obligation Tactic := fin; rew init_kleisli.
 
+(** ** [init] is the carrier of a monad morphism [UTSM_sm -> R] *)
+
 Program Instance init_monadic : RMonad_Hom_struct (P:=UTSM_sm) init_sm.
 
 Canonical Structure init_mon := Build_RMonad_Hom init_monadic.
 
-(** init is not only a monad morphism, but even a morphism of 
+(** ** [init] is morpism of representations
+init is not only (the carrier of) a monad morphism, but even (of) a morphism of 
     representations *)
 
-(** prod_ind_mod_mor INIT = init_list (up to STSl_f_pm) *)
+(** prod_ind_mod_mor INIT = init_list (up to bijection) *)
 
 
 Lemma prod_mor_eq_init_list (i : sig_index Sig) V 
@@ -871,7 +899,7 @@ Program Instance init_representic : Representation_Hom_struct
 
 Definition init_rep := Build_Representation_Hom init_representic.
 
-(** INITIALITY of STSRepr with init *)
+(** ** INITIALITY of STSRepr with init *)
 
 Section init.
 
@@ -927,6 +955,8 @@ End initiality.
 Hint Rewrite init_unique : fin.
 
 Obligation Tactic := fin.
+
+(** ** Initiality *)
 
 Program Instance UTS_initial : Initial (REPRESENTATION Sig) := {
   Init := UTSRepr ;

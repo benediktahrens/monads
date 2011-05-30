@@ -5,12 +5,16 @@ Unset Strict Implicit.
 Unset Transparent Obligations.
 Unset Automatic Introduction.
 
-
+(** ** Category of representations *)
 (** we define a category of representations of a signature Sig  *)
 (** main work has been done in ./arities.v , remains to do:
 	- identity representation morphism
 	- composition of rep morphs
 *)
+
+(**  Morphisms of representations are just monad morphisms which verify 
+    some property. It is hence sufficient to check those properties.
+    No new data is defined here. *)
 
 Section cat_of_reps.
 
@@ -19,7 +23,8 @@ Notation "[ T ]" := (list T) (at level 5).
 
 Variable S : Signature.
 
-(** identity representation morphism *)
+(** ** Identity  
+    identity representation morphism *)
 
 Section id.
 
@@ -48,7 +53,8 @@ End id.
 
 Hint Extern 1 (CONSTR _ _ = CONSTR _ _) => apply CONSTR_eq.
 
-(** composition of rep homs, preparation *)
+(** ** Composition
+       composition of rep homs, preparation *)
 
 Section comp_prepar.
 
@@ -101,7 +107,8 @@ Definition Rep_Comp := Build_Representation_Hom Rep_comp_struct.
 
 End comp.
 
-(** rep homs are equal if their resp carriers (monad homs) are *)
+(** ** Equality of Representation Morphisms
+rep homs are equal if their resp carriers (monad homs) are *)
 
 Section Req_equiv.
 
@@ -134,6 +141,8 @@ Obligation Tactic := simpl; intros; try unf_Proper;
         simpl; intros; 
    repeat match goal with [H:_ |-_]=>rewrite H end;
    auto.
+
+(** ** Category of Representations *)
 
 Program Instance REPRESENTATION_struct : 
          Cat_struct (@Representation_Hom S) := {

@@ -14,7 +14,9 @@ Unset Automatic Introduction.
 Notation "[[ T ]]" := (list T) (at level 5).
 
 
-(** A Signature is a family of lists of naturals, indexed by the type [sig_index] *)
+(** ** Signatures
+
+A Signature is a family of lists of naturals, indexed by the type [sig_index] *)
 
 Record Signature : Type := {
   sig_index : Type ;
@@ -28,7 +30,8 @@ Ltac opt := simpl; intros;
    repeat (cat || autorewrite with opt || auto with opt).
 
 
-(** To a set of variables [V] we add [n] fresh variables *)
+(** ** Adding fresh variables
+To a set of variables [V] we add [n] fresh variables *)
 
 Fixpoint pow (n : nat) (V : TYPE) : TYPE :=
   match n with
@@ -62,10 +65,12 @@ Lemma lift_opt_monad (V W : TYPE) (f g : V ---> W)
 Proof. t.
 Qed.  
 
-(** this thing works cuz of the strange semantics of the
+(* this thing works cuz of the strange semantics of the
     Ltac match *)
 
 Ltac app_any := match goal with [H:_|-_] => app H end.
+
+(** [f == g -> f**l == g**l] *)
 
 Lemma pow_map_eq l (V W : TYPE) (f g : V ---> W) 
      (H : forall (x : V) , f x = g x) : 
@@ -114,14 +119,16 @@ Proof.
   cat; rew (lift_lift option_monad).
 Qed.
 
-(** multiple adding of variables is a functor BLOWUP *)
+(** multiple adding of variables is a functor POW *)
 Obligation Tactic := auto using pow_id, pow_comp.
 
 Program Instance POW_struct (l : nat) : Functor_struct (@pow_map l).
 
 Canonical Structure POW l := Build_Functor (POW_struct l).
 
-(** now some functions to blow up under monads and modules *)
+(** ** (Multiply) Derived Module 
+
+  now some functions to blow up under monads and modules *)
 
 Section pow_and_product.
 
@@ -143,6 +150,9 @@ Hint Rewrite (shift_eq (P:=P)) (shift_weta P)
 
 *)
 
+(** lshift serves to go under binders with substitution functions,
+   ie. to adapt domain and codomain of functions to added fresh variables *)
+
 Fixpoint lshift_c (l : nat) (V W : TYPE) (f : SM_po V ---> P W) : 
          V ** l ---> P (W ** l) :=
     match l return V ** l ---> P (W ** l) with
@@ -161,6 +171,10 @@ Proof.
   induction l.
   simpl.
 *)
+
+
+(** we introduce notation for lshifting and prove some properties about 
+	 its social behaviour *)
 
 Notation "x >>- f" := (lshift _ f x)(at level 60).
 
@@ -239,7 +253,7 @@ Proof.
   rew (retakl P).
 Qed.
 
-
+(*
 (** multiple derivation of a module M wrt a list l *)
 
 (** we never actually USE these definitions,
@@ -283,6 +297,7 @@ Program Instance der_mod_struct (l : nat) :
 Definition D_mod (l : nat) := Build_RModule (der_mod_struct l).
 
 End many_derivs.
+*)
 
 (** now for 
       - M a relative module
@@ -315,7 +330,11 @@ Qed.
 
 End prod_mod_built_from_scratch_carrier.
 
-(** if [T : TYPE -> PO] then there is a natural order on [prod_mod_c T nl]  *)
+(** if [T : TYPE -> PO] and [nl] a list of naturals, 
+       then there is a natural order on [prod_mod_c T nl]:
+   	- any two empty lists are related
+	- any two non-empty lists are related iff head and tail are related 
+*)
 
 Section order_prod_mod.
 
@@ -458,13 +477,21 @@ Definition prod_mod l := Build_RModule (prod_mod_struct l).
 End prod_mod_carrier_is_mod.
 
 
-(** we are now ready to define what the representation of an arity is *)
+
+(** ** Representation of an arity
+we are now ready to define what the representation of an arity is *)
 
 Section arity_rep.
 
+(** the variable [M] will later be instantiated by tautological modules 
+   of some relative monad *)
+
 Variable M : RModule P PO.
 
-(** to each arity we associate a type of module morphisms *)
+(** To each arity we associate a type of [M]-module morphisms. More precisely,
+   we associate a domain [M]-module and say that a representation is a 
+  [M]-module morphism from this domain module to the module [M] 
+*)
 
 Definition modhom_from_arity (ar : [[nat]]) : Type := RModule_Hom (prod_mod M ar) M.
 
@@ -495,11 +522,9 @@ Record Representation := {
   repr : Repr rep_monad }.
 
 
-(** now we come to the MORPHISMS OF REPRESENTATIONS *)
-(** they are more complicated than in a "strict theory" since we
-    must insert isomorphisms where on paper we have equality of objects *)
+(** ** Morphisms of Representations *)
 
-(** the commutative diagrams we must have for a morphism of 
+ (** the commutative diagrams we must have for a morphism of 
      representations *)
 
 Section arrows.
@@ -509,6 +534,8 @@ Variable f : RMonad_Hom P Q.
 
 Notation "x >>- f" := (shift_not f x)(at level 60).
 Notation "x >-- f" := (lshift _ f x)(at level 60).
+
+(** lshifting is somehow compatible with monad morphisms *)
 
 Lemma lshift_monad_hom l V W (g : SM_po V ---> P W) (x : V ** l) :
     f _ (x >-- g) = x >-- (g ;; f _ ).
@@ -525,14 +552,13 @@ Qed.
 
 Hint Rewrite lshift_monad_hom : opt.
 
-(** the lower left corner of the commutative diagram *)
-
 
 
 Notation "'f*' M" := (PbRMOD f _ M) (at level 5).
 
 (** the left morphism of the commutative diagram *)
-(** at first its carrier *)
+(** at first its carrier: we apply the monad morphism [f] on each component of the
+    heterogeneous list *)
 
 Fixpoint Prod_mor_c1 (l : [[nat]]) (V : TYPE) (X : prod_mod_c (fun V => P V) V l) : 
                    (prod_mod_c _ V l) :=
@@ -542,6 +568,8 @@ Fixpoint Prod_mor_c1 (l : [[nat]]) (V : TYPE) (X : prod_mod_c (fun V => P V) V l
   | CONSTR b bs elem elems => 
     CONSTR (f  _ elem) (Prod_mor_c1 elems)
   end.
+
+(** this function is obviously monotone *)
 
 Program Instance prod_mor_struct l V : PO_mor_struct 
   (a:=prod_mod P l V) (b:=f* (prod_mod Q l) V) (@Prod_mor_c1 l V).
@@ -558,6 +586,8 @@ Proof.
 Qed.
 
 Definition prod_mor_po l V := Build_PO_mor (prod_mor_struct l V).
+
+(** and it is also compatible with substitution *)
 
 Lemma prod_mod_c_kl (ar : [[nat]]) V (x : prod_mod_c _ V ar):
 forall (W : TYPE) (g : SM_po V ---> P W),
@@ -622,10 +652,9 @@ End arrows.
 
 (** definition of "morphism of representations" *)
 
-(*Variable Sig : Signature.*)
 Variables P Q : Representation.  
 
-(** a representation morphism should make commute something *)
+(** a representation morphism should make commute something for any arity *)
 
 Class Representation_Hom_struct (f : RMonad_Hom P Q) :=
    repr_hom_s : forall i : sig_index S,

@@ -13,6 +13,16 @@ Unset Transparent Obligations.
 Notation "[ x ; .. ; y ]" := (cons x .. (cons y nil) ..).
 Notation "[[ T ]]" := (list T) (at level 5).
 
+(** ** Propositional arities and their representations
+	given a signature [Sig], we define 
+	- half-equations 
+	- algebraic half-equations
+	- (in)equations over [Sig] as pairs of half-equations
+	- representations of (in)equations as a predicate on representations of [Sig]
+*)
+
+(** ** Modules with codomain [wPO] *)
+
 (** given a relative module [M:Set -> PO] over a relative monad [P] over Delta, 
        the data of [M] defines a [P]-module [M : Set -> wPO ] *)
 
@@ -33,6 +43,7 @@ Definition wPO_RMod : RModule P wPO := Build_RModule wPO_RMod_struct.
 
 End wPO_taut_mod.
 
+(*
 Section monadic_subst_as_mod_hom.
 
 Variable P : RMonad SM_po.
@@ -78,6 +89,12 @@ Definition Rsubstar_mod_hom := Build_RModule_Hom Rsubstar_mod_hom_struct.
 *)
 
 End monadic_subst_as_mod_hom.
+*)
+
+(** ** S-Modules and Equations
+   given signature [Sig], we define equations and the predicate [verifies_prop_sig]
+     on representations of [Sig]
+*)
 
 Section S_Mods_and_Eqs.
 
@@ -114,7 +131,11 @@ Record half_equation (U V : S_Module) := {
 
 Section S_Module_algebraic.
 
-(** we are interested in algebraic S-Modules, i.e. of the form PROD_i P^ni *)
+
+
+(** ** Algebraic S-Modules and Equations 
+
+we are interested in algebraic S-Modules, i.e. of the form PROD_i P^{n(i)} *)
 
 Variable l : [[nat]].
 
@@ -154,6 +175,8 @@ Instance S_Mod_alg_s : S_Module_s (fun R => S_Mod_alg_ob R) := {
 Definition S_Mod_alg := Build_S_Module S_Mod_alg_s.
 
 End S_Module_algebraic.
+
+(** ** Example : substitution *)
 
 Section substitution.
 
@@ -234,7 +257,10 @@ Definition subst_half := Build_half_equation subst_half_s.
 
 End substitution.
 
-(** an algebraic half-equation is a half-equation with algebraic codomain *)
+
+(** ** Algebraic stuff cont. 
+
+an algebraic half-equation is a half-equation with algebraic codomain *)
 (** to simplify, we also suppose the domain to be algebraic, but in fact we 
    don't care *)
 
@@ -269,7 +295,9 @@ Defined.
 Print verifies_eq.
 *)
 
-(** a representation [P] verifies an equation [e] iff for any element in the domain,
+(** ** Representation of (a set of) (in)equations 
+
+a representation [P] verifies an equation [e] iff for any element in the domain,
     its two images under e1 and e2 are related
 *)
 
@@ -285,6 +313,8 @@ Definition Prop_Sig_struct (A : Type) := forall a : A, eq_alg.
 
 Definition verifies_prop_sig A (T : Prop_Sig_struct A) (R : REPRESENTATION Sig) :=
       forall a, verifies_eq (T a) R.
+
+(** ** Subcategory of Rep(Sig) of representations verifying equations *)
 
 Section subcat.
 
@@ -308,7 +338,8 @@ Program Instance Prop_Rep : SubCat_compat (REPRESENTATION Sig)
 Definition PROP_REP : Cat := SubCat Prop_Rep.
 
 
-(** We proceed with the construction of its initial object *)
+(** ** Initiality in the subcategory 
+We proceed with the construction of its initial object *)
 
 (** first thing to do is to build the correct order on the set of terms:
      - two terms [x] and [y] are related if their images under any 
@@ -344,7 +375,8 @@ Definition prop_rel_po_s X := Build_PO_obj_struct (prop_rel_po X).
 
 Definition prop_rel X := Build_PO_obj (prop_rel_po_s X).
 
-(** substitution as defined previously is compatible with this order *)
+(** ** Substitution compatible with new order
+substitution as defined previously is compatible with this order *)
 
 Program Instance subst_prop_rel_s X Y (f : X ---> UTS Sig Y) : 
    PO_mor_struct (a := prop_rel X) (b := prop_rel Y) 
@@ -379,6 +411,7 @@ Obligation Tactic := cat;
        rewrite subst_var || app subst_eq ||
        rewrite subst_subst || cat).
       
+(** ** Monad with previously defined terms but new order *)
 
 Program Instance UTS_prop_rel_rmonad_s : RMonad_struct SM_po prop_rel := {
   rweta c := Sm_ind (@Var Sig c);
@@ -387,9 +420,12 @@ Program Instance UTS_prop_rel_rmonad_s : RMonad_struct SM_po prop_rel := {
 
 Definition UTSP := Build_RMonad (UTS_prop_rel_rmonad_s).
 
-(** This lemma corresponds to one direction of Lemma 36 *)
+(** ** Important Lemma
+This lemma corresponds to one direction of Lemma 36 *)
 (** it says : the relation defined by the set of equations
-       behaves well when doing products and derivations *)
+       behaves well when doing products and derivations.
+ this is why we restrict ourselves to algebraic codomains
+*)
 
 Lemma lemma36 (l : [[nat]]) (V : Type)
     (x y : prod_mod_c (fun x : Type => UTS Sig x) V l)
@@ -422,7 +458,8 @@ Proof.
 Qed.
 
 
-(** we now pass to representations of [Sig] in our new shiny monad. the carrier is 
+(** ** Representation in the new monad 
+we now pass to representations of [Sig] in our new shiny monad. the carrier is 
     the same as for the diagonal monad. we have to prove that it is compatible with
     the new order on terms *)
 
@@ -544,10 +581,14 @@ Proof.
   apply H0.
 Qed.
 
-(** we produce a morphism of representations from [UTSP_sm] to 
+(** ** A morphism of representations 
+we produce a morphism of representations from [UTSP_sm] to 
      [UTSPREPR] 
      - this is in fact the identity morphism
      - just the order becomes bigger
+*)
+(** we use this morphism to show that an equation is the same on 
+  [UTSM_sm] (diagonal order) and [UTSP] (order induced by equations)
 *)
 
 Program Instance debi1s : 
@@ -583,7 +624,8 @@ Proof.
 Qed.
 
 (** this lemma states that half-equations are constant on 
-    representations whose underlying sets of terms are the same *)
+    representations whose underlying sets of terms are the same and the 
+     order gets bigger *)
 (** when passing from [UTSM_sm] to [UTSP], the equations remain the same *)
 
 Lemma debi3s a c x:
@@ -602,7 +644,8 @@ Proof.
   auto.
 Qed.
 
-(** the new nice representation [UTSPROPRepr] verifies the equations of [T], contrary
+(** [UTSPROPRepr] verifies (in)equations
+the new nice representation [UTSPROPRepr] verifies the equations of [T], contrary
     to the old one, [UTSRepr] *)
 
 
@@ -633,10 +676,14 @@ Proof.
   apply v.
 Qed.
 
+(** ** an object of the subcategory 
+*)
+
 Definition UTSPROPREPR : PROP_REP := 
  exist (fun a : Representation Sig => verifies_prop_sig (A:=A) T a) UTSPROPRepr
   UTSPRepr_sig_prop.
 
+(** ** Initiality in the subcategory *)
 
 Section init.
 
@@ -691,11 +738,14 @@ Program Instance init_prop_rep : Representation_Hom_struct
 
 Definition init_prop_re := Build_Representation_Hom init_prop_rep.
 
-(** and we have our morphism (weak initiality) *)
+(** ** Weak Initiality in Subcategory 
+and we have our morphism (weak initiality) *)
 
 Definition init_prop : UTSPROPREPR ---> R := exist _ init_prop_re I.
 
 Section unique.
+
+(** ** Initiality in subcategory *)
 
 Variable f : UTSPROPREPR ---> R.
 
@@ -759,6 +809,8 @@ Qed.
 End unique.
 
 End init.
+
+(** ** Initiality verified by Coq *)
 
 Program Instance INITIAL_PROP : Initial PROP_REP := {
   Init := UTSPROPREPR ;
