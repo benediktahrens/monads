@@ -10,12 +10,6 @@ Unset Automatic Introduction.
 Unset Transparent Obligations.
 
 
-(** note that this file is superseeded by ./prop_arities_initial.v, which is the 
-	same but without the condition of algebraicity of the domain of 
-	an (in)equation
-*)
-
-
 Notation "[ x ; .. ; y ]" := (cons x .. (cons y nil) ..).
 Notation "[[ T ]]" := (list T) (at level 5).
 
@@ -270,15 +264,9 @@ an algebraic half-equation is a half-equation with algebraic codomain *)
 (** to simplify, we also suppose the domain to be algebraic, but in fact we 
    don't care *)
 
-(** note that a proof without this condition (algebraicity of the domain)
-   is in ./prop_arities_initial.v
 
-sorry, this is work in progress....
-*)
-
-
-Definition half_eq_alg (doml codl : [[nat]]) := 
-      half_equation (S_Mod_alg doml) (S_Mod_alg codl).
+Definition half_eq_alg (U : S_Module)(codl : [[nat]]) := 
+      half_equation U (S_Mod_alg codl).
 
 (** an algebraic (in)equation is given by 
        - an algebraic domain (condition can be deleted)
@@ -286,10 +274,10 @@ Definition half_eq_alg (doml codl : [[nat]]) :=
        - two half-equations eq1 and eq2 *)
 
 Record eq_alg := {
-  doml : [[nat]] ;
+  domS : S_Module ;
   codl : [[nat]] ;
-  eq1 : half_eq_alg doml codl ;
-  eq2 : half_eq_alg doml codl }.
+  eq1 : half_eq_alg domS codl ;
+  eq2 : half_eq_alg domS codl }.
 
 
 
@@ -309,12 +297,12 @@ Print verifies_eq.
 
 (** ** Representation of (a set of) (in)equations 
 
-a representation [P] verifies an equation [e] iff for any element in the domain,
-    its two images under e1 and e2 are related
+a representation [P] verifies an equation [e] iff for any element in the domain [domS e P c],
+ ([c] a set of variables) its two images under e1 and e2 are related
 *)
 
 Definition verifies_eq (e : eq_alg) (P : REPRESENTATION Sig) :=
-  forall c (x : (s_mod_rep (S_Mod_alg (doml e)) P) c), 
+  forall c (x : (s_mod_rep (domS e) P) c), 
        half_eq (eq1 e) P _ x << half_eq (eq2 e)_ _ x.
 
 (** a set of (in)equations, indexed by a set A *)
@@ -640,8 +628,9 @@ Qed.
      order gets bigger *)
 (** when passing from [UTSM_sm] to [UTSP], the equations remain the same *)
 
+(*
 Lemma debi3s a c x:
-forall h : half_eq_alg (doml (T a)) (codl (T a)),
+forall h : half_eq_alg (domS (T a)) (codl (T a)),
     (h (UTSRepr Sig)) c x = (h UTSPROPRepr) c x.
 Proof.
   simpl.
@@ -655,49 +644,14 @@ Proof.
   rewrite debi25 in H.
   auto.
 Qed.
-
+*)
 (** [UTSPROPRepr] verifies (in)equations
 the new nice representation [UTSPROPRepr] verifies the equations of [T], contrary
     to the old one, [UTSRepr] *)
 
 
-Lemma UTSPRepr_sig_prop : verifies_prop_sig T UTSPROPRepr.
-Proof.
-  unfold verifies_prop_sig, verifies_eq.
-  simpl; intros.
-  apply lemma36_2.
-  intros. 
-  assert (H4:=comm_eq_s (half_equation_struct := eq1 (T a))).
-  assert (H5:=H4 _ _ (init_rep (SC_inj_ob R))).
-  simpl in H5.
-  clear H4.
-  rerew (debi3s x (eq2 (T a)) ).
-  rerew (debi3s x (eq1 (T a))).
-  rewrite <- H5.
-  clear H5.
-  assert (H4:=comm_eq_s (half_equation_struct := eq2 (T a))).
-  assert (H5:=H4 _ _ (init_rep (SC_inj_ob R))).
-  simpl in H5.
-  rewrite <- H5.
-  clear H5 H4.
-  simpl in *.
-  destruct R; simpl in *.
-  unfold verifies_prop_sig in v.
-  unfold verifies_eq in v.
-  simpl in v.
-  apply v.
-Qed.
 
-(** ** an object of the subcategory 
-*)
-
-Definition UTSPROPREPR : PROP_REP := 
- exist (fun a : Representation Sig => verifies_prop_sig (A:=A) T a) UTSPROPRepr
-  UTSPRepr_sig_prop.
-
-(** ** Initiality in the subcategory *)
-
-Section init.
+Section weak_init.
 
 Variable R : PROP_REP.
 
@@ -710,7 +664,7 @@ Variable R : PROP_REP.
 
 
 Program Instance init_prop_s V : PO_mor_struct
-    (a:=(FINJ _ UTSPROPREPR) V) (b:=(FINJ _ R) V) (init (FINJ _ R) (V:=V)).
+    (a:=(UTSPROPRepr) V) (b:=(FINJ _ R) V) (init (FINJ _ R) (V:=V)).
 Next Obligation.
 Proof.
   unfold Proper, respectful;
@@ -725,7 +679,7 @@ Obligation Tactic := cat; rewrite init_kleisli2;
 (** monadicity *)
 
 Program Instance init_prop_mon_s : RMonad_Hom_struct
-      (P:=FINJ _ UTSPROPREPR)(Q:=FINJ _ R) init_prop_po.
+      (P:=UTSPROPRepr)(Q:=FINJ _ R) init_prop_po.
 
 Definition init_prop_mon := Build_RMonad_Hom init_prop_mon_s.
 
@@ -750,10 +704,106 @@ Program Instance init_prop_rep : Representation_Hom_struct
 
 Definition init_prop_re := Build_Representation_Hom init_prop_rep.
 
+End weak_init.
+
+
+Lemma bbb (R : PROP_REP) a c (x : S_Mod_alg (codl (T a)) UTSPROPRepr c):
+  Prod_mor_c1 (init_prop_mon R) x = Prod_mor_c1 (init_mon (SC_inj_ob R)) x.
+Proof.
+  reflexivity.
+Qed.
+
+
+Lemma UTSPRepr_sig_prop : verifies_prop_sig T UTSPROPRepr.
+Proof.
+  unfold verifies_prop_sig, verifies_eq.
+  simpl; intros.
+  apply lemma36_2.
+  intros. 
+  assert (H4:=comm_eq_s (half_equation_struct := eq1 (T a))).
+  assert (H5:=H4 _ _ (init_prop_re ( R))).
+  
+  assert (H4':=comm_eq_s (half_equation_struct := eq2 (T a))).
+  assert (H5':=H4' _ _ (init_prop_re ( R))).
+  
+  simpl in H5.
+  clear H4.
+  rewrite <- bbb.
+  rewrite <- bbb.
+  rewrite <- H5.
+  rerew H5'.
+  destruct R.
+  unfold verifies_prop_sig in v.
+  unfold verifies_eq in v.
+  simpl in v.
+  apply v.
+Qed.
+
+(*
+  simpl in *.
+  assert (H6:=H5 c x).
+  simpl in *.
+  rewrite <- bbb.
+  Check Prod_mor_c1.
+  Check ((eq1 (T a) UTSPROPRepr) c x).
+  assert (H: 
+       Prod_mor_c1
+                             (init_prop_mon
+                                (exist
+                                   (fun a : Representation Sig =>
+                                    verifies_prop_sig (A:=A) T a) x0 v))
+                             (((eq1 (T a)) UTSPROPRepr) c x) = 
+  Prod_mor_c1 (init_mon (Sig:=Sig) x0) (((eq1 (T a)) UTSPROPRepr) c x)).
+  simpl. auto.
+  rerew  H.
+  clear H.
+  rewrite <- H6.
+  clear H5 H6.
+  
+  assert (H1: 
+       Prod_mor_c1
+      (init_prop_mon
+         (exist (fun a : Representation Sig => verifies_prop_sig (A:=A) T a)
+            x0 v)) (((eq2 (T a)) UTSPROPRepr) c x) = 
+        Prod_mor_c1 (init_mon (Sig:=Sig) x0) (((eq2 (T a)) UTSPROPRepr) c x)).
+  simpl; auto.
+  rerew H1.
+  rewrite <- H5'.
+       
+  unfold verifies_prop_sig in v.
+  unfold verifies_eq in v.
+  simpl in v.
+  apply v.
+Qed.
+*)
+
+(** ** an object of the subcategory 
+*)
+
+Definition UTSPROPREPR : PROP_REP := 
+ exist (fun a : Representation Sig => verifies_prop_sig (A:=A) T a) UTSPROPRepr
+  UTSPRepr_sig_prop.
+
+(** ** Initiality in the subcategory *)
+
+Section init.
+
+Variable R : PROP_REP.
+
+(** the initial morphism is the same as before
+      - we need to show that it is monotone, which is by definition
+      - that it is a morphism of monads
+      - morphism of representations
+      - unicity
+*)
+
+
+
+
 (** ** Weak Initiality in Subcategory 
 and we have our morphism (weak initiality) *)
 
-Definition init_prop : UTSPROPREPR ---> R := exist _ init_prop_re I.
+Definition init_prop : UTSPROPREPR ---> R := exist _ (init_prop_re R) I.
 
 Section unique.
 
