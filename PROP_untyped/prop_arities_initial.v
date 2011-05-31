@@ -260,18 +260,18 @@ End substitution.
 
 (** ** Algebraic stuff cont. 
 
-an algebraic half-equation is a half-equation with algebraic codomain *)
-(** to simplify, we also suppose the domain to be algebraic, but in fact we 
-   don't care *)
+an algebraic half-equation is a half-equation with algebraic codomain, and
+	an arbitrary domain *)
+
 
 
 Definition half_eq_alg (U : S_Module)(codl : [[nat]]) := 
       half_equation U (S_Mod_alg codl).
 
 (** an algebraic (in)equation is given by 
-       - an algebraic domain (condition can be deleted)
-       - an algebraic codomain 
-       - two half-equations eq1 and eq2 *)
+       - an arbitrary domain [domS]
+       - an algebraic codomain [S_Mod_alg codl]
+       - two half-equations [eq1 eq2 : domS -> S_Mod_alg codl] *)
 
 Record eq_alg := {
   domS : S_Module ;
@@ -338,10 +338,11 @@ Program Instance Prop_Rep : SubCat_compat (REPRESENTATION Sig)
 Definition PROP_REP : Cat := SubCat Prop_Rep.
 
 
-(** ** Initiality in the subcategory 
+(** * Initiality in the subcategory 
 We proceed with the construction of its initial object *)
 
-(** first thing to do is to build the correct order on the set of terms:
+(** ** Order induced by a set of equations
+first thing to do is to build the correct order on the set of terms:
      - two terms [x] and [y] are related if their images under any 
         initial morphism towards a rep of [(Sig, T)] is
      - this initial morphism is actually in the category of representations of 
@@ -379,8 +380,7 @@ Definition prop_rel X := Build_PO_obj (prop_rel_po_s X).
 substitution as defined previously is compatible with this order *)
 
 Program Instance subst_prop_rel_s X Y (f : X ---> UTS Sig Y) : 
-   PO_mor_struct (a := prop_rel X) (b := prop_rel Y) 
-     (subst f).
+   PO_mor_struct (a := prop_rel X) (b := prop_rel Y) (subst f).
 Next Obligation.
 Proof.
   unfold Proper, respectful.
@@ -411,7 +411,7 @@ Obligation Tactic := cat;
        rewrite subst_var || app subst_eq ||
        rewrite subst_subst || cat).
       
-(** ** Monad with previously defined terms but new order *)
+(** ** Monad with previously defined terms but new order, induced by equations *)
 
 Program Instance UTS_prop_rel_rmonad_s : RMonad_struct SM_po prop_rel := {
   rweta c := Sm_ind (@Var Sig c);
@@ -547,8 +547,13 @@ Canonical Structure UTSPROPrepr : Repr Sig UTSP := Build_prop.
 Canonical Structure UTSPROPRepr : REPRESENTATION Sig := 
        Build_Representation (@UTSPROPrepr).
 
-(** other direction of Lemma 36
-    - also here some code savings possible *)
+(** ** Important Lemma, other direction
+other direction of Lemma 36
+    - also here some code savings possible
+    - this is actually not the variant we need: point is,
+      we have V (init) = V (init_prop) (cf. later) 
+    - here is the version with V (init)
+*)
 
 Lemma lemma36_2 (l : [[nat]]) (V : Type)
     (x y : prod_mod_c (fun x : Type => UTS Sig x) V l)
@@ -623,12 +628,14 @@ Proof.
   auto.
 Qed.
 
+
+(*
+
 (** this lemma states that half-equations are constant on 
     representations whose underlying sets of terms are the same and the 
      order gets bigger *)
 (** when passing from [UTSM_sm] to [UTSP], the equations remain the same *)
 
-(*
 Lemma debi3s a c x:
 forall h : half_eq_alg (domS (T a)) (codl (T a)),
     (h (UTSRepr Sig)) c x = (h UTSPROPRepr) c x.
@@ -644,12 +651,19 @@ Proof.
   rewrite debi25 in H.
   auto.
 Qed.
+
 *)
+
+
 (** [UTSPROPRepr] verifies (in)equations
 the new nice representation [UTSPROPRepr] verifies the equations of [T], contrary
     to the old one, [UTSRepr] *)
 
+(** ** Weak Initiality
+     we will use the weak initial morphism in the proof that
+     UTSPROPRepr verifies the equations
 
+*)
 
 Section weak_init.
 
@@ -707,18 +721,46 @@ Definition init_prop_re := Build_Representation_Hom init_prop_rep.
 End weak_init.
 
 
-Lemma bbb (R : PROP_REP) a c (x : S_Mod_alg (codl (T a)) UTSPROPRepr c):
+(** ** V (init) = V (init_prop)
+*)
+
+Lemma bb2b (R : PROP_REP) a l (x : prod_mod_c (fun x : Type => UTS Sig x) a l):
   Prod_mor_c1 (init_prop_mon R) x = Prod_mor_c1 (init_mon (SC_inj_ob R)) x.
 Proof.
   reflexivity.
 Qed.
 
+(** ** Version of lemma36_2 using init_prop
+*)
+
+Lemma lemma36_2a (l : [[nat]]) (V : Type)
+    (x y : prod_mod_c (fun x : Type => UTS Sig x) V l)
+    (H : forall R : subob (fun P : Representation Sig => verifies_prop_sig (A:=A) T P),
+        Rel (PO_obj_struct := prod_mod_po (SC_inj_ob R) V l) 
+  (Prod_mor_c1 (init_prop_mon  (R)) x)
+  (Prod_mor_c1 (init_prop_mon  (R)) y) ) :
+prod_mod_c_rel (M:=prop_rel) x y.
+Proof.
+  simpl; intros.
+  apply lemma36_2.
+  simpl; intros.
+  rewrite <- bb2b.
+  rewrite <- bb2b.
+  apply H.
+Qed.
+
+(** ** [UTSPROPRepr verifies equations
+      - we use  a1(x) < a2(x) in V(Sigma)(X) iff 
+                  forall R, V(init_R) (a1(x)) < V(init_R) (a2(x))
+      - we rewrite V(init_R)(a1(x)) = a1 (U (init_R) x) 
+      - and for a2 as well
+*)
 
 Lemma UTSPRepr_sig_prop : verifies_prop_sig T UTSPROPRepr.
 Proof.
   unfold verifies_prop_sig, verifies_eq.
   simpl; intros.
-  apply lemma36_2.
+  apply lemma36_2a.
   intros. 
   assert (H4:=comm_eq_s (half_equation_struct := eq1 (T a))).
   assert (H5:=H4 _ _ (init_prop_re ( R))).
@@ -726,16 +768,16 @@ Proof.
   assert (H4':=comm_eq_s (half_equation_struct := eq2 (T a))).
   assert (H5':=H4' _ _ (init_prop_re ( R))).
   
-  simpl in H5.
-  clear H4.
-  rewrite <- bbb.
-  rewrite <- bbb.
+  clear H4 H4'.
+  simpl in *.
+
   rewrite <- H5.
-  rerew H5'.
+  rewrite <- H5'.
+  
   destruct R.
   unfold verifies_prop_sig in v.
   unfold verifies_eq in v.
-  simpl in v.
+  simpl in *.
   apply v.
 Qed.
 
@@ -777,7 +819,7 @@ Qed.
 Qed.
 *)
 
-(** ** an object of the subcategory 
+(** ** yielding an object of the subcategory 
 *)
 
 Definition UTSPROPREPR : PROP_REP := 
@@ -800,8 +842,8 @@ Variable R : PROP_REP.
 
 
 
-(** ** Weak Initiality in Subcategory 
-and we have our morphism (weak initiality) *)
+(** ** Weak Initial morphism in subcategory 
+    was already defined *)
 
 Definition init_prop : UTSPROPREPR ---> R := exist _ (init_prop_re R) I.
 
@@ -813,7 +855,11 @@ Variable f : UTSPROPREPR ---> R.
 
 Existing Instance REPRESENTATION_struct.
 
-(** the proof uses initiality of init in the case wout equations *)
+(** the proof uses initiality of init in the case without equations
+     - unicity is only concerned with data
+     - for data, the initial morphisms in the category of reps and in 
+       the subcategory are the same
+*)
 
 Lemma init_prop_unique : f == init_prop.
 Proof.

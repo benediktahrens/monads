@@ -10,7 +10,7 @@ Unset Automatic Introduction.
 Unset Transparent Obligations.
 
 
-(** note that this file is superseeded by ./prop_arities_initial.v, which is the 
+(** note that this file is superseded by ./prop_arities_initial.v, which is the 
 	same but without the condition of algebraicity of the domain of 
 	an (in)equation
 *)

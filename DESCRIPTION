@@ -370,7 +370,7 @@ CONTENT OF THIS LIBRARY
 	init is unique 
 	REPRESENTATION S has an initial object	
    
-   ./PROP_untyped/prop_initial.v
+   ./PROP_untyped/prop_arities.v (* superseded by next file *)
 	definition of half-equation, propositional arity,
 	  algebraic equation
 	subcategory PROP_REP of representations verifying a set of 
@@ -379,7 +379,15 @@ CONTENT OF THIS LIBRARY
 	representation structure on UTSP -> UTSPREPR
 	initiality of UTSPREPR in PROP_REP
 	
-	
+   ./PROP_untyped/prop_arities_initial.v
+	definition of half-equation, propositional arity,
+	  algebraic equation
+	subcategory PROP_REP of representations verifying a set of 
+	  inequations
+	definition of the order associated to a set of equations
+	  on terms of UTS, giving UTSP
+	representation structure on UTSP, yielding rep UTSPROPREPR
+	  initiality of UTSPROPREPR in PROP_REP
 	 	
 
 
