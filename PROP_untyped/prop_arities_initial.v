@@ -139,6 +139,8 @@ we are interested in algebraic S-Modules, i.e. of the form PROD_i P^{n(i)} *)
 
 Variable l : [[nat]].
 
+(** algebraic S-Modules on objects *)
+
 Section ob.
 
 Variable P : RMonad SM_po.
@@ -156,6 +158,8 @@ End ob.
 
 Section mor.
 
+(** algebraic S-Modules on morphisms *)
+
 Variables P Q : RMonad SM_po.
 Variable f : RMonad_Hom P Q.
 
@@ -163,7 +167,7 @@ Obligation Tactic := repeat (mauto || rew prod_mod_c_kl || app pm_mkl_eq).
 
 Program Instance S_Mod_alg_mor_s : RModule_Hom_struct 
        (M := S_Mod_alg_ob P) (N := PbRMod f (S_Mod_alg_ob Q)) 
-       (@Prod_mor_c1 _ _ f (l)).
+       (@Prod_mor_c1 _ _ f l).
 
 Definition S_Mod_alg_mor := Build_RModule_Hom S_Mod_alg_mor_s.
 
@@ -257,6 +261,7 @@ Definition subst_half := Build_half_equation subst_half_s.
 
 End substitution.
 
+(** end of example *)
 
 (** ** Algebraic stuff cont. 
 
@@ -427,13 +432,26 @@ This lemma corresponds to one direction of Lemma 36 *)
  this is why we restrict ourselves to algebraic codomains
 *)
 
+
+
+Lemma lemma36 (l : [[nat]]) (V : Type)
+    (x y : prod_mod_c (fun x : Type => UTS Sig x) V l)
+    (H : prod_mod_c_rel (M:=prop_rel) x y) 
+    (R : PROP_REP):
+Rel (PO_obj_struct := prod_mod_po (SC_inj_ob R) V l) 
+  (Prod_mor_c1 (init_mon (SC_inj_ob R)) x)
+  (Prod_mor_c1 (init_mon (SC_inj_ob R)) y).
+
+(*
 Lemma lemma36 (l : [[nat]]) (V : Type)
     (x y : prod_mod_c (fun x : Type => UTS Sig x) V l)
     (H : prod_mod_c_rel (M:=prop_rel) x y) 
     (R : subob (fun P : Representation Sig => verifies_prop_sig (A:=A) T P)):
 Rel (PO_obj_struct := prod_mod_po (SC_inj_ob R) V l) 
-  (Prod_mor_c1 (init_mon (Sig:=Sig) (SC_inj_ob R)) x)
-  (Prod_mor_c1 (init_mon (Sig:=Sig) (SC_inj_ob R)) y).
+  (Prod_mor_c1 (init_mon (SC_inj_ob R)) x)
+  (Prod_mor_c1 (init_mon (SC_inj_ob R)) y).
+*)
+
 Proof.
   simpl.
   induction l; simpl;
@@ -489,8 +507,7 @@ Definition Build_prop_po i V := Build_PO_mor (Build_prop_pos i V).
 (** these lemmas are the same as for the other monad *)
 (** perhaps we could reuse some code here, but that is not urgent *)
 
-Lemma _lshift_lshift_eq2 (b : nat)
-  (X : TYPE) (W : Type) (f : PO_mor (sm_po X) (prop_rel W))
+Lemma _lshift_lshift_eq2 (b : nat) (X W : TYPE) (f : PO_mor (sm_po X) (prop_rel W))
    (x : X ** b):
  lshift_c (P:=UTSP) (l:=b) (V:=X) (W:=W) f x =
     _lshift (Sig:=Sig) (l:=b) (V:=X) (W:=W) f x .
@@ -562,6 +579,17 @@ Lemma lemma36_2 (l : [[nat]]) (V : Type)
   (Prod_mor_c1 (init_mon (Sig:=Sig) (SC_inj_ob R)) x)
   (Prod_mor_c1 (init_mon (Sig:=Sig) (SC_inj_ob R)) y) ) :
 prod_mod_c_rel (M:=prop_rel) x y.
+
+(*
+Lemma lemma36_2 (l : [[nat]]) (V : Type)
+    (x y : prod_mod_c (fun x : Type => UTS Sig x) V l)
+    (H : forall R : subob (fun P : Representation Sig => verifies_prop_sig (A:=A) T P),
+        Rel (PO_obj_struct := prod_mod_po (SC_inj_ob R) V l) 
+  (Prod_mor_c1 (init_mon (Sig:=Sig) (SC_inj_ob R)) x)
+  (Prod_mor_c1 (init_mon (Sig:=Sig) (SC_inj_ob R)) y) ) :
+prod_mod_c_rel (M:=prop_rel) x y.
+*)
+
 Proof.
   simpl.
   induction l; simpl;
@@ -596,26 +624,26 @@ we produce a morphism of representations from [UTSP_sm] to
   [UTSM_sm] (diagonal order) and [UTSP] (order induced by equations)
 *)
 
-Program Instance debi1s : 
+Program Instance Id_UTSM_sm_UTSPs : 
    RMonad_Hom_struct (P:=UTSM_sm Sig) (Q:=UTSP) 
    (fun c => Sm_ind (id (UTS Sig c))).
 
-Definition debi1 := Build_RMonad_Hom debi1s.
+Definition Id_UTSM_sm_UTSP := Build_RMonad_Hom Id_UTSM_sm_UTSPs.
 
-Lemma debi25 l c (x : prod_mod_c (fun x => UTS Sig x) c l) : 
-      Prod_mor_c1 debi1 x = x.
+Lemma id_UTSM_sm_UTSP l c (x : prod_mod_c (fun x => UTS Sig x) c l) : 
+      Prod_mor_c1 Id_UTSM_sm_UTSP x = x.
 Proof.
   induction x; simpl; intros;
   auto; apply CONSTR_eq; auto.
 Qed.
 
 Obligation Tactic := unfold commute; simpl; intros;
-     repeat (apply f_equal || apply debi25 || auto).
+     repeat (apply f_equal || apply id_UTSM_sm_UTSP || auto).
 
 Program Instance debi2s : 
-     Representation_Hom_struct (P:=UTSRepr Sig) (Q:=UTSPROPRepr) debi1.
+     Representation_Hom_struct (P:=UTSRepr Sig) (Q:=UTSPROPRepr) Id_UTSM_sm_UTSP.
 
-Definition debi2 := Build_Representation_Hom debi2s.
+Definition UTSM_sm_UTSP_rep_hom := Build_Representation_Hom debi2s.
 
 Existing Instance UTS_initial.
 
@@ -623,7 +651,7 @@ Lemma half_eq_const_on_carrier : forall c x,
    init_rep UTSPROPRepr c x = x.
 Proof.
   simpl;
-  assert (H:=InitMorUnique (C:=REPRESENTATION Sig) debi2);
+  assert (H:=InitMorUnique (C:=REPRESENTATION Sig) UTSM_sm_UTSP_rep_hom);
   simpl in H;
   auto.
 Qed.
@@ -735,7 +763,7 @@ Qed.
 
 Lemma lemma36_2a (l : [[nat]]) (V : Type)
     (x y : prod_mod_c (fun x : Type => UTS Sig x) V l)
-    (H : forall R : subob (fun P : Representation Sig => verifies_prop_sig (A:=A) T P),
+    (H : forall R : PROP_REP,
         Rel (PO_obj_struct := prod_mod_po (SC_inj_ob R) V l) 
   (Prod_mor_c1 (init_prop_mon  (R)) x)
   (Prod_mor_c1 (init_prop_mon  (R)) y) ) :
@@ -823,7 +851,7 @@ Qed.
 *)
 
 Definition UTSPROPREPR : PROP_REP := 
- exist (fun a : Representation Sig => verifies_prop_sig (A:=A) T a) UTSPROPRepr
+ exist (fun R : Representation Sig => verifies_prop_sig (A:=A) T R) UTSPROPRepr
   UTSPRepr_sig_prop.
 
 (** ** Initiality in the subcategory *)
@@ -874,7 +902,7 @@ Proof.
   simpl in *.
   clear R.
   assert (H:= InitMorUnique (Initial := UTS_initial Sig) 
-                         (debi2 ;; x1)).
+                         (UTSM_sm_UTSP_rep_hom ;; x1)).
   simpl in H.
   auto.
 Qed.  

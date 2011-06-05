@@ -21,19 +21,32 @@ Definition subob:= {a:ob | subobP a}.
 Definition SC_inj_ob (a: subob): ob := proj1_sig a.
 Coercion SC_inj_ob : subob >-> ob.
 
+
 Variable submorP: forall a b: ob, mor a b -> Prop.
 
 Definition submor (a b: ob) := {f : mor a b | submorP f}.
+
 (*
 Definition submor_oid (a b: ob) : relation (submor a b) := 
               fun f g => proj1_sig f == proj1_sig g.
 
 Lemma submor_equiv (a b: : Equivale
 *)
+
 Definition SC_inj_mor (a b: ob) (f: submor a b) := 
                    proj1_sig f.
 Coercion SC_inj_mor: submor >-> mor.
 
+
+Class SubCat_compat := { 
+  (*submor_oid:> forall a b:ob, Proper (equiv ==> equiv) 
+                                 (submorP (a:=a) (b:=b));*)
+  sub_id: forall a: subob, submorP (id (proj1_sig a));
+  sub_comp: forall (a b c:ob) (f: mor a b) (g: mor b c),
+                   submorP f -> submorP g -> submorP (f ;; g)
+}.
+
+(*
 Class SubCat_compat := { 
   (*submor_oid:> forall a b:ob, Proper (equiv ==> equiv) 
                                  (submorP (a:=a) (b:=b));*)
@@ -41,17 +54,23 @@ Class SubCat_compat := {
   sub_comp: forall (a b c:ob) (f: mor a b) (g: mor b c),
                    submorP f -> submorP g -> submorP (f ;; g)
 }.
-
+*)
 
 Hypothesis SC: SubCat_compat.
 
+(*
 
 Definition SC_ob:= subob. 
 Definition SC_mor (a b: subob) := submor a b.
+
+*)
+
 (*
 Definition submor_relation (a b: ob) : relation (submor a b) := 
               fun f g => proj1_sig f == proj1_sig g.
 *)
+
+
 Lemma submor_equiv (a b: ob) : @Equivalence (submor a b) 
            (fun f g => proj1_sig f == proj1_sig g).
 Proof. 
@@ -81,17 +100,19 @@ Proof.
 Qed.
 *)
 
-Lemma subidP: forall a: subob, submorP (id (SC_inj_ob a)).
+(*
+Lemma subidP: forall a: subob, submorP (id (proj1_sig a)).
 Proof.  
   intro a. 
   apply sub_id. 
 Qed.
+*)
 
 Program Definition subid (a: subob) : submor a a :=
-  exist _ (id (SC_inj_ob a)) _ . 
+  exist _ (id (proj1_sig a)) _ . 
 Next Obligation.
 Proof. 
-  apply subidP. 
+  apply sub_id. 
 Qed.
 
 
@@ -108,7 +129,7 @@ Qed.
                            
 Obligation Tactic := cat; try apply assoc.
 
-Program Instance SubCat_struct: Cat_struct SC_mor := {
+Program Instance SubCat_struct: Cat_struct (obj := subob) submor := {
   mor_oid a b := submor_setoid a b;
   comp a b c f g := subcomp f g;
   id a := subid a
@@ -128,8 +149,6 @@ Definition SubCat := Build_Cat SubCat_struct.
 
 End SubCat_struct.
 
-
-
 (*
 Class SubCat : Type := {
   subobP: ob -> Prop;
@@ -141,6 +160,7 @@ Class SubCat : Type := {
 Definition Cat_from_SubCat (S: SubCat) := @subcat_struct S.
 Coercion Cat_from_SubCat: SubCat >-> Cat.
 *)
+
 End SubCat_def.
 
 

@@ -121,6 +121,8 @@
 ./COMP/PCF_ULC_nounit.v
 ./COMP/PCF_ULC_comp.v
 
+./COMP/type_arities.v
+
 
 #./COMP/gen_T/TLC.v
 

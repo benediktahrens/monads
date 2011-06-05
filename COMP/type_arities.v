@@ -16,7 +16,7 @@ Section Vmap.
 
 Variables A B : Type.
 Variable f : A -> B.
-Check @Vcons.
+
 Fixpoint Vmap n (X : vector A n) : vector B n := 
   match X in vector _ n return vector B n with
   | Vnil => Vnil _
@@ -96,7 +96,7 @@ Obligation Tactic := vec ; unfold Transitive; simpl; intros; etransitivity; auto
 Program Instance ts_eq A B : Equivalence (fun f g : ts_rep_hom A B => forall x, f x = g x).
 Definition ts_oid A B := Build_Setoid (ts_eq A B).
 
-Check ts_oid.
+
 
 Obligation Tactic := unfold Proper, respectful; simpl; intros; 
         repeat rew_all; auto.
@@ -175,7 +175,7 @@ Definition init_hom := Build_ts_rep_hom init_hom_s.
 Lemma unique : forall f : ts_init ---> R, f == init_hom.
 Proof.
   simpl.
-  intro f.  Check ts_induct.
+  intro f.  
   apply (@ts_induct 
               (fun t => f t = init t)
               (fun n lk => Vmap f (vec_f_ts_list lk) = init_list lk));
