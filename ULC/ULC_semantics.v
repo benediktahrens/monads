@@ -65,9 +65,9 @@ Qed.
 End Relations_on_ULC.
 
 (** Beta reduction *)
-
+(*
 Reserved Notation "a >> b" (at level 70).
-
+*)
 
 Inductive beta (V : TT): relation (ULC V) :=
 | app_abs : forall (M: ULC V*) N, 
@@ -78,12 +78,12 @@ Definition beta_star := ULCpropag beta.
 Definition beta_rel := 
    fun (V : TT) => clos_refl_trans_1n _ (@beta_star V).
 
-Notation "a >> b" := (beta_rel a b).
+Notation "a >>> b" := (beta_rel a b) (at level 70).
 
 (** lemmata *)
 
 Lemma beta_eq : forall V (M N : ULC V),
-   M = N -> M >> N.
+   M = N -> M >>> N.
 Proof.
   intros.
   destruct H.
@@ -91,7 +91,7 @@ Proof.
 Qed.
 
 Lemma beta_trans : forall V (M N K : ULC V),
- M >> K -> N >> M -> N >> K.
+ M >>> K -> N >>> M -> N >>> K.
 Proof.
   intros.
   transitivity M;
@@ -99,7 +99,7 @@ Proof.
 Qed.
 
 Lemma beta_beta : forall V M (N : ULC V), 
-   App (Abs M) N >> M [*:= N].
+   App (Abs M) N >>> M [*:= N].
 Proof.
   intros.
   apply clos_refl_trans_1n_contains.
@@ -108,7 +108,7 @@ Proof.
 Qed.
 
 Lemma app_abs_red V (M : ULC _ ) (N M' : ULC V) :
-   M [*:= N ] >> M' -> App (Abs M) N >> M'.
+   M [*:= N ] >>> M' -> App (Abs M) N >>> M'.
 Proof.
   intros.
   apply (beta_trans H).
@@ -232,8 +232,8 @@ Qed.
 Lemma App2_App1_app_abs V 
     (M : ULC V* ) N K 
     (L : ULC V)  (R:ULC V) :
-  App K (App (M [*:=N]) L) >> R ->
-  App K (App (App (Abs M) N) L) >> R.
+  App K (App (M [*:=N]) L) >>> R ->
+  App K (App (App (Abs M) N) L) >>> R.
 Proof.
   intros.
   apply (beta_trans H).
@@ -247,9 +247,9 @@ Lemma Abs_Abs_App1_Abs_App2_App1_app_abs V
      N (K : ULC _) (L : ULC _) (J : ULC _) 
        (R:ULC V):
    Abs (Abs (App (Abs (App K 
-             (App (M[*:=N]) J))) L)) >> R ->
+             (App (M[*:=N]) J))) L)) >>> R ->
    Abs (Abs (App (Abs (App K 
-     (App (App (Abs M) N) J))) L)) >> R.
+     (App (App (Abs M) N) J))) L)) >>> R.
 Proof.
   intros.
   apply (beta_trans H).
@@ -266,9 +266,9 @@ Lemma Abs_Abs_App1_Abs_App2_app_abs V
    N (K : ULC _) (L : ULC _) 
        (R:ULC V):
    Abs (Abs (App (Abs (App K 
-             (M[*:=N]) )) L)) >> R ->
+             (M[*:=N]) )) L)) >>> R ->
    Abs (Abs (App (Abs (App K 
-      (App (Abs M) N) )) L)) >> R.
+      (App (Abs M) N) )) L)) >>> R.
 Proof.
   intros.
   apply (beta_trans H).
@@ -282,8 +282,8 @@ Qed.
 Lemma Abs_Abs_App2_app_abs V 
       (M : ULC V * * * ) 
       N K (R:ULC V ) :
-  Abs (Abs (App K (M[*:=N]))) >> R ->
-  Abs (Abs (App K (App (Abs M) N))) >> R.
+  Abs (Abs (App K (M[*:=N]))) >>> R ->
+  Abs (Abs (App K (App (Abs M) N))) >>> R.
 Proof.
   intros.
   apply (beta_trans H).
@@ -295,8 +295,8 @@ Qed.
 Lemma App2_Abs_Abs_App2_App1_app_abs V 
      (M : ULC V * * * ) 
      N K L (J : ULC _) (R:ULC V) :
-   App K (Abs (Abs (App L (App (M[*:=N]) J)))) >> R ->
-   App K (Abs (Abs (App L (App (App (Abs M) N) J)))) >> R.
+   App K (Abs (Abs (App L (App (M[*:=N]) J)))) >>> R ->
+   App K (Abs (Abs (App L (App (App (Abs M) N) J)))) >>> R.
 Proof.
   intros.
   apply (beta_trans H).
@@ -310,8 +310,8 @@ Qed.
 Lemma Abs_Abs_App1_App1_App1_app_abs V
    (M : ULC V * * * ) 
    N (K : ULC _ ) (L : ULC _ ) (J : ULC _ ) (R:ULC V) :
-  Abs (Abs (App (App (App (M [*:=N]) K) L) J)) >> R ->
-  Abs (Abs (App (App (App (App (Abs M) N) K) L) J)) >> R .
+  Abs (Abs (App (App (App (M [*:=N]) K) L) J)) >>> R ->
+  Abs (Abs (App (App (App (App (Abs M) N) K) L) J)) >>> R .
 Proof.
   intros.
   apply (beta_trans H).
@@ -324,8 +324,8 @@ Lemma Abs_Abs_App2_App1_App1_app_abs V
     (M : ULC V * * * )  
     (N : ULC _) (K : ULC _) 
     (L : ULC _) (J : ULC _) (R:ULC V):
-   Abs (Abs (App K (App (App (M[*:=N]) L) J))) >> R -> 
-   Abs (Abs (App K (App (App (App (Abs M) N) L) J))) >> R.
+   Abs (Abs (App K (App (App (M[*:=N]) L) J))) >>> R -> 
+   Abs (Abs (App K (App (App (App (Abs M) N) L) J))) >>> R.
 Proof.
   intros.
   apply (beta_trans H).
@@ -338,8 +338,8 @@ Qed.
 Lemma Abs_Abs_App2_App1_app_abs V
     (M : ULC V * * * ) 
     N (K : ULC _) (L : ULC _) (R:ULC V):
-  Abs (Abs (App K (App (M[*:=N]) L))) >> R ->
-  Abs (Abs (App K (App (App (Abs M) N) L))) >> R.
+  Abs (Abs (App K (App (M[*:=N]) L))) >>> R ->
+  Abs (Abs (App K (App (App (Abs M) N) L))) >>> R.
 Proof.
   intros.
   apply (beta_trans H).
@@ -352,8 +352,8 @@ Qed.
 Lemma Abs_App2_app_abs V 
      (M : ULC V * * ) 
      N K (R : ULC V) :
-   Abs (App K (M[*:=N])) >> R -> 
-   Abs (App K (App (Abs M) N)) >> R.
+   Abs (App K (M[*:=N])) >>> R -> 
+   Abs (App K (App (Abs M) N)) >>> R.
 Proof.
   intros.
   apply (beta_trans H).
@@ -365,8 +365,8 @@ Qed.
 Lemma App1_Abs_app_abs V 
    (M : ULC V * * ) 
    N (K : ULC _) (R:ULC V) :
-  App (Abs (M[*:=N])) K >> R ->
-  App (Abs (App (Abs M) N)) K >> R.
+  App (Abs (M[*:=N])) K >>> R ->
+  App (Abs (App (Abs M) N)) K >>> R.
 Proof.
   intros.
   apply (beta_trans H).
@@ -379,8 +379,8 @@ Lemma App1_Abs_App2_App1_app_abs V
    (M : ULC V * * ) 
    N (K : ULC _) (L : ULC _) 
    (J : ULC _) (R:ULC V) :
-  App (Abs (App K (App (M[*:=N]) L))) J >> R -> 
-  App (Abs (App K (App (App (Abs M) N) L))) J >> R.
+  App (Abs (App K (App (M[*:=N]) L))) J >>> R -> 
+  App (Abs (App K (App (App (Abs M) N) L))) J >>> R.
 Proof.
   intros.
   apply (beta_trans H).
@@ -395,8 +395,8 @@ Qed.
 Lemma App1_Abs_Abs_App2_App1_app_abs V 
    (M : ULC V * * * ) 
     N (K : ULC _) (L:ULC _) (J : ULC _) (R:ULC V) :
-  App (Abs (Abs (App K (App (M[*:=N]) L)))) J >> R -> 
-  App (Abs (Abs (App K (App (App (Abs M) N) L)))) J >> R.
+  App (Abs (Abs (App K (App (M[*:=N]) L)))) J >>> R -> 
+  App (Abs (Abs (App K (App (App (Abs M) N) L)))) J >>> R.
 Proof.
   intros.
   apply (beta_trans H).
@@ -410,8 +410,8 @@ Qed.
 Lemma App1_App1_Abs_app_abs V
    (M : ULC V * * )  
     N (K : ULC _) (L : ULC _) (R:ULC V) :
-  App (App (Abs (M[*:=N])) K) L >> R -> 
-  App (App (Abs (App (Abs M)N)) K) L >> R.
+  App (App (Abs (M[*:=N])) K) L >>> R -> 
+  App (App (Abs (App (Abs M)N)) K) L >>> R.
 Proof.
   intros.
   apply (beta_trans H).
@@ -423,8 +423,8 @@ Qed.
 Lemma App1_App1_Abs_Abs_app_abs V
     (M : ULC V * * * ) 
      N (K : ULC _) (L : ULC _) (R:ULC V) :
-  App (App (Abs (Abs (M[*:=N]))) K) L >> R -> 
-  App (App (Abs (Abs (App (Abs M)N))) K) L >> R.
+  App (App (Abs (Abs (M[*:=N]))) K) L >>> R -> 
+  App (App (Abs (Abs (App (Abs M)N))) K) L >>> R.
 Proof.
   intros.
   apply (beta_trans H).
@@ -434,8 +434,8 @@ Proof.
 Qed.
 
 Lemma App1_App1_Abs_Abs_App1_app_abs V M N K L J (R : ULC V):
-    App (App (Abs (Abs (App (M[*:=N]) K))) L) J >> R ->
-    App (App (Abs (Abs (App (App (Abs M) N) K))) L) J >> R.
+    App (App (Abs (Abs (App (M[*:=N]) K))) L) J >>> R ->
+    App (App (Abs (Abs (App (App (Abs M) N) K))) L) J >>> R.
 Proof.
   intros.
   apply (beta_trans H).
@@ -472,7 +472,7 @@ Qed.
 Definition VAR V := Build_PO_mor (Var_s V).
 
 Lemma rename_beta (V W : TT)(f : V ---> W) (v w : ULC V):
-     v >> w -> v //- f >> w //- f.
+     v >>> w -> v //- f >>> w //- f.
 Proof.
   intros V W f v w H.
   generalize dependent W.
@@ -566,7 +566,7 @@ Qed.
  
 Lemma subst_beta (V W : TT) (f : V ---> ULC W) 
     (v w : ULC V) :
-   v >> w -> v >>= f >> w >>= f.
+   v >>> w -> v >>= f >>> w >>= f.
 Proof.
   intros.
   assert (H':= subst_s _ _ (Sm_ind (W:= ULCBETA W) f)).

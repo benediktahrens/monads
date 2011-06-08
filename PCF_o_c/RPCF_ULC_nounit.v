@@ -5,7 +5,7 @@ Require Export CatSem.PCF_o_c.RPCF_rep.
 Require Export CatSem.ULC.ULC_RMonad.
 Require Export CatSem.ULC.ULC_terms.
 Require Export CatSem.CAT.unit_type_rmonad.
-
+Locate ">>".
 Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Automatic Introduction.
