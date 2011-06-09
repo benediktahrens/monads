@@ -150,7 +150,7 @@ Program Instance REPRESENTATION_struct :
   id a := Rep_Id a;
   comp P Q R f g := Rep_Comp f g }.
 
-Definition REPRESENTATION := Build_Cat REPRESENTATION_struct.
+Definition REP := Build_Cat REPRESENTATION_struct.
 
 End cat_of_reps.
 

@@ -112,26 +112,26 @@ Variable Sig : Signature.
    category of pairs
 *)
 
-Class S_Module_s (s_mod_rep : forall R : REPRESENTATION Sig, RMOD R wPO) := {
-   S_Mod_Hom : forall (R S : REPRESENTATION Sig) (f : R ---> S), 
+Class S_Module_s (s_mod_rep : forall R : REP Sig, RMOD R wPO) := {
+   S_Mod_Hom : forall (R S : REP Sig) (f : R ---> S), 
       s_mod_rep R ---> PbRMod f (s_mod_rep S)  }.
 
 Record S_Module := {
-  s_mod_rep :> forall R : REPRESENTATION Sig, RMOD R wPO ;
+  s_mod_rep :> forall R : REP Sig, RMOD R wPO ;
   s_mod_hom :> S_Module_s s_mod_rep }.
 
 (** a half-equation is a natural transformation of between S-Modules. 
     we need the naturality condition in the following *)
 
 Class half_equation_struct (U V : S_Module) 
-    (half_eq : forall R : REPRESENTATION Sig, s_mod_rep U R ---> s_mod_rep V R) := {
-  comm_eq_s : forall (R S : REPRESENTATION Sig)  (f : R ---> S), 
+    (half_eq : forall R : REP Sig, s_mod_rep U R ---> s_mod_rep V R) := {
+  comm_eq_s : forall (R S : REP Sig)  (f : R ---> S), 
      S_Mod_Hom (S_Module_s := U) f ;; PbRMod_Hom _ (half_eq S) == 
                 half_eq R ;; S_Mod_Hom (S_Module_s := V) f }.
 
 
 Record half_equation (U V : S_Module) := {
-  half_eq :> forall R : REPRESENTATION Sig, 
+  half_eq :> forall R : REP Sig, 
          s_mod_rep U R ---> s_mod_rep V R ;
   half_eq_s :> half_equation_struct half_eq }.
 
@@ -191,7 +191,7 @@ Section substitution.
 (** the carrier is - for the moment - defined by tactics. Buh! 
      we don't care, since it's just an example *)
 
-Definition blubb (P : REPRESENTATION Sig) :
+Definition blubb (P : REP Sig) :
 (forall c : TYPE, (S_Mod_alg_ob [1; 0] P) c ---> (S_Mod_alg_ob [0] P) c) .
 simpl.
 intros.
@@ -234,7 +234,7 @@ Qed.
 
 Print Assumptions sub_struct.
 
-Definition sub (P : REPRESENTATION Sig) := Build_RModule_Hom (sub_struct P).
+Definition sub (P : REP Sig) := Build_RModule_Hom (sub_struct P).
 
 
 Program Instance subst_half_s : half_equation_struct 
@@ -294,7 +294,7 @@ Record eq_alg := {
 
 
 (*
-Definition verifies_eq l l' (e : eq_alg l l') (P : REPRESENTATION Sig) : Prop.
+Definition verifies_eq l l' (e : eq_alg l l') (P : REP Sig) : Prop.
 intros.
 destruct e.
 simpl in *.
@@ -313,7 +313,7 @@ a representation [P] verifies an equation [e] iff for any element in the domain,
     its two images under e1 and e2 are related
 *)
 
-Definition verifies_eq (e : eq_alg) (P : REPRESENTATION Sig) :=
+Definition verifies_eq (e : eq_alg) (P : REP Sig) :=
   forall c (x : (s_mod_rep (S_Mod_alg (doml e)) P) c), 
        half_eq (eq1 e) P _ x << half_eq (eq2 e)_ _ x.
 
@@ -323,7 +323,7 @@ Definition Prop_Sig_struct (A : Type) := forall a : A, eq_alg.
 
 (** [R] verifies [T] iff it verifies any equation of [T] *)
 
-Definition verifies_prop_sig A (T : Prop_Sig_struct A) (R : REPRESENTATION Sig) :=
+Definition verifies_prop_sig A (T : Prop_Sig_struct A) (R : REP Sig) :=
       forall a, verifies_eq (T a) R.
 
 (** ** Subcategory of Rep(Sig) of representations verifying equations *)
@@ -342,7 +342,7 @@ Variable T : Prop_Sig_struct A.
 (** lemma stating that the properties are closed under composition and 
     identity *)
 
-Program Instance Prop_Rep : SubCat_compat (REPRESENTATION Sig)
+Program Instance Prop_Rep : SubCat_compat (REP Sig)
      (fun P => verifies_prop_sig T P) (fun a b f => True).
 
 (** hence we obtain a category, the category of representations of [(Sig, T)] *)
@@ -477,7 +477,7 @@ we now pass to representations of [Sig] in our new shiny monad. the carrier is
 
 Program Instance Build_prop_pos (i : sig_index Sig) V : PO_mor_struct
   (a := prod_mod UTSP (sig i) V) (b := UTSP V)
-  (fun X => Build (i:=i) (STSl_f_pm (V:=V) X)).
+  (fun X => Build (i:=i) (UTSl_f_pm (V:=V) X)).
 Next Obligation.
 Proof.
   unfold Proper; red.
@@ -523,7 +523,7 @@ Qed.
 
 Lemma sts_list_subst2 l X (v : prod_mod (UTSP) l X) 
        W (f : SM_po X ---> UTSP W):
-  STSl_f_pm  (pm_mkl f v ) = list_subst (STSl_f_pm v) f.
+  UTSl_f_pm  (pm_mkl f v ) = list_subst (UTSl_f_pm v) f.
 Proof.
   induction v; simpl;
   intros. auto.
@@ -556,7 +556,7 @@ Definition Build_prop i := Build_RModule_Hom (Build_prop_s i).
 
 Canonical Structure UTSPROPrepr : Repr Sig UTSP := Build_prop.
 
-Canonical Structure UTSPROPRepr : REPRESENTATION Sig := 
+Canonical Structure UTSPROPRepr : REP Sig := 
        Build_Representation (@UTSPROPrepr).
 
 (** other direction of Lemma 36
@@ -604,7 +604,7 @@ we produce a morphism of representations from [UTSP_sm] to
 *)
 
 Program Instance debi1s : 
-   RMonad_Hom_struct (P:=UTSM_sm Sig) (Q:=UTSP) 
+   RMonad_Hom_struct (P:=UTSM Sig) (Q:=UTSP) 
    (fun c => Sm_ind (id (UTS Sig c))).
 
 Definition debi1 := Build_RMonad_Hom debi1s.
@@ -630,7 +630,7 @@ Lemma half_eq_const_on_carrier : forall c x,
    init_rep UTSPROPRepr c x = x.
 Proof.
   simpl;
-  assert (H:=InitMorUnique (C:=REPRESENTATION Sig) debi2);
+  assert (H:=InitMorUnique (C:=REP Sig) debi2);
   simpl in H;
   auto.
 Qed.
@@ -733,7 +733,7 @@ Definition init_prop_mon := Build_RMonad_Hom init_prop_mon_s.
 
 Lemma prod_mor_eq_init_list2 (i : sig_index Sig) V
        (x : prod_mod_c (fun V => UTS Sig V) V (sig i)) :
-  Prod_mor_c1 init_prop_mon x = init_list _ (STSl_f_pm x).
+  Prod_mor_c1 init_prop_mon x = init_list _ (UTSl_f_pm x).
 Proof.
   induction x;
   simpl; auto.

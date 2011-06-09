@@ -106,27 +106,27 @@ Variable Sig : Signature.
    category of pairs
 *)
 
-Class S_Module_s (s_mod_rep : forall R : REPRESENTATION Sig, RMOD R wPO) := {
-   S_Mod_Hom : forall (R S : REPRESENTATION Sig) (f : R ---> S), 
-      s_mod_rep R ---> PbRMod f (s_mod_rep S)  }.
+Class S_Module_s (The : forall R : REP Sig, RMOD R wPO) := {
+   S_Mod_Hom : forall (R S : REP Sig) (f : R ---> S), 
+      The R ---> PbRMod f (The S)  }.
 
 Record S_Module := {
-  s_mod_rep :> forall R : REPRESENTATION Sig, RMOD R wPO ;
-  s_mod_hom :> S_Module_s s_mod_rep }.
+  s_mod :> forall R : REP Sig, RMOD R wPO ;
+  s_mod_hom :> S_Module_s s_mod }.
 
 (** a half-equation is a natural transformation of between S-Modules. 
     we need the naturality condition in the following *)
 
 Class half_equation_struct (U V : S_Module) 
-    (half_eq : forall R : REPRESENTATION Sig, s_mod_rep U R ---> s_mod_rep V R) := {
-  comm_eq_s : forall (R S : REPRESENTATION Sig)  (f : R ---> S), 
+    (half_eq : forall R : REP Sig, s_mod U R ---> s_mod V R) := {
+  comm_eq_s : forall (R S : REP Sig)  (f : R ---> S), 
      S_Mod_Hom (S_Module_s := U) f ;; PbRMod_Hom _ (half_eq S) == 
                 half_eq R ;; S_Mod_Hom (S_Module_s := V) f }.
 
 
 Record half_equation (U V : S_Module) := {
-  half_eq :> forall R : REPRESENTATION Sig, 
-         s_mod_rep U R ---> s_mod_rep V R ;
+  half_eq :> forall R : REP Sig, 
+                 U R --->  V R ;
   half_eq_s :> half_equation_struct half_eq }.
 
 Section S_Module_algebraic.
@@ -189,7 +189,7 @@ Section substitution.
 (** the carrier is - for the moment - defined by tactics. Buh! 
      we don't care, since it's just an example *)
 
-Definition blubb (P : REPRESENTATION Sig) :
+Definition blubb (P : REP Sig) :
 (forall c : TYPE, (S_Mod_alg_ob [1; 0] P) c ---> (S_Mod_alg_ob [0] P) c) .
 simpl.
 intros.
@@ -232,7 +232,7 @@ Qed.
 
 Print Assumptions sub_struct.
 
-Definition sub (P : REPRESENTATION Sig) := Build_RModule_Hom (sub_struct P).
+Definition sub (P : REP Sig) := Build_RModule_Hom (sub_struct P).
 
 
 Program Instance subst_half_s : half_equation_struct 
@@ -279,15 +279,15 @@ Definition half_eq_alg (U : S_Module)(codl : [[nat]]) :=
        - two half-equations [eq1 eq2 : domS -> S_Mod_alg codl] *)
 
 Record eq_alg := {
-  domS : S_Module ;
-  codl : [[nat]] ;
-  eq1 : half_eq_alg domS codl ;
-  eq2 : half_eq_alg domS codl }.
+  Dom : S_Module ;
+  Cod : [[nat]] ;
+  eq1 : half_eq_alg Dom Cod ;
+  eq2 : half_eq_alg Dom Cod }.
 
 
 
 (*
-Definition verifies_eq l l' (e : eq_alg l l') (P : REPRESENTATION Sig) : Prop.
+Definition verifies_eq l l' (e : eq_alg l l') (P : REP Sig) : Prop.
 intros.
 destruct e.
 simpl in *.
@@ -306,17 +306,23 @@ a representation [P] verifies an equation [e] iff for any element in the domain 
  ([c] a set of variables) its two images under e1 and e2 are related
 *)
 
-Definition verifies_eq (e : eq_alg) (P : REPRESENTATION Sig) :=
-  forall c (x : (s_mod_rep (domS e) P) c), 
-       half_eq (eq1 e) P _ x << half_eq (eq2 e)_ _ x.
+(*
+Definition verifies_eq (e : eq_alg) (P : REP Sig) :=
+  forall c (x : s_mod_rep (domS e) P c), 
+       (*half_eq*) (eq1 e) P _ x << (*half_eq*) (eq2 e)_ _ x.
+*)
+
+Definition verifies_eq (e : eq_alg) (P : REP Sig) :=
+  forall c (x : Dom e P c), 
+        eq1 _ _ _ x <<  eq2 _ _ _ x.
 
 (** a set of (in)equations, indexed by a set A *)
 
-Definition Prop_Sig_struct (A : Type) := forall a : A, eq_alg.
+Definition Prop_Sig (A : Type) := forall a : A, eq_alg.
 
 (** [R] verifies [T] iff it verifies any equation of [T] *)
 
-Definition verifies_prop_sig A (T : Prop_Sig_struct A) (R : REPRESENTATION Sig) :=
+Definition verifies_psig A (T : Prop_Sig A) (R : REP Sig) :=
       forall a, verifies_eq (T a) R.
 
 (** ** Subcategory of Rep(Sig) of representations verifying equations *)
@@ -330,13 +336,13 @@ Section subcat.
 *)
 
 Variable A : Type.
-Variable T : Prop_Sig_struct A.
+Variable T : Prop_Sig A.
 
 (** lemma stating that the properties are closed under composition and 
     identity *)
 
-Program Instance Prop_Rep : SubCat_compat (REPRESENTATION Sig)
-     (fun P => verifies_prop_sig T P) (fun a b f => True).
+Program Instance Prop_Rep : SubCat_compat (REP Sig)
+     (fun P => verifies_psig T P) (fun a b f => True).
 
 (** hence we obtain a category, the category of representations of [(Sig, T)] *)
 
@@ -355,7 +361,7 @@ first thing to do is to build the correct order on the set of terms:
 *)
 
 Definition prop_rel_c X (x y : UTS Sig X) : Prop :=
-      forall R : PROP_REP, init (SC_inj_ob R) x << init (SC_inj_ob R) y.
+      forall R : PROP_REP, init (FINJ _ R) x << init (FINJ _ R) y.
 
 (** this ordering is a preorder *)
 
@@ -371,10 +377,8 @@ Proof.
   unfold Transitive.
   unfold prop_rel_c.
   simpl; intros.
-  transitivity (
-   init (SC_inj_ob
-     (subobP:=fun P : Representation Sig => verifies_prop_sig (A:=A) T P) R)
-  y); auto.
+  transitivity (init (proj1_sig R) y); 
+  auto.
 Qed.
 
 Definition prop_rel_po_s X := Build_PO_obj_struct (prop_rel_po X).
@@ -391,7 +395,7 @@ Proof.
   unfold Proper, respectful.
   unfold prop_rel_c.
   simpl. intros.
-  assert (H':= init_kleisli (SC_inj_ob R)).
+  assert (H':= init_kleisli (proj1_sig R)).
   simpl in H'.
   assert (H2 := H' X x _ (Sm_ind f)).
   simpl in H2.
@@ -483,7 +487,7 @@ we now pass to representations of [Sig] in our new shiny monad. the carrier is
 
 Program Instance Build_prop_pos (i : sig_index Sig) V : PO_mor_struct
   (a := prod_mod UTSP (sig i) V) (b := UTSP V)
-  (fun X => Build (i:=i) (STSl_f_pm (V:=V) X)).
+  (fun X => Build (i:=i) (UTSl_f_pm (V:=V) X)).
 Next Obligation.
 Proof.
   unfold Proper; red.
@@ -528,7 +532,7 @@ Qed.
 
 Lemma sts_list_subst2 l X (v : prod_mod (UTSP) l X) 
        W (f : SM_po X ---> UTSP W):
-  STSl_f_pm  (pm_mkl f v ) = list_subst (STSl_f_pm v) f.
+  UTSl_f_pm  (pm_mkl f v ) = list_subst (UTSl_f_pm v) f.
 Proof.
   induction v; simpl;
   intros. auto.
@@ -559,10 +563,10 @@ Definition Build_prop i := Build_RModule_Hom (Build_prop_s i).
 
 (**  UTSP has a structure as a representation of Sig *)
 
-Canonical Structure UTSPROPrepr : Repr Sig UTSP := Build_prop.
+Canonical Structure UTSPrepr : Repr Sig UTSP := Build_prop.
 
-Canonical Structure UTSPROPRepr : REPRESENTATION Sig := 
-       Build_Representation (@UTSPROPrepr).
+Canonical Structure UTSProp : REP Sig := 
+       Build_Representation (@UTSPrepr).
 
 (** ** Important Lemma, other direction
 other direction of Lemma 36
@@ -574,7 +578,7 @@ other direction of Lemma 36
 
 Lemma lemma36_2 (l : [[nat]]) (V : Type)
     (x y : prod_mod_c (fun x : Type => UTS Sig x) V l)
-    (H : forall R : subob (fun P : Representation Sig => verifies_prop_sig (A:=A) T P),
+    (H : forall R : PROP_REP,
         Rel (PO_obj_struct := prod_mod_po (SC_inj_ob R) V l) 
   (Prod_mor_c1 (init_mon (Sig:=Sig) (SC_inj_ob R)) x)
   (Prod_mor_c1 (init_mon (Sig:=Sig) (SC_inj_ob R)) y) ) :
@@ -624,11 +628,11 @@ we produce a morphism of representations from [UTSP_sm] to
   [UTSM_sm] (diagonal order) and [UTSP] (order induced by equations)
 *)
 
-Program Instance Id_UTSM_sm_UTSPs : 
-   RMonad_Hom_struct (P:=UTSM_sm Sig) (Q:=UTSP) 
+Program Instance Id_UTSM_UTSPs : 
+   RMonad_Hom_struct (P:=UTSM Sig) (Q:=UTSP) 
    (fun c => Sm_ind (id (UTS Sig c))).
 
-Definition Id_UTSM_sm_UTSP := Build_RMonad_Hom Id_UTSM_sm_UTSPs.
+Definition Id_UTSM_sm_UTSP := Build_RMonad_Hom Id_UTSM_UTSPs.
 
 Lemma id_UTSM_sm_UTSP l c (x : prod_mod_c (fun x => UTS Sig x) c l) : 
       Prod_mor_c1 Id_UTSM_sm_UTSP x = x.
@@ -641,17 +645,17 @@ Obligation Tactic := unfold commute; simpl; intros;
      repeat (apply f_equal || apply id_UTSM_sm_UTSP || auto).
 
 Program Instance debi2s : 
-     Representation_Hom_struct (P:=UTSRepr Sig) (Q:=UTSPROPRepr) Id_UTSM_sm_UTSP.
+     Representation_Hom_struct (P:=UTSRepr Sig) (Q:=UTSProp) Id_UTSM_sm_UTSP.
 
 Definition UTSM_sm_UTSP_rep_hom := Build_Representation_Hom debi2s.
 
 Existing Instance UTS_initial.
 
 Lemma half_eq_const_on_carrier : forall c x, 
-   init_rep UTSPROPRepr c x = x.
+   init_rep UTSProp c x = x.
 Proof.
   simpl;
-  assert (H:=InitMorUnique (C:=REPRESENTATION Sig) UTSM_sm_UTSP_rep_hom);
+  assert (H:=InitMorUnique (C:=REP Sig) UTSM_sm_UTSP_rep_hom);
   simpl in H;
   auto.
 Qed.
@@ -706,11 +710,15 @@ Variable R : PROP_REP.
 
 
 Program Instance init_prop_s V : PO_mor_struct
-    (a:=(UTSPROPRepr) V) (b:=(FINJ _ R) V) (init (FINJ _ R) (V:=V)).
+    (a:=(UTSProp) V) (b:=(FINJ _ R) V) (init (FINJ _ R) (V:=V)).
 Next Obligation.
 Proof.
   unfold Proper, respectful;
-  intros; app_any.
+  intros. 
+  simpl in *. 
+  unfold prop_rel_c in H. 
+  simpl in H.
+  apply H.
 Qed.
 
 Definition init_prop_po V := Build_PO_mor (init_prop_s V).
@@ -721,7 +729,7 @@ Obligation Tactic := cat; rewrite init_kleisli2;
 (** monadicity *)
 
 Program Instance init_prop_mon_s : RMonad_Hom_struct
-      (P:=UTSPROPRepr)(Q:=FINJ _ R) init_prop_po.
+      (P:=UTSProp)(Q:=FINJ _ R) init_prop_po.
 
 Definition init_prop_mon := Build_RMonad_Hom init_prop_mon_s.
 
@@ -729,7 +737,7 @@ Definition init_prop_mon := Build_RMonad_Hom init_prop_mon_s.
 
 Lemma prod_mor_eq_init_list2 (i : sig_index Sig) V
        (x : prod_mod_c (fun V => UTS Sig V) V (sig i)) :
-  Prod_mor_c1 init_prop_mon x = init_list _ (STSl_f_pm x).
+  Prod_mor_c1 init_prop_mon x = init_list _ (UTSl_f_pm x).
 Proof.
   induction x;
   simpl; auto.
@@ -784,17 +792,17 @@ Qed.
       - and for a2 as well
 *)
 
-Lemma UTSPRepr_sig_prop : verifies_prop_sig T UTSPROPRepr.
+Lemma UTSPRepr_sig_prop : verifies_psig T UTSProp.
 Proof.
-  unfold verifies_prop_sig, verifies_eq.
+  unfold verifies_psig, verifies_eq.
   simpl; intros.
   apply lemma36_2a.
   intros. 
   assert (H4:=comm_eq_s (half_equation_struct := eq1 (T a))).
-  assert (H5:=H4 _ _ (init_prop_re ( R))).
+  assert (H5:=H4 _ _ (init_prop_re R)).
   
   assert (H4':=comm_eq_s (half_equation_struct := eq2 (T a))).
-  assert (H5':=H4' _ _ (init_prop_re ( R))).
+  assert (H5':=H4' _ _ (init_prop_re R)).
   
   clear H4 H4'.
   simpl in *.
@@ -803,7 +811,7 @@ Proof.
   rewrite <- H5'.
   
   destruct R.
-  unfold verifies_prop_sig in v.
+  unfold verifies_psig in v.
   unfold verifies_eq in v.
   simpl in *.
   apply v.
@@ -850,8 +858,8 @@ Qed.
 (** ** yielding an object of the subcategory 
 *)
 
-Definition UTSPROPREPR : PROP_REP := 
- exist (fun R : Representation Sig => verifies_prop_sig (A:=A) T R) UTSPROPRepr
+Definition UTSPROP : PROP_REP := 
+ exist (fun R : Representation Sig => verifies_psig (A:=A) T R) UTSProp
   UTSPRepr_sig_prop.
 
 (** ** Initiality in the subcategory *)
@@ -873,13 +881,13 @@ Variable R : PROP_REP.
 (** ** Weak Initial morphism in subcategory 
     was already defined *)
 
-Definition init_prop : UTSPROPREPR ---> R := exist _ (init_prop_re R) I.
+Definition init_prop : UTSPROP ---> R := exist _ (init_prop_re R) I.
 
 Section unique.
 
 (** ** Initiality in subcategory *)
 
-Variable f : UTSPROPREPR ---> R.
+Variable f : UTSPROP ---> R.
 
 Existing Instance REPRESENTATION_struct.
 
@@ -949,7 +957,7 @@ End init.
 (** ** Initiality verified by Coq *)
 
 Program Instance INITIAL_PROP : Initial PROP_REP := {
-  Init := UTSPROPREPR ;
+  Init := UTSPROP ;
   InitMor := init_prop ;
   InitMorUnique := init_prop_unique
 }.

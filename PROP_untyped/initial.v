@@ -568,36 +568,36 @@ Program Instance UTS_sm_rmonad : RMonad_struct SM_po UTS_sm := {
   rkleisli := subst_sm
 }.
 
-Canonical Structure UTSM_sm := Build_RMonad UTS_sm_rmonad.
+Canonical Structure UTSM := Build_RMonad UTS_sm_rmonad.
 
 (** ** Bijections
 
 as said before, UTS_list is actually the same as 
     prod_mod_c UTSM_sm. we give a module morphism translation *)
 
-Fixpoint STSl_f_pm l V (x : prod_mod_c (fun V => UTS V) V l)
+Fixpoint UTSl_f_pm l V (x : prod_mod_c (fun V => UTS V) V l)
          : UTS_list V l :=
     match x in prod_mod_c _ _ l return UTS_list V l with
     | TTT =>  TT V 
-    | CONSTR b bs e el => constr e (STSl_f_pm el)
+    | CONSTR b bs e el => constr e (UTSl_f_pm el)
     end.
 
-Fixpoint pm_f_STSl l V (v : UTS_list V l) :
+Fixpoint pm_f_UTSl l V (v : UTS_list V l) :
        prod_mod_c (fun V => UTS V) V l :=
  match v in UTS_list _ l return prod_mod_c _ V l with
  | TT => TTT _ _ 
  | constr b bs elem elems => 
-        CONSTR elem (pm_f_STSl elems)
+        CONSTR elem (pm_f_UTSl elems)
  end.
 
 Lemma one_way l V (v : UTS_list V l) : 
-    STSl_f_pm (pm_f_STSl v) = v.
+    UTSl_f_pm (pm_f_UTSl v) = v.
 Proof.
   induction v; fin.
 Qed.
 
 Lemma or_another l V (v : prod_mod_c (fun V => UTS V) l V) : 
-       pm_f_STSl (STSl_f_pm v) = v.
+       pm_f_UTSl (UTSl_f_pm v) = v.
 Proof.
   induction v; fin.
 Qed.
@@ -650,7 +650,7 @@ Qed.
 (**   rename = lift *)
 
 Lemma lift_rename2 V (s : UTS_sm V) W (f : V ---> W): 
-          rlift UTSM_sm f s = s //- f.
+          rlift UTSM f s = s //- f.
 Proof.
   fin.
 Qed.
@@ -661,9 +661,9 @@ Hint Resolve _lshift_lshift_eq : fin.
 
 Notation "v >>>= f" := (pm_mkl f v) (at level 67).
           
-Lemma sts_list_subst l X (v : prod_mod (UTSM_sm) l X) 
+Lemma sts_list_subst l X (v : prod_mod UTSM l X) 
        W (f : SM_po X ---> UTS_sm W):
-  STSl_f_pm  (pm_mkl f v ) = (STSl_f_pm v) >>== f.
+  UTSl_f_pm  (pm_mkl f v ) = (UTSl_f_pm v) >>== f.
 Proof.
   induction v; repeat (t5 || rew _lshift_lshift_eq ) .
 Qed.
@@ -715,25 +715,25 @@ Obligation Tactic :=   unfold Proper, respectful; intros; simpl;
         repeat (match goal with [H:_|-_]=>rewrite (bba H) end); constructor.
 
 Program Instance UTS_arity_rep_po (i : sig_index Sig) V : PO_mor_struct
-  (a:= prod_mod UTSM_sm (sig i) V)
-  (b:= UTSM_sm V)
-  (fun (X : prod_mod_c _ V (sig i)) => Build (i:=i) (STSl_f_pm (V:=V) X)).
+  (a:= prod_mod UTSM (sig i) V)
+  (b:= UTSM V)
+  (fun (X : prod_mod_c _ V (sig i)) => Build (i:=i) (UTSl_f_pm (V:=V) X)).
 
 Obligation Tactic := t5.
 
 Program Instance UTS_arity_rep (i : sig_index Sig) : 
   RModule_Hom_struct 
-       (M := prod_mod UTSM_sm (sig i))
-       (N := UTSM_sm) 
+       (M := prod_mod UTSM (sig i))
+       (N := UTSM) 
        (fun V => Build_PO_mor (UTS_arity_rep_po i V)).
  
 
 (**  STS has a structure as a representation of Sig *)
 
-Canonical Structure UTSrepr : Repr Sig UTSM_sm :=
+Canonical Structure UTSrepr : Repr Sig UTSM :=
        fun i => Build_RModule_Hom (UTS_arity_rep i).
 
-Canonical Structure UTSRepr : REPRESENTATION Sig := 
+Canonical Structure UTSRepr : REP Sig := 
        Build_Representation (@UTSrepr).
 
 (** ** INITIALITY 
@@ -741,7 +741,7 @@ Canonical Structure UTSRepr : REPRESENTATION Sig :=
 
 Section initiality.
 
-Variable R : REPRESENTATION Sig.
+Variable R : REP Sig.
 
 (** the initial morphism STS -> R *)
 
@@ -874,7 +874,7 @@ Obligation Tactic := fin; rew init_kleisli.
 
 (** ** [init] is the carrier of a monad morphism [UTSM_sm -> R] *)
 
-Program Instance init_monadic : RMonad_Hom_struct (P:=UTSM_sm) init_sm.
+Program Instance init_monadic : RMonad_Hom_struct (P:=UTSM) init_sm.
 
 Canonical Structure init_mon := Build_RMonad_Hom init_monadic.
 
@@ -887,7 +887,7 @@ init is not only (the carrier of) a monad morphism, but even (of) a morphism of
 
 Lemma prod_mor_eq_init_list (i : sig_index Sig) V 
        (x : prod_mod_c UTS_sm V (sig i)) :
-  Prod_mor_c1 init_mon  x = init_list (STSl_f_pm x).
+  Prod_mor_c1 init_mon  x = init_list (UTSl_f_pm x).
 Proof.
   induction x; fin.
 Qed.
@@ -929,7 +929,7 @@ Lemma init_unique_prepa V (v : UTS V) : f V v = init v.
 Proof.
   apply (@UTSind
      (fun V v => f V v = init v)
-     (fun V l v => Prod_mor f l V (pm_f_STSl v) = init_list v));
+     (fun V l v => Prod_mor f l V (pm_f_UTSl v) = init_list v));
   ttt;
   match goal with [H:_|-_]=>rewrite <- (one_way H) end;
   let H:=fresh in (assert (H:=@repr_hom_s _ _ _ f f);
@@ -958,7 +958,7 @@ Obligation Tactic := fin.
 
 (** ** Initiality *)
 
-Program Instance UTS_initial : Initial (REPRESENTATION Sig) := {
+Program Instance UTS_initial : Initial (REP Sig) := {
   Init := UTSRepr ;
   InitMor R := init_rep R }.
 
