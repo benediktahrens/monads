@@ -3,7 +3,9 @@ Require Export CatSem.PCF_o_c.RPCF_ULC_nounit.
 
 Set Implicit Arguments.
 Unset Strict Implicit.
-Unset Printing Implicit Defensive.
+(*Unset Printing Implicit Defensive.*)
+Unset Automatic Introduction.
+
 
 Definition PCF_ULC_compilation := 
     InitMor PCF_ULC.
@@ -41,10 +43,32 @@ Check (fun V t (a : PCF V t)  => PCF_ULC_c (V) tt
 
 Require Import Coq.Program.Equality.
 
-Lemma aaaa V t (a : PCF V t): 
-        (exists b, (PCF_ULC_c _ _ 
-                   (ctype (fun t => tt) a)) >>> b) ->
-        (exists b',  a >> b').
+Lemma aaaa V t (a : PCF V t) b :
+      (PCF_ULC_c _ _  (ctype (fun t => tt) a)) >>> b ->
+        (exists b',  a >> b' /\ PCF_ULC_c _ _ (ctype _ b') = b).
+  intros V t a.        
+  intro b.
+  dependent induction b;
+  simpl; intros.
+  inversion H.
+  exists (PCF_syntax.Var (ct ).
+  exists (Bottom V t).
+  split. reflexivity.
+  simpl.
+  inversion H. auto.
+  subst. clear H. 
+  inversion H0.
+  subst.
+  exists (Bottom V t).
+  split.
+  reflexivity.
+  simpl; auto.
+  subst.
+  exists (Bottom V t).
+  split. reflexivity.
+  ssiauto.
+  
+  destruct H.
 intros.
  elim H.
  clear H.
