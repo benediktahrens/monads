@@ -180,6 +180,9 @@
 ./PCF_o_c/ULC_syntax1.v
 #./PCF_o_c/RPCF_syntax.v #should be obsolete
 
+#### RPCF #########################
+./RPCF/RPCF_rep.v
+
 
 #### PROP_untyped #################
 ./PROP_untyped/arities.v
