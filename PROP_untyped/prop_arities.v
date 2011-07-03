@@ -16,8 +16,10 @@ Unset Transparent Obligations.
 *)
 
 
-Notation "[ x ; .. ; y ]" := (cons x .. (cons y nil) ..).
-Notation "[[ T ]]" := (list T) (at level 5).
+Notation "[[ x ; .. ; y ]]" := (cons x .. (cons y nil) ..).
+
+
+Notation "[ T ]" := (list T) (at level 5).
 
 (** ** Propositional arities and their representations
 	given a signature [Sig], we define 
@@ -143,7 +145,7 @@ Section S_Module_algebraic.
 
 we are interested in algebraic S-Modules, i.e. of the form PROD_i P^{n(i)} *)
 
-Variable l : [[nat]].
+Variable l : [nat].
 
 Section ob.
 
@@ -192,7 +194,7 @@ Section substitution.
      we don't care, since it's just an example *)
 
 Definition blubb (P : REP Sig) :
-(forall c : TYPE, (S_Mod_alg_ob [1; 0] P) c ---> (S_Mod_alg_ob [0] P) c) .
+(forall c : TYPE, (S_Mod_alg_ob [[1; 0]] P) c ---> (S_Mod_alg_ob [[0]] P) c) .
 simpl.
 intros.
 simpl in *.
@@ -208,7 +210,7 @@ Defined.
 
 
 Program Instance sub_struct (P : Representation Sig) : RModule_Hom_struct 
-  (M:=S_Mod_alg_ob [1;0] P) (N:=S_Mod_alg_ob [0] P) (blubb (P:=P)).
+  (M:=S_Mod_alg_ob [[1;0]] P) (N:=S_Mod_alg_ob [[0]] P) (blubb (P:=P)).
 Next Obligation.
 Proof.
   dependent destruction x.
@@ -238,7 +240,7 @@ Definition sub (P : REP Sig) := Build_RModule_Hom (sub_struct P).
 
 
 Program Instance subst_half_s : half_equation_struct 
-      (U:=Build_S_Module (S_Mod_alg [1 ; 0])) (V:=S_Mod_alg [0]) sub.
+      (U:=Build_S_Module (S_Mod_alg [[1 ; 0]])) (V:=S_Mod_alg [[0]]) sub.
 Next Obligation.
 Proof.
   
@@ -277,7 +279,7 @@ sorry, this is work in progress....
 *)
 
 
-Definition half_eq_alg (doml codl : [[nat]]) := 
+Definition half_eq_alg (doml codl : [nat]) := 
       half_equation (S_Mod_alg doml) (S_Mod_alg codl).
 
 (** an algebraic (in)equation is given by 
@@ -286,8 +288,8 @@ Definition half_eq_alg (doml codl : [[nat]]) :=
        - two half-equations eq1 and eq2 *)
 
 Record eq_alg := {
-  doml : [[nat]] ;
-  codl : [[nat]] ;
+  doml : [nat] ;
+  codl : [nat] ;
   eq1 : half_eq_alg doml codl ;
   eq2 : half_eq_alg doml codl }.
 
@@ -439,7 +441,7 @@ This lemma corresponds to one direction of Lemma 36 *)
  this is why we restrict ourselves to algebraic codomains
 *)
 
-Lemma lemma36 (l : [[nat]]) (V : Type)
+Lemma lemma36 (l : [nat]) (V : Type)
     (x y : prod_mod_c (fun x : Type => UTS Sig x) V l)
     (H : prod_mod_c_rel (M:=prop_rel) x y) 
     (R : subob (fun P : Representation Sig => verifies_prop_sig (A:=A) T P)):
@@ -562,7 +564,7 @@ Canonical Structure UTSPROPRepr : REP Sig :=
 (** other direction of Lemma 36
     - also here some code savings possible *)
 
-Lemma lemma36_2 (l : [[nat]]) (V : Type)
+Lemma lemma36_2 (l : [nat]) (V : Type)
     (x y : prod_mod_c (fun x : Type => UTS Sig x) V l)
     (H : forall R : subob (fun P : Representation Sig => verifies_prop_sig (A:=A) T P),
         Rel (PO_obj_struct := prod_mod_po (SC_inj_ob R) V l) 
