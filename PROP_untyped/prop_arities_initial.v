@@ -168,7 +168,7 @@ Obligation Tactic := repeat (mauto || rew prod_mod_c_kl || app pm_mkl_eq).
 
 Program Instance S_Mod_alg_mor_s : RModule_Hom_struct 
        (M := S_Mod_alg_ob P) (N := PbRMod f (S_Mod_alg_ob Q)) 
-       (@Prod_mor_c1 _ _ f l).
+       (@Prod_mor_c _ _ f l).
 
 Definition S_Mod_alg_mor := Build_RModule_Hom S_Mod_alg_mor_s.
 
@@ -444,8 +444,8 @@ Lemma lemma36 (l : [nat]) (V : Type)
     (H : prod_mod_c_rel (M:=prop_rel) x y) 
     (R : PROP_REP):
 Rel (PO_obj_struct := prod_mod_po (SC_inj_ob R) V l) 
-  (Prod_mor_c1 (init_mon (SC_inj_ob R)) x)
-  (Prod_mor_c1 (init_mon (SC_inj_ob R)) y).
+  (Prod_mor_c (init_mon (SC_inj_ob R)) x)
+  (Prod_mor_c (init_mon (SC_inj_ob R)) y).
 
 (*
 Lemma lemma36 (l : [nat]) (V : Type)
@@ -453,8 +453,8 @@ Lemma lemma36 (l : [nat]) (V : Type)
     (H : prod_mod_c_rel (M:=prop_rel) x y) 
     (R : subob (fun P : Representation Sig => verifies_prop_sig (A:=A) T P)):
 Rel (PO_obj_struct := prod_mod_po (SC_inj_ob R) V l) 
-  (Prod_mor_c1 (init_mon (SC_inj_ob R)) x)
-  (Prod_mor_c1 (init_mon (SC_inj_ob R)) y).
+  (Prod_mor_c (init_mon (SC_inj_ob R)) x)
+  (Prod_mor_c (init_mon (SC_inj_ob R)) y).
 *)
 
 Proof.
@@ -581,8 +581,8 @@ Lemma lemma36_2 (l : [nat]) (V : Type)
     (x y : prod_mod_c (fun x : Type => UTS Sig x) V l)
     (H : forall R : PROP_REP,
         Rel (PO_obj_struct := prod_mod_po (SC_inj_ob R) V l) 
-  (Prod_mor_c1 (init_mon (Sig:=Sig) (SC_inj_ob R)) x)
-  (Prod_mor_c1 (init_mon (Sig:=Sig) (SC_inj_ob R)) y) ) :
+  (Prod_mor_c (init_mon (Sig:=Sig) (SC_inj_ob R)) x)
+  (Prod_mor_c (init_mon (Sig:=Sig) (SC_inj_ob R)) y) ) :
 prod_mod_c_rel (M:=prop_rel) x y.
 
 (*
@@ -590,8 +590,8 @@ Lemma lemma36_2 (l : [nat]) (V : Type)
     (x y : prod_mod_c (fun x : Type => UTS Sig x) V l)
     (H : forall R : subob (fun P : Representation Sig => verifies_prop_sig (A:=A) T P),
         Rel (PO_obj_struct := prod_mod_po (SC_inj_ob R) V l) 
-  (Prod_mor_c1 (init_mon (Sig:=Sig) (SC_inj_ob R)) x)
-  (Prod_mor_c1 (init_mon (Sig:=Sig) (SC_inj_ob R)) y) ) :
+  (Prod_mor_c (init_mon (Sig:=Sig) (SC_inj_ob R)) x)
+  (Prod_mor_c (init_mon (Sig:=Sig) (SC_inj_ob R)) y) ) :
 prod_mod_c_rel (M:=prop_rel) x y.
 *)
 
@@ -636,7 +636,7 @@ Program Instance Id_UTSM_UTSPs :
 Definition Id_UTSM_sm_UTSP := Build_RMonad_Hom Id_UTSM_UTSPs.
 
 Lemma id_UTSM_sm_UTSP l c (x : prod_mod_c (fun x => UTS Sig x) c l) : 
-      Prod_mor_c1 Id_UTSM_sm_UTSP x = x.
+      Prod_mor_c Id_UTSM_sm_UTSP x = x.
 Proof.
   induction x; simpl; intros;
   auto; apply CONSTR_eq; auto.
@@ -738,7 +738,7 @@ Definition init_prop_mon := Build_RMonad_Hom init_prop_mon_s.
 
 Lemma prod_mor_eq_init_list2 (i : sig_index Sig) V
        (x : prod_mod_c (fun V => UTS Sig V) V (sig i)) :
-  Prod_mor_c1 init_prop_mon x = init_list _ (UTSl_f_pm x).
+  Prod_mor_c init_prop_mon x = init_list _ (UTSl_f_pm x).
 Proof.
   induction x;
   simpl; auto.
@@ -762,7 +762,7 @@ End weak_init.
 *)
 
 Lemma bb2b (R : PROP_REP) a l (x : prod_mod_c (fun x : Type => UTS Sig x) a l):
-  Prod_mor_c1 (init_prop_mon R) x = Prod_mor_c1 (init_mon (SC_inj_ob R)) x.
+  Prod_mor_c (init_prop_mon R) x = Prod_mor_c (init_mon (SC_inj_ob R)) x.
 Proof.
   reflexivity.
 Qed.
@@ -774,8 +774,8 @@ Lemma lemma36_2a (l : [nat]) (V : Type)
     (x y : prod_mod_c (fun x : Type => UTS Sig x) V l)
     (H : forall R : PROP_REP,
         Rel (PO_obj_struct := prod_mod_po (SC_inj_ob R) V l) 
-  (Prod_mor_c1 (init_prop_mon  (R)) x)
-  (Prod_mor_c1 (init_prop_mon  (R)) y) ) :
+  (Prod_mor_c (init_prop_mon  (R)) x)
+  (Prod_mor_c (init_prop_mon  (R)) y) ) :
 prod_mod_c_rel (M:=prop_rel) x y.
 Proof.
   simpl; intros.
@@ -823,7 +823,7 @@ Qed.
   assert (H6:=H5 c x).
   simpl in *.
   rewrite <- bbb.
-  Check Prod_mor_c1.
+  Check Prod_mor_c.
   Check ((eq1 (T a) UTSPROPRepr) c x).
   assert (H: 
        Prod_mor_c1

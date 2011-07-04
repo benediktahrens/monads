@@ -560,19 +560,19 @@ Notation "'f*' M" := (PbRMOD f _ M) (at level 5).
 (** at first its carrier: we apply the monad morphism [f] on each component of the
     heterogeneous list *)
 
-Fixpoint Prod_mor_c1 (l : [nat]) (V : TYPE) (X : prod_mod_c (fun V => P V) V l) : 
+Fixpoint Prod_mor_c (l : [nat]) (V : TYPE) (X : prod_mod_c (fun V => P V) V l) : 
                    (prod_mod_c _ V l) :=
   match X in prod_mod_c _ _ l 
   return f* (prod_mod Q l) V with
   | TTT => TTT _ _
   | CONSTR b bs elem elems => 
-    CONSTR (f  _ elem) (Prod_mor_c1 elems)
+    CONSTR (f  _ elem) (Prod_mor_c elems)
   end.
 
 (** this function is obviously monotone *)
 
 Program Instance prod_mor_struct l V : PO_mor_struct 
-  (a:=prod_mod P l V) (b:=f* (prod_mod Q l) V) (@Prod_mor_c1 l V).
+  (a:=prod_mod P l V) (b:=f* (prod_mod Q l) V) (@Prod_mor_c l V).
 Next Obligation.
 Proof.
   unfold Proper; red.
@@ -591,9 +591,9 @@ Definition prod_mor_po l V := Build_PO_mor (prod_mor_struct l V).
 
 Lemma prod_mod_c_kl (ar : [nat]) V (x : prod_mod_c _ V ar):
 forall (W : TYPE) (g : SM_po V ---> P W),
- Prod_mor_c1 (l:=ar) (V:=W) (pm_mkl (M:=P) (W:=W) g x) =
+ Prod_mor_c (l:=ar) (V:=W) (pm_mkl (M:=P) (W:=W) g x) =
      pm_mkl (M:=Q) (W:=W) (Sm_ind (fun (x0 : V) => f W (g x0)))
-             (Prod_mor_c1 (l:=ar) (V:=V) x).
+             (Prod_mor_c (l:=ar) (V:=V) x).
 Proof. 
   induction x; 
   repeat (opt || apply CONSTR_eq ||

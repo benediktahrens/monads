@@ -680,7 +680,7 @@ Obligation Tactic := t.
 
 (** the diagonal propagates to products in the expected way *)
 
-Lemma bba (l : [nat]) V (x y : prod_mod_c UTS_sm V l) 
+Lemma diag_preorder_prod_imp_eq (l : [nat]) V (x y : prod_mod_c UTS_sm V l) 
           (H : prod_mod_c_rel x y) : x = y.
 Proof.
   induction 1;
@@ -712,7 +712,7 @@ Proof.
 Qed.
 *)
 Obligation Tactic :=   unfold Proper, respectful; intros; simpl; 
-        repeat (match goal with [H:_|-_]=>rewrite (bba H) end); constructor.
+        repeat (match goal with [H:_|-_]=>rewrite (diag_preorder_prod_imp_eq H) end); constructor.
 
 Program Instance UTS_arity_rep_po (i : sig_index Sig) V : PO_mor_struct
   (a:= prod_mod UTSM (sig i) V)
@@ -887,7 +887,7 @@ init is not only (the carrier of) a monad morphism, but even (of) a morphism of
 
 Lemma prod_mor_eq_init_list (i : sig_index Sig) V 
        (x : prod_mod_c UTS_sm V (sig i)) :
-  Prod_mor_c1 init_mon  x = init_list (UTSl_f_pm x).
+  Prod_mor_c init_mon  x = init_list (UTSl_f_pm x).
 Proof.
   induction x; fin.
 Qed.
