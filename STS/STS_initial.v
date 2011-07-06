@@ -90,7 +90,7 @@ Fixpoint rename (V : ITYPE T)
              (W : ITYPE T) (f : V ---> W) t (v : STS V t):=
     match v in STS _ t return STS W t with
     | Var t v => Var (f t v)
-    | Build  t i l => Build (i:=i) (list_rename l f)
+    | Build  t i l => Build (l //-- f)
     end
 with 
   list_rename V t (l : STS_list V t) W (f : V ---> W) : STS_list W t :=
