@@ -6,6 +6,8 @@ Notation "X *" := (option X) (at level 5).
 
 Section freshness.
 
+(** b fresh for z =>  z{a:=x} == z{a:=b}{b:=x} *)
+
 Variable P : Monad TYPE.
 Variable X : Type.
 Variable z : P (X*).
@@ -54,6 +56,9 @@ Qed.
 End freshness.
 
 Section freshness2.
+
+(** b fresh for z =>  z{b:=x} == z *)
+
 Variable P : Monad TYPE.
 
 Variable X : TYPE.
@@ -81,7 +86,6 @@ Proof.
   unfold lift.
   simpl.
   rew (klkl P).
-  Check kleta_id.
   app (kleta_id (FM:=P)).
   intros.
   rew (etakl P).
@@ -89,6 +93,7 @@ Qed.
 
 End freshness2.
 
+(*
   simpl.
   simpl.
   rew (etakl P).
@@ -107,11 +112,11 @@ Section freshness.
 
 Variable X : Type.
 
-Variable z : ULC (X*).
+Variable z : ULC (X* ).
 Variable a : ULC X.
 
 Definition fresh_subst := _subst 
-  (fun x => match x in option _ return ULC (X * *) with
+  (fun x => match x in option _ return ULC (X * * ) with
             | Some x => Var (Some (Some x))
             | None => Var None
             end).
@@ -149,5 +154,5 @@ simpl; intros.
 destruct o;
 simpl; auto.
 apply f_equal.
-
+*)
 
