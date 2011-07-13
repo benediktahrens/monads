@@ -68,6 +68,13 @@ Proof.
   apply FM.
 Qed.
 
+Lemma kleta_id a f : f == weta a -> kleisli f == id _ .
+Proof.
+  intros.
+  rewrite H.
+  apply kleta.
+Qed.
+
 Lemma klkl a b c (f : a ---> F b) (g: b --->  F c) :
            kleisli f ;; kleisli g == kleisli (f ;; kleisli g).
 Proof.
