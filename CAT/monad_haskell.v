@@ -1,4 +1,5 @@
 Require Export CatSem.CAT.functor.
+Require Export CatSem.CAT.NT.
 
 Set Implicit Arguments.
 Unset Strict Implicit.
@@ -206,7 +207,7 @@ Variable M: Monad.
 
 Existing Instance lift_oid.
 
-Obligation Tactic := monad.
+Obligation Tactic := simpl; monad; unfold join; monad.
 
 Program Instance MFunc_struct : Functor_struct (Fobj:= M) 
                    (@lift _  ).
@@ -214,6 +215,13 @@ Program Instance MFunc_struct : Functor_struct (Fobj:= M)
 Canonical Structure MFunc : Functor C C := Build_Functor MFunc_struct.
 
 (*Canonical Structure MFunctor := Build_Functor MFunc.*)
+
+Program Instance weta_NT_struct : NT_struct (F:=Id C) (G:=MFunc) (weta (Monad_struct:=M)).
+
+Canonical Structure weta_NT := Build_NT weta_NT_struct.
+
+Program Instance join_NT_struct : NT_struct (F:=MFunc O MFunc) (G:=MFunc) (join (M)).
+Canonical Structure join_NT := Build_NT join_NT_struct.
 
 End MFunc_def.
 

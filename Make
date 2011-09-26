@@ -68,6 +68,7 @@
 ./CAT/module_postcomp_functor.v
 ./CAT/unit_mod.v
 ./CAT/cat_gen_monad.v
+./CAT/equiv_Monad_MonaD.v
 
 
 #### STS, no semantics, no type change
