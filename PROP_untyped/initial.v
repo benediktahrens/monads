@@ -122,7 +122,7 @@ Reserved Notation "x //-- f" (at level 42, left associativity).
 Fixpoint rename (V W: TYPE ) (f : V ---> W) (v : UTS V):=
     match v in UTS _ return UTS W with
     | Var v => Var (f v)
-    | Build i l => Build (i:=i) (list_rename l f)
+    | Build i l => Build (*i:=i*) (l //-- f)
     end
 with 
   list_rename V t (l : UTS_list V t) W (f : V ---> W) : UTS_list W t :=
