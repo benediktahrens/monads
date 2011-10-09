@@ -23,7 +23,7 @@ Record Signature : Type := {
   sig : sig_index -> [nat] }.
 
 
-Notation "V *" := (option V) (at level 5).
+Notation "V '" := (option V) (at level 5).
 Notation "^ f" := (lift (M:= option_monad) f) (at level 5).
 
 Ltac opt := simpl; intros; 
@@ -55,7 +55,7 @@ Notation "f ^^ l" := (pow_map (l:=l) f) (at level 10).
 (*Notation "^ f" := (lift (M:= opt_T_monad _) f) (at level 5).*)
 
 Ltac t := simpl; intros; 
-      match goal with [H : _ * |-_] => destruct H end;
+      match goal with [H : _ ' |-_] => destruct H end;
       unfold lift; simpl;
       repeat rew_all; auto.
 
@@ -224,22 +224,22 @@ Proof.
   app (rkl_eq P).
   simpl in IHl.
 
-  assert (H:=IHl (V*) (W*)(shift_not f)(X*) (shift_not g) x).
+  assert (H:=IHl (V ') (W ')(shift_not f)(X ') (shift_not g) x).
   simpl in H.
   assert (H': lshift l (shift_not g) == lshift (S l) g).
   simpl. auto.
-  transitivity ((rkleisli (a:=W * ** l) (b:=X * ** l)
-       (lshift l (V:=W *) (W:=X *) (shift_not (P:=P) (V:=W) (W:=X) g)))
-      (lshift_c (l:=l) (V:=V *) (W:=W *) (shift_not (P:=P) (V:=V) (W:=W) f) x)).
+  transitivity ((rkleisli (a:=W ' ** l) (b:=X ' ** l)
+       (lshift l (V:=W ') (W:=X ') (shift_not (P:=P) (V:=W) (W:=X) g)))
+      (lshift_c (l:=l) (V:=V ') (W:=W ') (shift_not (P:=P) (V:=V) (W:=W) f) x)).
   apply (rkl_eq P).
   auto. 
-  transitivity (lshift_c (l:=l) (V:=V *) (W:=X *)
-      (Sm_ind (W:=P X *)
-         (fun y : V * =>
-          (rkleisli (a:=W *) (b:=X *) (shift_not (P:=P) (V:=W) (W:=X) g))
+  transitivity (lshift_c (l:=l) (V:=V ') (W:=X ')
+      (Sm_ind (W:=P X ')
+         (fun y : V ' =>
+          (rkleisli (a:=W ') (b:=X ') (shift_not (P:=P) (V:=W) (W:=X) g))
             (option_default
-               (fun x : V => (rlift P (a:=W) (b:=W *) Some) (f x))
-               ((rweta (RMonad_struct:=P) W *) None) y))) x).
+               (fun x : V => (rlift P (a:=W) (b:=W ') Some) (f x))
+               ((rweta (RMonad_struct:=P) W ') None) y))) x).
   auto.
   apply lshift_eq.
   simpl. intros.
@@ -626,27 +626,37 @@ Variable RepP : modhom_from_arity P a.
 Variable RepQ : modhom_from_arity Q a.
 
 (** the left - lower side of the diagram *)
+Locate "*".
+Notation "f * M" := (# (PbRMOD f _ ) M) : d_scope.
 
-Notation "'f*' M" := (# (PbRMOD f _ ) M).
+Open Scope d_scope.
 
 Definition commute_left :=
-        Prod_mor a ;; f* RepQ . 
+        Prod_mor a ;; f * RepQ . 
         (*ITPB_FIB f _ (*snd a*) _.*)
 
 (** the right - upper side *)
-Coercion PbRMod_ind_Hom : RMonad_Hom >-> mor.
-
+(*Coercion PbRMod_ind_Hom : RMonad_Hom >-> mor.*)
+(*Check PbRMod_ind_Hom.*)
 (*Notation "'f'":= (PbMod_ind_Hom f).*)
 (*
 Notation "y [( s )]" := (#(ITFIB_MOD _ s) y) (at level 40).
 *)
 
+(*Definition commute_right : prod_mod P a ---> PbRMod f Q := RepP ;; f .*)
+
 Definition commute_right := RepP ;;  PbRMod_ind_Hom f .
+(*Check commute_right.*)
+
 
 (** they are equal *)
 
 Definition commute := commute_left == commute_right.
 
+Notation "f^" := (PbRMod_ind_Hom f) : d_scope.
+
+Definition commute_2 :=  Prod_mor a ;; f * RepQ  == RepP ;; f^ .
+            
 
 End arrows.
 

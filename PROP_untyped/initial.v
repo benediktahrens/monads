@@ -55,7 +55,7 @@ Section initial_type.
 Ltac fin := simpl in *; intros; autorewrite with fin; auto with fin.
 
 Variable Sig : Signature.
-Notation "V *" := (option V).
+Notation "V '" := (option V).
 Notation "V ** l" := (pow l V) (at level 10).
 Notation "f ^^ l" := (pow_map (l:=l) f) (at level 10).
 Notation "^ f" := (lift (M:= option_monad) f) (at level 5).
@@ -223,9 +223,9 @@ Definition inj_list V :=
 (** we'll call it _ shift in order to avoid clash with generic shift *)
 
 Definition _shift (V W : TYPE ) (f : V ---> UTS W) : 
-         V * ---> UTS (W *) :=
+         V ' ---> UTS (W ') :=
    fun v => 
-   match v in (option _) return (UTS (W *)) with
+   match v in (option _) return (UTS (W ')) with
    | Some p => inj (f p)
    | None => Var None
    end.
@@ -272,8 +272,8 @@ Definition subst_sm (V W : TYPE) (f : SM_po V ---> UTS_sm W) :
 (** substitution of one variable only *)
 
 Definition substar (V : TYPE) (M : UTS V ) :
-           UTS (V *) ---> UTS V :=
- subst (fun (x : V *) => match x with
+           UTS (V ') ---> UTS V :=
+ subst (fun (x : V ') => match x with
          | None => M
          | Some v => Var v
          end).
@@ -287,7 +287,7 @@ Notation "M [*:= N ]" := (substar N M) (at level 50).
 Hint Extern 1 (_ = _) => f_equal : fin.
 
 Lemma _shift_eq V W (f g : V ---> UTS W) 
-     (H : forall x, f x = g x) (x : V*) : 
+     (H : forall x, f x = g x) (x : V ') : 
           x >- f = x >- g.
 Proof. 
   tt.
@@ -314,7 +314,7 @@ Hint Rewrite _lshift_eq : fin.
 Program Instance _lshift_oid l V W : 
     Proper (equiv ==> equiv) (@_lshift l V W).
 
-Lemma shift_var (V : TYPE) (x : V*) : x >- @Var _ = Var x .
+Lemma shift_var (V : TYPE) (x : V ') : x >- @Var _ = Var x .
 Proof.
   tt.
 Qed.
@@ -336,7 +336,7 @@ Proof.
   tt.
 Qed.
   
-Lemma var_lift_shift V W (f : V ---> W) (x : V*) : Var (^f x) = x >- (f ;; @Var _ ).
+Lemma var_lift_shift V W (f : V ---> W) (x : V ') : Var (^f x) = x >- (f ;; @Var _ ).
 Proof.
   induction x; tt.
 Qed.
@@ -355,7 +355,7 @@ Proof.
   induction l; t4.
 Qed.
 
-Lemma shift_lift V W X (f : V ---> W) (g : W ---> UTS X) (x : V*) :
+Lemma shift_lift V W X (f : V ---> W) (g : W ---> UTS X) (x : V ') :
       (^f x) >- g = x >- (f ;; g).
 Proof.
   induction x; fin.
@@ -440,7 +440,7 @@ Proof.
   t5.
 Qed.
 
-Lemma rename_shift V W X (f : V ---> UTS W) (g : W ---> X) (x : V*) : 
+Lemma rename_shift V W X (f : V ---> UTS W) (g : W ---> X) (x : V ') : 
     x >- f //- ^g = x >- (f ;; rename g).
 Proof.
   induction x; t5.
@@ -493,7 +493,7 @@ Hint Resolve subst_rename rename_subst : fin.
 Hint Rewrite subst_rename rename_subst : fin.
 Hint Unfold substar : fin.
 
-Lemma rename_substar V (v : UTS V*) W (f : V ---> W) N:
+Lemma rename_substar V (v : UTS V ') W (f : V ---> W) N:
      v [*:= N] //- f = (v //- ^f) [*:= N //- f ].
 Proof.
   t5.
@@ -501,7 +501,7 @@ Qed.
 
 Hint Rewrite rename_subst rename_subst : fin.
 
-Lemma subst_shift_shift V (v : V*) W X (f: V ---> UTS W) (g: W ---> UTS X):
+Lemma subst_shift_shift V (v : V ') W X (f: V ---> UTS W) (g: W ---> UTS X):
     (v >- f) >== (_shift g)  = 
              v >- (f ;; subst g).
 Proof.
@@ -633,7 +633,7 @@ Notation "x >-- f" := (lshift _ f x) (at level 50).
 
 Existing Instance UTS_sm_rmonad.
 
-Lemma _shift_shift_eq V W (f : SM_po V ---> UTS_sm W) (x : V*) :
+Lemma _shift_shift_eq V W (f : SM_po V ---> UTS_sm W) (x : V ') :
         x >>- f = x >- f. 
 Proof.
   t5.
@@ -793,7 +793,7 @@ Definition init_sm V := Sm_ind (@init V).
 
 (** init commutes with shift and lshift *)
 
-Lemma init_shift V W (f : SM_po V ---> UTS_sm W) (x : V*) :
+Lemma init_shift V W (f : SM_po V ---> UTS_sm W) (x : V ') :
   init (x >>- f) = x >>- (f ;; @init_sm _ ).
 Proof.
   induction x; 

@@ -125,3 +125,4 @@ Definition PbRMod_ind_Hom : Taut_RMod P ---> PbRMod Q :=
 
 End pullback.
 
+Coercion PbRMod_ind_Hom : RMonad_Hom >-> mor.
