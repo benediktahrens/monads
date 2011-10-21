@@ -130,17 +130,17 @@ Record half_equation (U V : S_Module) := {
                  U R --->  V R ;
   half_eq_s :> half_equation_struct half_eq }.
 
-Section S_Module_algebraic.
 
 
+Section S_Module_classic.
 
 (** ** Algebraic S-Modules and Equations 
 
-we are interested in algebraic S-Modules, i.e. of the form PROD_i P^{n(i)} *)
+we are interested in classic S-Modules, i.e. of the form PROD_i P^{n(i)} *)
 
 Variable l : [nat].
 
-(** algebraic S-Modules on objects *)
+(** classic S-Modules on objects *)
 
 Section ob.
 
@@ -150,36 +150,36 @@ Variable M : RModule P PO.
 Obligation Tactic := mauto; repeat (t || unfold Proper, respectful || 
                              app pm_mkl_eq || rew pm_mkl_mkl || app pm_mkl_weta).
 
-Program Instance S_Mod_alg_ob_s : RModule_struct P wPO (fun V => prod_mod_po M V l) := {
+Program Instance S_Mod_classic_ob_s : RModule_struct P wPO (fun V => prod_mod_po M V l) := {
   rmkleisli a b f := pm_mkl f }.
 
-Definition S_Mod_alg_ob : RMOD P wPO := Build_RModule S_Mod_alg_ob_s.
+Definition S_Mod_classic_ob : RMOD P wPO := Build_RModule S_Mod_classic_ob_s.
 
 End ob.
 
 Section mor.
 
-(** algebraic S-Modules on morphisms *)
+(** classic S-Modules on morphisms *)
 
 Variables P Q : RMonad SM_po.
 Variable f : RMonad_Hom P Q.
 
 Obligation Tactic := repeat (mauto || rew prod_mod_c_kl || app pm_mkl_eq).
 
-Program Instance S_Mod_alg_mor_s : RModule_Hom_struct 
-       (M := S_Mod_alg_ob P) (N := PbRMod f (S_Mod_alg_ob Q)) 
+Program Instance S_Mod_classic_mor_s : RModule_Hom_struct 
+       (M := S_Mod_classic_ob P) (N := PbRMod f (S_Mod_classic_ob Q)) 
        (@Prod_mor_c _ _ f l).
 
-Definition S_Mod_alg_mor := Build_RModule_Hom S_Mod_alg_mor_s.
+Definition S_Mod_classic_mor := Build_RModule_Hom S_Mod_classic_mor_s.
 
 End mor.
 
-Instance S_Mod_alg_s : S_Module_s (fun R => S_Mod_alg_ob R) := {
-  S_Mod_Hom R S f := S_Mod_alg_mor f }.
+Instance S_Mod_classic_s : S_Module_s (fun R => S_Mod_classic_ob R) := {
+  S_Mod_Hom R S f := S_Mod_classic_mor f }.
 
-Definition S_Mod_alg := Build_S_Module S_Mod_alg_s.
+Definition S_Mod_classic := Build_S_Module S_Mod_classic_s.
 
-End S_Module_algebraic.
+End S_Module_classic.
 
 (** ** Example : substitution *)
 
@@ -191,7 +191,7 @@ Section substitution.
      we don't care, since it's just an example *)
 
 Definition blubb (P : REP S) :
-(forall c : TYPE, (S_Mod_alg_ob [[1; 0]] P) c ---> (S_Mod_alg_ob [[0]] P) c) .
+(forall c : TYPE, (S_Mod_classic_ob [[1; 0]] P) c ---> (S_Mod_classic_ob [[0]] P) c) .
 simpl.
 intros.
 simpl in *.
@@ -207,7 +207,7 @@ Defined.
 
 
 Program Instance sub_struct (P : Representation S) : RModule_Hom_struct 
-  (M:=S_Mod_alg_ob [[1;0]] P) (N:=S_Mod_alg_ob [[0]] P) (blubb (P:=P)).
+  (M:=S_Mod_classic_ob [[1;0]] P) (N:=S_Mod_classic_ob [[0]] P) (blubb (P:=P)).
 Next Obligation.
 Proof.
   dependent destruction x.
@@ -237,7 +237,7 @@ Definition sub (P : REP S) := Build_RModule_Hom (sub_struct P).
 
 
 Program Instance subst_half_s : half_equation_struct 
-      (U:=Build_S_Module (S_Mod_alg [[1 ; 0]])) (V:=S_Mod_alg [[0]]) sub.
+      (U:=Build_S_Module (S_Mod_classic [[1 ; 0]])) (V:=S_Mod_classic [[0]]) sub.
 Next Obligation.
 Proof.
   
@@ -271,19 +271,19 @@ an algebraic half-equation is a half-equation with algebraic codomain, and
 
 
 
-Definition half_eq_alg (U : S_Module)(codl : [nat]) := 
-      half_equation U (S_Mod_alg codl).
+Definition half_eq_classic (U : S_Module)(codl : [nat]) := 
+      half_equation U (S_Mod_classic codl).
 
 (** an algebraic (in)equation is given by 
        - an arbitrary domain [domS]
        - an algebraic codomain [S_Mod_alg codl]
        - two half-equations [eq1 eq2 : domS -> S_Mod_alg codl] *)
 
-Record eq_alg := {
+Record eq_classic := {
   Dom : S_Module ;
   Cod : [nat] ;
-  eq1 : half_eq_alg Dom Cod ;
-  eq2 : half_eq_alg Dom Cod }.
+  eq1 : half_eq_classic Dom Cod ;
+  eq2 : half_eq_classic Dom Cod }.
 
 
 
@@ -313,13 +313,13 @@ Definition verifies_eq (e : eq_alg) (P : REP Sig) :=
        (*half_eq*) (eq1 e) P _ x << (*half_eq*) (eq2 e)_ _ x.
 *)
 
-Definition verifies_eq (e : eq_alg) (P : REP S) :=
+Definition verifies_eq (e : eq_classic) (P : REP S) :=
   forall c (x : Dom e P c), 
         eq1 _ _ _ x <<  eq2 _ _ _ x.
 
 (** a set of (in)equations, indexed by a set A *)
 
-Definition Prop_Sig (A : Type) := A -> eq_alg.
+Definition Prop_Sig (A : Type) := A -> eq_classic.
 
 
 (** [R] verifies [T] iff it verifies any equation of [T] *)

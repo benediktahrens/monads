@@ -193,6 +193,7 @@
 ./PROP_untyped/initial.v
 ./PROP_untyped/prop_arities.v
 ./PROP_untyped/prop_arities_initial.v
+./PROP_untyped/ex_ulcbeta.v
 
 
 #### previous tries, should be deleted
