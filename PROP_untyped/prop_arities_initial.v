@@ -190,7 +190,7 @@ Section substitution.
 (** the carrier is - for the moment - defined by tactics. Buh! 
      we don't care, since it's just an example *)
 
-Definition blubb (P : REP S) :
+Definition subst_carrier (P : REP S) :
 (forall c : TYPE, (S_Mod_classic_ob [[1; 0]] P) c ---> (S_Mod_classic_ob [[0]] P) c) .
 simpl.
 intros.
@@ -207,7 +207,7 @@ Defined.
 
 
 Program Instance sub_struct (P : Representation S) : RModule_Hom_struct 
-  (M:=S_Mod_classic_ob [[1;0]] P) (N:=S_Mod_classic_ob [[0]] P) (blubb (P:=P)).
+  (M:=S_Mod_classic_ob [[1;0]] P) (N:=S_Mod_classic_ob [[0]] P) (subst_carrier (P:=P)).
 Next Obligation.
 Proof.
   dependent destruction x.
@@ -233,11 +233,11 @@ Qed.
 
 Print Assumptions sub_struct.
 
-Definition sub (P : REP S) := Build_RModule_Hom (sub_struct P).
+Definition subst_module_mor (P : REP S) := Build_RModule_Hom (sub_struct P).
 
 
 Program Instance subst_half_s : half_equation_struct 
-      (U:=Build_S_Module (S_Mod_classic [[1 ; 0]])) (V:=S_Mod_classic [[0]]) sub.
+      (U:=Build_S_Module (S_Mod_classic [[1 ; 0]])) (V:=S_Mod_classic [[0]]) subst_module_mor.
 Next Obligation.
 Proof.
   
@@ -258,7 +258,7 @@ Proof.
   auto.
 Qed.
 
-Definition subst_half := Build_half_equation subst_half_s.
+Definition subst_half_eq := Build_half_equation subst_half_s.
 
 End substitution.
 
