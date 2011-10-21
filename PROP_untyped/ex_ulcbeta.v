@@ -7,6 +7,7 @@ Unset Strict Implicit.
 Unset Automatic Introduction.
 Unset Transparent Obligations.
 
+Check INITIAL_PROP.
 
 Inductive Lambda_index := ABS | APP.
 
@@ -127,9 +128,23 @@ Definition beta_rule : eq_classic Lambda := {|
    eq2 := subst_half_eq Lambda |}.
 
 Print beta_rule.
+Check PROP_REP.
+Check INITIAL_PROP.
+Definition Lambda_beta_Cat := PROP_REP 
+    (S:=Lambda)(A:=unit)(fun x : unit => beta_rule).
+Check Lambda_beta_Cat.
 
 
 
+Definition Lambda_beta_SynSem :=  (INITIAL_PROP (fun x : unit => beta_rule)).
+Check Lambda_beta_SynSem.
+Definition Lambda_beta := @Init _ _ _ (INITIAL_PROP (fun x : unit => beta_rule)). 
+
+Check Lambda_beta.
+
+
+
+Print Init.
 
 
 

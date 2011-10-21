@@ -134,7 +134,7 @@ Record half_equation (U V : S_Module) := {
 
 Section S_Module_classic.
 
-(** ** Algebraic S-Modules and Equations 
+(** ** Classic S-Modules and Equations 
 
 we are interested in classic S-Modules, i.e. of the form PROD_i P^{n(i)} *)
 
@@ -205,8 +205,27 @@ apply (Rsubstar_not X2 X0).
 apply TTT.
 Defined.
 
+(*
+Print subst_carrier.
 
-Program Instance sub_struct (P : Representation S) : RModule_Hom_struct 
+Definition subst_carrier_exp (P : REP S) :
+(forall c : TYPE, (S_Mod_classic_ob [[1; 0]] P) c ---> (S_Mod_classic_ob [[0]] P) c) :=
+  fun c X => match X in (prod_mod_c _ _ l) return 
+       (match l with 
+        | TTT => False_rect _ _ _ 
+        | CONSTR a b => match b with
+
+
+Definition subst_carrier2 (P : REP S) :
+(forall c : TYPE, (S_Mod_classic_ob [[1; 0]] P) c ---> (S_Mod_classic_ob [[0]] P) c) .
+simpl; intros.
+pose (diag x := match x with cons a b => prod_mod_c (fun x => P x) x [[0]])
+  fun c X => match X in 
+          prod_mod_c (fun x : Type => P x) _ l return 
+
+*)
+
+Program Instance sub_struct (P : REP S) : RModule_Hom_struct 
   (M:=S_Mod_classic_ob [[1;0]] P) (N:=S_Mod_classic_ob [[0]] P) (subst_carrier (P:=P)).
 Next Obligation.
 Proof.
