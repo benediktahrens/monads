@@ -1,7 +1,7 @@
 Require Import Coq.Logic.Eqdep.
 
-Require Export CatSem.PCF_o_c.RPCF_syntax_rep.
-Require Export CatSem.PCF_o_c.RPCF_rep_hom.
+Require Export CatSem.RPCF.RPCF_syntax_rep.
+Require Export CatSem.RPCF.RPCF_rep_hom.
 
 Set Implicit Arguments.
 Unset Strict Implicit.
@@ -52,88 +52,91 @@ Defined.
 Print init_tac.
 *)
 
+(** the initial type morphism T(STS) -> T(R) *)
+
+Fixpoint type_mor (t : PCF.types) : type_type R := 
+    match t with
+    | PCF.Nat => type_nat R 
+    | PCF.Bool => type_bool R
+    | PCF.arrow u v => (type_mor u) ~~> (type_mor v)
+    end.
+
 (** the initial morphism STS -> R *)
 
-Fixpoint init V t (v : PCF V t) : 
-    R (retype (fun t0 => type_mor R t0) V) (type_mor R t) :=
+Program Fixpoint init V t (v : PCF V t) : 
+    R (retype (fun t0 => type_mor t0) V) (type_mor t) :=
   match v in PCF _ t return 
-        R (retype (fun t0 => type_mor R t0) V) (type_mor R t) with
+        R (retype (fun t0 => type_mor t0) V) (type_mor t) with
   | Var t v => rweta (RMonad_struct := R) _ _ (ctype _ v)
   | App r s u v => app (PCFPO_rep_struct := R) _ _ _ 
            (eq_rect (A:=type_type R)
               _
               (fun t1 : type_type R =>
-                (R (retype (fun t2 : TY => type_mor R t2) _)) t1) 
+                (R (retype (fun t2 : TY => type_mor  t2) _)) t1) 
                (init u) _
-               ( (type_arrow_dist R _ _ )), 
+               ( ( _ )), 
                          init v)
   | Lam _ _ v => 
         eq_rect (A:=type_type R) _
              (fun t1 : type_type R =>
-                (R (retype (fun t2 : TY => type_mor R t2) _)) t1) 
+                (R (retype (fun t2 : TY => type_mor  t2) _)) t1) 
             (abs (PCFPO_rep_struct := R) _ _ _ 
                   (rlift R 
-            (@der_comm TY (type_type R) (fun t => type_mor R t) _ V ) 
+            (@der_comm TY (type_type R) (fun t => type_mor  t) _ V ) 
                    _ (init v)))
-               _ (eq_sym (type_arrow_dist R _ _ ))
+               _ ( _ )
   | Rec _ v => rec (PCFPO_rep_struct := R) _ _ 
                   (eq_rect (A:=type_type R) _ 
                    (fun t1 : type_type R =>
-                (R (retype (fun t2 : TY => type_mor R t2) _)) t1)
-                 (init v) _ (type_arrow_dist R _ _ ))
+                (R (retype (fun t2 : TY => type_mor  t2) _)) t1)
+                 (init v) _ ( _ ))
   | Bottom _  => bottom (PCFPO_rep_struct := R) _ _ tt
   | Const _ y => match y in Consts t1 return 
-                    R (retype (fun t2 => type_mor R t2) V) (type_mor R t1) 
+                    R (retype (fun t2 => type_mor t2) V) (type_mor t1) 
                  with
                  | Nats m => nats (PCFPO_rep_struct := R) m 
                       (retype _ V) tt
                  | succ => eq_rect
-           (type_mor R Nat ~~> type_mor R Nat)
+           (type_mor Nat ~~> type_mor  Nat)
            (fun t1 : type_type R =>
-            (R (retype (fun t2 : TY => type_mor R t2) _)) t1)
-           ((Succ (retype (fun t1 : TY => type_mor R t1) _)) tt)
-           (type_mor R (Nat ~> Nat))
-           (eq_sym (type_arrow_dist R Nat Nat))
+            (R (retype (fun t2 : TY => type_mor  t2) _)) t1)
+           ((Succ (retype (fun t1 : TY => type_mor  t1) _)) tt)
+           (type_mor  (Nat ~> Nat))
+           ( _ )
                  | condN => eq_rect
-           (type_mor R Bool ~~> type_mor R Nat ~~>
-            type_mor R Nat ~~> type_mor R Nat)
+           (type_mor  Bool ~~> type_mor  Nat ~~>
+            type_mor  Nat ~~> type_mor  Nat)
            (fun t1 : type_type R =>
-            (R (retype (fun t2 : TY => type_mor R t2) _)) t1)
-           ((CondN (retype (fun t1 : TY => type_mor R t1) _)) tt)
-           (type_mor R
+            (R (retype (fun t2 : TY => type_mor  t2) _)) t1)
+           ((CondN (retype (fun t1 : TY => type_mor  t1) _)) tt)
+           (type_mor 
               (Bool ~> Nat ~> Nat ~> Nat))
-           (eq_sym
-              (arrow_distrib4 (Uar:=PCF.arrow) (U'ar:=type_arrow (p:=R))
-                 (g:=type_mor R) (type_arrow_dist R) Bool
-                 Nat Nat Nat))
+           ( _ )
                  | condB => eq_rect
-           (type_mor R Bool ~~> type_mor R Bool ~~> 
-            type_mor R Bool ~~> type_mor R Bool)
+           (type_mor  Bool ~~> type_mor  Bool ~~> 
+            type_mor  Bool ~~> type_mor  Bool)
            (fun t1 : type_type R =>
-            (R (retype (fun t2 : TY => type_mor R t2) _)) t1)
-           ((CondB (retype (fun t1 : TY => type_mor R t1) _)) tt)
-           (type_mor R
+            (R (retype (fun t2 : TY => type_mor  t2) _)) t1)
+           ((CondB (retype (fun t1 : TY => type_mor  t1) _)) tt)
+           (type_mor 
               (Bool ~> Bool ~> Bool ~> Bool))
-           (eq_sym
-              (arrow_distrib4 (Uar:=PCF.arrow) (U'ar:=type_arrow (p:=R))
-                 (g:=type_mor R) (type_arrow_dist R) Bool
-                 Bool Bool Bool))
+           ( _ )
                  | zero => eq_rect
-           (type_mor R Nat ~~> type_mor R Bool)
+           (type_mor  Nat ~~> type_mor  Bool)
            (fun t1 : type_type R =>
-            (R (retype (fun t2 : TY => type_mor R t2) _)) t1)
-           ((Zero (retype (fun t1 : TY => type_mor R t1) _)) tt)
-           (type_mor R (Nat ~> Bool))
-           (eq_sym (type_arrow_dist R Nat Bool))
+            (R (retype (fun t2 : TY => type_mor  t2) _)) t1)
+           ((Zero (retype (fun t1 : TY => type_mor  t1) _)) tt)
+           (type_mor  (Nat ~> Bool))
+           ( _ )
                  | ttt => tttt (PCFPO_rep_struct := R) _ tt
                  | fff => ffff (PCFPO_rep_struct := R) _ tt
                  | preds => eq_rect
-           (type_mor R Nat ~~> type_mor R Nat)
+           (type_mor  Nat ~~> type_mor  Nat)
            (fun t1 : type_type R =>
-            (R (retype (fun t2 : TY => type_mor R t2) _)) t1)
-           ((Pred (retype (fun t1 : TY => type_mor R t1) _)) tt)
-           (type_mor R (Nat ~> Nat))
-           (eq_sym (type_arrow_dist R Nat Nat))
+            (R (retype (fun t2 : TY => type_mor  t2) _)) t1)
+           ((Pred (retype (fun t1 : TY => type_mor  t1) _)) tt)
+           (type_mor  (Nat ~> Nat))
+           ( _ )
                  end
   end.
 
@@ -149,7 +152,7 @@ Proof.
   
   unfold rlift.
   assert (H':=rmod_hom_rmkl 
-      (bottom (PCFPO_rep_struct := R) (type_mor R t))).
+      (bottom (PCFPO_rep_struct := R) (type_mor t))).
       simpl in H'; auto.
   
   destruct c.

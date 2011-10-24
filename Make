@@ -189,6 +189,8 @@
 ./RPCF/RPCF_rep_eq.v
 ./RPCF/RPCF_rep_id.v
 ./RPCF/RPCF_rep_comp.v
+./RPCF/RPCF_rep_cat.v
+./RPCF/RPCF_syntax_rep.v
 
 
 #### PROP_untyped #################
