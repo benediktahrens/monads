@@ -186,6 +186,9 @@
 #### RPCF #########################
 ./RPCF/RPCF_rep.v
 ./RPCF/RPCF_rep_hom.v
+./RPCF/RPCF_rep_eq.v
+./RPCF/RPCF_rep_id.v
+./RPCF/RPCF_rep_comp.v
 
 
 #### PROP_untyped #################
