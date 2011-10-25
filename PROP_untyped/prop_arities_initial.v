@@ -30,17 +30,17 @@ Notation "[ T ]" := (list T) (at level 5).
 Section wPO_taut_mod.
 
 Variable P : RMonad Delta.
-Variable M : RModule P PO.
+Variable M : RModule P Ord.
 
 Obligation Tactic := unfold Proper, respectful; mauto;
         try apply (rmkl_eq M);
         try rew (rmklmkl M);
         try rew (rmkleta M); mauto.
 
-Program Instance wPO_RMod_struct : RModule_struct P wPO M := {
+Program Instance wOrd_RMod_struct : RModule_struct P wOrd M := {
   rmkleisli a b f := rmkleisli (RModule_struct:= M) f }.
 
-Definition wPO_RMod : RModule P wPO := Build_RModule wPO_RMod_struct.
+Definition wOrd_RMod : RModule P wOrd := Build_RModule wOrd_RMod_struct.
 
 End wPO_taut_mod.
 
@@ -107,12 +107,12 @@ Variable S : Signature.
    category of pairs
 *)
 
-Class S_Module_s (Tau : forall R : REP S, RMOD R wPO) := {
+Class S_Module_s (Tau : forall R : REP S, RMOD R wOrd) := {
    S_Mod_Hom : forall (R S : REP S) (f : R ---> S), 
       Tau R ---> PbRMod f (Tau S)  }.
 
 Record S_Module := {
-  s_mod :> forall R : REP S, RMOD R wPO ;
+  s_mod :> forall R : REP S, RMOD R wOrd ;
   s_mod_hom :> S_Module_s s_mod }.
 
 (** a half-equation is a natural transformation of between S-Modules. 
@@ -145,15 +145,15 @@ Variable l : [nat].
 Section ob.
 
 Variable P : RMonad Delta.
-Variable M : RModule P PO.
+Variable M : RModule P Ord.
 
 Obligation Tactic := mauto; repeat (t || unfold Proper, respectful || 
                              app pm_mkl_eq || rew pm_mkl_mkl || app pm_mkl_weta).
 
-Program Instance S_Mod_classic_ob_s : RModule_struct P wPO (fun V => prod_mod_po M V l) := {
+Program Instance S_Mod_classic_ob_s : RModule_struct P wOrd (fun V => prod_mod_po M V l) := {
   rmkleisli a b f := pm_mkl f }.
 
-Definition S_Mod_classic_ob : RMOD P wPO := Build_RModule S_Mod_classic_ob_s.
+Definition S_Mod_classic_ob : RMOD P wOrd := Build_RModule S_Mod_classic_ob_s.
 
 End ob.
 

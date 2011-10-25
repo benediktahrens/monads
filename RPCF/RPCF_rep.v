@@ -21,7 +21,7 @@ Notation "'IP'" := (IPO TY).
 Notation "a 'x' b" := (product a b) (at level 30).
 Notation "M [ z ]" := (FIB_RMOD _ z M) (at level 35).
 Notation "'d' M // s" := (DER_RMOD _ _ s M) (at level 25).
-Notation "'*'" := (Term (C:=RMOD _ PO)).
+Notation "'*'" := (Term (C:=RMOD _ Ord)).
 
 Notation "f 'X' g" := (product_mor _ f g)(at level 30).
 

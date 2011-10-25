@@ -453,7 +453,7 @@ Program Instance ULCBETA_struct (V : TT) :
  Rel := @beta_rel V 
 }.
 
-Definition ULCBETA (V: TT) : PO :=
+Definition ULCBETA (V: TT) : Ord :=
     Build_PO_obj (ULCBETA_struct V ).
 
 Program Instance Var_s (V : TT) : 

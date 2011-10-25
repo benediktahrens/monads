@@ -25,7 +25,7 @@ Proof.
   auto.
 Qed.
 
-Canonical Structure sm_po (V : TYPE) : PO := 
+Canonical Structure sm_po (V : TYPE) : Ord := 
       Build_PO_obj (sm_po_struct V).
 
 Section sm_po_mor.
@@ -65,7 +65,7 @@ Definition Delta := SM_po.
 Section Sm_ind.
 
 Variable V : TYPE.
-Variable W : PO.
+Variable W : Ord.
 
 Variable f : V -> W.
 

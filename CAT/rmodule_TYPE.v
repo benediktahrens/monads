@@ -570,7 +570,7 @@ Variable M : RMOD P (IPO T).
 Obligation Tactic := idtac.
 
 Program Instance Fib_RMod_s : 
-   RModule_struct P PO (fun c => ipo_proj (M c) u) := {
+   RModule_struct P Ord (fun c => ipo_proj (M c) u) := {
    rmkleisli a b f := ipo_mor_proj u
                (rmkleisli (RModule_struct := M) f)
 }.
@@ -599,7 +599,7 @@ Proof.
   auto.
 Qed.
 
-Definition Fib_RMod : RMOD P PO := Build_RModule Fib_RMod_s.
+Definition Fib_RMod : RMOD P Ord := Build_RModule Fib_RMod_s.
 
 End fibre_on_obj.
 

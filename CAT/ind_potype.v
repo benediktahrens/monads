@@ -306,7 +306,7 @@ Qed.
 End hom.
 
 Program Instance IP_proj_Func (t:T) : 
-     Functor_struct (C:=IP) (D:=PO)(*Fobj:= fun a => ipo_proj a t*) 
+     Functor_struct (C:=IP) (D:=Ord)(*Fobj:= fun a => ipo_proj a t*) 
                         (ipo_mor_proj t).
   
 Canonical Structure IP_proj t := Build_Functor (IP_proj_Func t).

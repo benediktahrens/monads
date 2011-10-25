@@ -338,7 +338,7 @@ End prod_mod_built_from_scratch_carrier.
 
 Section order_prod_mod.
 
-Variable M : TYPE -> PO.
+Variable M : TYPE -> Ord.
 
 Inductive prod_mod_c_rel (V : TYPE) : forall n, relation (prod_mod_c M V n) :=
   | TTT_rel : forall x y : prod_mod_c M V nil, prod_mod_c_rel x y 
@@ -378,7 +378,7 @@ Qed.
 Print Assumptions prod_mod_c_rel_po_struct.
 *)
 
-Definition prod_mod_po V n : PO := Build_PO_obj (prod_mod_c_rel_po_struct V n).
+Definition prod_mod_po V n : Ord := Build_PO_obj (prod_mod_c_rel_po_struct V n).
 
 End order_prod_mod.
 
@@ -386,7 +386,7 @@ End order_prod_mod.
 
 Section prod_mod_carrier_is_mod.
 
-Variable M : RMOD P PO.
+Variable M : RMOD P Ord.
 
 (** the product module substitution is defined by structural recursion *)
 
@@ -468,7 +468,7 @@ Program Instance pm_mkl_oid l V W : Proper
 Obligation Tactic := repeat (unfold Proper, respectful || opt || 
                 apply pm_mkl_oid || rew (pm_mkl_eq _ )).
 
-Program Instance prod_mod_struct l : RModule_struct (F:=Delta) P (D:=PO) PO  
+Program Instance prod_mod_struct l : RModule_struct (F:=Delta) P (D:=Ord) Ord  
    (fun V => prod_mod_po M V l) := {
   rmkleisli := pm_mkl_po l }.
 
@@ -486,7 +486,7 @@ Section arity_rep.
 (** the variable [M] will later be instantiated by tautological modules 
    of some relative monad *)
 
-Variable M : RModule P PO.
+Variable M : RModule P Ord.
 
 (** To each arity we associate a type of [M]-module morphisms. More precisely,
    we associate a domain [M]-module and say that a representation is a 

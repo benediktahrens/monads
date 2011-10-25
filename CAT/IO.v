@@ -306,7 +306,7 @@ Program Instance io_proj_struct (t : T) (A : IO) :
   Rel := IRel (t:=t)
 }.
 
-Definition io_proj t A : wPO := Build_PO_obj (io_proj_struct t A).
+Definition io_proj t A : wOrd := Build_PO_obj (io_proj_struct t A).
 
 Definition io_proj_mor t A B (f : A ---> B) : 
           io_proj t A ---> io_proj t B := f t.

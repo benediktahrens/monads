@@ -158,11 +158,11 @@ Proof.
   auto. 
 Qed.
 
-Canonical Structure PO := Build_Cat POTYPE.
+Canonical Structure Ord := Build_Cat POTYPE.
 
 (** lemmata about V:PO *)
 Section PO_lemmata.
-Variable V: PO.
+Variable V: Ord.
 Variable x : V.
 Lemma PO_refl :  x << x.
 Proof. apply POprf. Qed.
@@ -195,7 +195,7 @@ Section PO_product.
 
 Section PO_prod_data.
 
-Variables V W: PO.
+Variables V W: Ord.
 
 Inductive prod_rel : relation (prod V W) :=
 | rel_rel_rel: forall v v' w w',
@@ -226,7 +226,7 @@ Instance prod_rel_ : PO_obj_struct (prod V W) := {
   POprf := prod_rel_oid
 }. 
 
-Definition PO_product : PO := Build_PO_obj prod_rel_.
+Definition PO_product : Ord := Build_PO_obj prod_rel_.
 
 Program Definition PO_prl : PO_product ---> V := 
     Build_PO_mor (PO_fun := fun x => fst x) _.
@@ -250,7 +250,7 @@ Proof.
   auto.
 Qed.
 
-Variable X: PO.
+Variable X: Ord.
 Variable f: X ---> V.
 Variable g: X ---> W.
 
@@ -271,7 +271,7 @@ Qed.
 End PO_prod_data.
 
 
-Program Instance PO_prod : Cat_Prod (PO) := {
+Program Instance PO_prod : Cat_Prod Ord := {
   product a b := PO_product a b;
   prl a b := PO_prl a b;
   prr a b := PO_prr a b;
@@ -317,7 +317,7 @@ Instance PO_term_rel_ : PO_obj_struct unit := {
 
 Definition PO_TERM := Build_PO_obj PO_term_rel_.
 
-Program Definition PO_TERM_mor (A:PO) : A ---> PO_TERM :=
+Program Definition PO_TERM_mor (A : Ord) : A ---> PO_TERM :=
      Build_PO_mor (PO_fun := fun x => tt) _ .
 Next Obligation.
 Proof.
@@ -329,7 +329,7 @@ Proof.
   auto. 
 Qed.
 
-Program Instance PO_Terminal : Terminal PO := {
+Program Instance PO_Terminal : Terminal Ord := {
   Term := PO_TERM;
   TermMor a := PO_TERM_mor a
 }.
@@ -347,7 +347,7 @@ Instance PO_init_ : PO_obj_struct TEMPTY := {
 
 Definition PO_INIT := Build_PO_obj PO_init_.
 
-Definition PO_Initial_morD (A:PO) : PO_INIT -> A.
+Definition PO_Initial_morD (A : Ord) : PO_INIT -> A.
 intros A t.
 elim t.
 Defined.
@@ -357,14 +357,14 @@ Obligation Tactic := simpl; intros;
   repeat match goal with [x:TEMPTY |- _ ] => elim x end;
   auto.
 
-Program Instance PO_Initial_mors (A: PO) : 
+Program Instance PO_Initial_mors (A : Ord) : 
   PO_mor_struct (a:=PO_INIT) (b:=A)
    (PO_Initial_morD A).
 
-Definition PO_Initial_mor (A: PO) : PO_INIT ---> A := 
+Definition PO_Initial_mor (A: Ord) : PO_INIT ---> A := 
   Build_PO_mor (PO_Initial_mors A).
 
-Program Instance PO_Initial : Initial PO := {
+Program Instance PO_Initial : Initial Ord := {
   Init := PO_INIT;
   InitMor a := PO_Initial_mor a
 }.
@@ -378,7 +378,7 @@ Obligation Tactic := simpl; intros;
   repeat match goal with [x:TEMPTY |- _ ] => elim x end;
   auto.
 
-Program Instance OPO_struct : Functor_struct (C:=PO) (D:=TYPE)
+Program Instance OPO_struct : Functor_struct (C:=Ord) (D:=TYPE)
       (fun a b f => f).
 
 Canonical Structure OPO := Build_Functor OPO_struct.

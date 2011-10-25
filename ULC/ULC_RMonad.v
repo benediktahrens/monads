@@ -57,7 +57,7 @@ Definition app_po_mor c := Build_PO_mor (app_po_mors c).
 Obligation Tactic := fin.
 
 Program Instance ulc_app_s  : RModule_Hom_struct
-  (M:=product (C:=RMOD _ PO) ULCBETA ULCBETA) 
+  (M:=product (C:=RMOD _ Ord) ULCBETA ULCBETA) 
   (N:=ULCBETA) (app_po_mor).
 
 Definition ulc_app := Build_RModule_Hom ulc_app_s.

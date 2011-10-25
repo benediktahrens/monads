@@ -20,7 +20,7 @@ Notation "a '~>' b" := (TLCarrow a b)
 Notation "a 'x' b" := (product a b) (at level 30).
 Notation "M [ z ]" := (FIB_RMOD _ z M) (at level 35).
 Notation "'d' M // s" := (DER_RMOD _ _ s M) (at level 25).
-Notation "'*'" := (Term (C:=RMOD _ PO)).
+Notation "'*'" := (Term (C:=RMOD _ Ord)).
 
 Notation "f 'X' g" := (product_mor _ f g)(at level 30).
 
@@ -40,7 +40,7 @@ Notation "y [* := z ]":= (Rsubstar z _ y)(at level 55).
     - beta-reduction
 *)
 
-Class TLCPO_rep_struct (P : RMonad (SM_ipo TY)) := {
+Class TLCPO_rep_struct (P : RMonad (IDelta TY)) := {
   App : forall r s, (P[r~>s]) x (P[r]) ---> P[s];
   Abs : forall r s, (d P // r)[s] ---> P[r ~> s];
 
@@ -62,7 +62,7 @@ Class TLCPO_rep_struct (P : RMonad (SM_ipo TY)) := {
 
 
 Record TLCPO_rep := {
-  tlcpo_rep_monad :> RMonad (SM_ipo TY) ;
+  tlcpo_rep_monad :> RMonad (IDelta TY) ;
   tlcpo_rep_struct :> TLCPO_rep_struct tlcpo_rep_monad
 }.
 

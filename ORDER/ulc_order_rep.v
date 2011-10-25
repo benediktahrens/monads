@@ -11,7 +11,7 @@ Section ULC_rep.
 
 Notation "a 'x' b" := (product (C:=RMOD _ _) a b) (at level 30).
 Notation "'d' M" := (DER_RMOD_not _ _ M) (at level 25).
-Notation "'*'" := (Term (C:=RMOD _ PO)).
+Notation "'*'" := (Term (C:=RMOD _ Ord)).
 
 Notation "f 'X' g" := (product_mor _ f g)(at level 30).
 

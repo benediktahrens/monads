@@ -91,11 +91,11 @@ Qed.
 End lemmata.
 
 Program Instance unit_rmod_s : RModule_Hom_struct
-  (M:= Term (C:=RMOD P PO)) (N:= gen_PbRMod M (Term (C:=RMOD Q PO)))
+  (M:= Term (C:=RMOD P Ord)) (N:= gen_PbRMod M (Term (C:=RMOD Q Ord)))
   (fun V => id PO_TERM).
 
 Definition unit_rmod : 
-  Term (C:=RMOD P PO) ---> gen_PbRMod M (Term (C:=RMOD Q PO)) :=
+  Term (C:=RMOD P Ord) ---> gen_PbRMod M (Term (C:=RMOD Q Ord)) :=
      Build_RModule_Hom unit_rmod_s.
 
 End term_to_term.

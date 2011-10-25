@@ -127,7 +127,7 @@ Program Instance Fibre_Mod_struct (u:T) :
   mkleisli a b f := #(IP_proj u) (@mkleisli _ P  _ M M  a b f)  
 }.
 
-Canonical Structure Fibre_Mod (u:T) : MOD P PO := 
+Canonical Structure Fibre_Mod (u:T) : MOD P Ord := 
            Build_Module (Fibre_Mod_struct u).
 
 End Fibre_Module_def.
@@ -152,7 +152,7 @@ End Fibre_Module_Hom.
 Obligation Tactic := repeat red; simpl; auto.
 
 Program Instance Fib_Mod_Func (u:T) : 
-   Functor_struct (C:=MOD P (IPO T)) (D:=MOD P PO) 
+   Functor_struct (C:=MOD P (IPO T)) (D:=MOD P Ord) 
         (Fobj:= fun x => Fibre_Mod x u) 
         (fun M N TT => Fib_Mod_Hom (M:=M) (N:=N) TT u).
 

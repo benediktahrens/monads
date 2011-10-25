@@ -5,7 +5,7 @@ Require Import Coq.Relations.Relations.
 Set Implicit Arguments.
 Unset Strict Implicit.
 
-Inductive F (V : PO) : Type :=
+Inductive F (V : Ord) : Type :=
    | Var : V -> F V
    | Ar : F V -> F V -> F V.
 
@@ -16,14 +16,14 @@ Inductive FPO V : relation (F V) :=
 (*   | arp : forall s t s' t', FPO s s' -> FPO t t' -> FPO (Ar s' t) (Ar s t') *)
    | varp: forall v v', v << v' -> FPO (Var v) (Var v').
 
-Definition FP (V : PO) := Clos_RT_1n_prf ((@FPO V)).
+Definition FP (V : Ord) := Clos_RT_1n_prf ((@FPO V)).
 
 
-Instance FPP (V : PO)  : PO_obj_struct (F V) := {
+Instance FPP (V : Ord)  : PO_obj_struct (F V) := {
   POprf := FP V
 }.
 
-Definition FF (V : PO) : PO := Build_PO_obj (FPP V).
+Definition FF (V : Ord) : Ord := Build_PO_obj (FPP V).
 
 Lemma Ar2 V (s t t' : FF V) : t << t' -> (Ar s t) << (Ar s t').
 Proof.
@@ -88,7 +88,7 @@ Proof.
 Qed.
 
 
-Fixpoint subst (V W : PO) (f : V ---> FF W) (x : FF V) : FF W := 
+Fixpoint subst (V W : Ord) (f : V ---> FF W) (x : FF V) : FF W := 
   match x with 
   | Var v => f v
   | Ar s t => Ar (subst f s) (subst f t)

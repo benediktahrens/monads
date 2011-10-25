@@ -170,7 +170,7 @@ Program Instance ULCttt_pos :
    (fun _ => ULC_True (sunit V)).
 
 Definition ULCttt_car V:
-Term (C:=RMOD ULCBETAM PO) V ---> 
+Term (C:=RMOD ULCBETAM Ord) V ---> 
        (ULCBETAM [PCF_ULC_type_mor PCF.Bool]) V :=
 Build_PO_mor (ULCttt_pos V).
 
@@ -188,7 +188,7 @@ Program Instance ULCfff_pos :
    (fun _ => ULC_False (sunit V)).
 
 Definition ULCfff_car V:
-Term (C:=RMOD ULCBETAM PO) V ---> 
+Term (C:=RMOD ULCBETAM Ord) V ---> 
        (ULCBETAM [PCF_ULC_type_mor PCF.Bool]) V :=
 Build_PO_mor (ULCfff_pos V).
 
@@ -340,7 +340,7 @@ Obligation Tactic := intros; try unf_Proper; cat;
        try rewrite ULC_N_sk_subst; cat.
 
 Program Instance ulc_n_s m : RModule_Hom_struct
- (M:= Term (C:=RMOD ULCBETAM PO))
+ (M:= Term (C:=RMOD ULCBETAM Ord))
  (N:= ULCBETAM [PCF_ULC_type_mor PCF.Nat])
  (ULC_N_car m).
  
@@ -359,7 +359,7 @@ Term (C:=RMOD ULCBETAM _ ) V --->
 
 
 Program Instance ulc_succ_s : RModule_Hom_struct
-  (M:= Term (C:=RMOD ULCBETAM PO))
+  (M:= Term (C:=RMOD ULCBETAM Ord))
   (N:= ULCBETAM [PCF_ULC_type_mor (PCF.Nat ~> PCF.Nat)])
   ULCSucc_car.
 
@@ -379,7 +379,7 @@ Term (C:=RMOD ULCBETAM _ ) V --->
   Build_PO_mor (ULCCondN_pos V).
 
 Program Instance ulc_condn_s : RModule_Hom_struct 
-  (M := Term (C:=RMOD ULCBETAM PO))
+  (M := Term (C:=RMOD ULCBETAM Ord))
   (N:= ULCBETAM [PCF_ULC_type_mor (PCF.Bool ~> PCF.Nat ~> PCF.Nat ~> PCF.Nat)])
   (ULCCondN_car).
 
@@ -399,7 +399,7 @@ Term (C:=RMOD ULCBETAM _ ) V --->
   Build_PO_mor (ULCCondB_pos V).
 
 Program Instance ulc_condb_s : RModule_Hom_struct 
-  (M := Term (C:=RMOD ULCBETAM PO))
+  (M := Term (C:=RMOD ULCBETAM Ord))
   (N:= ULCBETAM [PCF_ULC_type_mor (PCF.Bool ~> PCF.Bool ~> PCF.Bool ~> PCF.Bool)])
   (ULCCondB_car).
 
@@ -421,7 +421,7 @@ Obligation Tactic := intros; try unf_Proper; cat;
        try rewrite ULC_N_sk_subst; repeat elim_unit; cat.
 
 Program Instance ulc_bottom_s t : RModule_Hom_struct 
-  (M:= Term (C:= RMOD ULCBETAM PO))
+  (M:= Term (C:= RMOD ULCBETAM Ord))
   (N:= ULCBETAM [t])
   (ULCbottom_car t).
 
@@ -440,7 +440,7 @@ Term (C:=RMOD ULCBETAM _ ) V --->
   Build_PO_mor (ULCzero_pos V).
 
 Program Instance ulc_zero_s : RModule_Hom_struct 
-  (M:= Term (C := RMOD ULCBETAM PO))
+  (M:= Term (C := RMOD ULCBETAM Ord))
   (N:= ULCBETAM [PCF_ULC_type_mor (PCF.Nat ~> PCF.Bool)])
   ULCzero_car.
 
@@ -459,7 +459,7 @@ Term (C:=RMOD ULCBETAM _ ) V --->
   Build_PO_mor (ULCpred_pos V).
 
 Program Instance ulc_pred_s : RModule_Hom_struct 
-  (M:= Term (C := RMOD ULCBETAM PO))
+  (M:= Term (C := RMOD ULCBETAM Ord))
   (N:= ULCBETAM [PCF_ULC_type_mor (PCF.Nat ~> PCF.Nat)])
   ULCpred_car.
 

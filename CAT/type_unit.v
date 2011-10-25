@@ -52,11 +52,11 @@ Definition wunit := Build_Functor wunit_s.
 
 (** a functor (unit -> PO) -> PO  = (IPO unit) -> PO*)
 
-Definition sunit_po : Functor (IPO unit) PO := IP_proj tt.
+Definition sunit_po : Functor (IPO unit) Ord := IP_proj tt.
 
 (** a functor PO -> (IPO unit) *)
 
-Program Instance wunit_ob_s (V : PO): 
+Program Instance wunit_ob_s (V : Ord): 
     ipo_obj_struct (T:=unit)(fun _ => V) := {
   IRel t := Rel ;
   IPOprf t := POprf
@@ -67,7 +67,7 @@ Definition wunit_ob V := Build_ipo_obj (wunit_ob_s V).
 Obligation Tactic := cat; try unf_Proper; cat;
   repeat apply PO_mor_monotone; cat.
 
-Program Instance wunit_mor_s (V W : PO)(f : V ---> W) : 
+Program Instance wunit_mor_s (V W : Ord)(f : V ---> W) : 
   ipo_mor_struct (a:=wunit_ob V) (b:=wunit_ob W)
   (fun t => f).
 
@@ -76,11 +76,11 @@ Definition wunit_mor V W (f:V--->W) :=
 
 Obligation Tactic := mauto.
 
-Program Instance wunit_po_s : Functor_struct (C:=PO)(D:=IPO unit)
+Program Instance wunit_po_s : Functor_struct (C:=Ord)(D:=IPO unit)
     (Fobj:=wunit_ob)
     (fun a b f => wunit_mor f).
 
-Definition wunit_po : Functor PO (IPO unit) := Build_Functor wunit_po_s.
+Definition wunit_po : Functor Ord (IPO unit) := Build_Functor wunit_po_s.
 
 End bla.
 
