@@ -138,8 +138,8 @@ Qed.
 Definition id_cc c := Build_ipo_mor (id_ccs c).
 
 Program Instance NNNT1s : NT_struct
-    (F:=SM_ipo U O RETYPE f) 
-    (G:=RETYPE_PO f O SM_ipo T) 
+    (F:=IDelta U O RETYPE f) 
+    (G:=RETYPE_PO f O IDelta T) 
     (fun c => id_cc c).
 
 Definition NNNT1 := Build_NT NNNT1s.
@@ -162,8 +162,8 @@ Qed.
 Definition id_dd c := Build_ipo_mor (id_dds c).
 
 Program Instance NNNT2s : NT_struct
-    (G:=SM_ipo U O RETYPE f) 
-    (F:=RETYPE_PO f O SM_ipo T) 
+    (G:=IDelta U O RETYPE f) 
+    (F:=RETYPE_PO f O IDelta T) 
     (fun c => id_dd c).
 
 Definition NNNT2 := Build_NT NNNT2s.

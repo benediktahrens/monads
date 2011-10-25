@@ -877,9 +877,13 @@ destruct Rnats1 as [RNat RNats].
 simpl in *.
 clear RNats.
 gendep RNat.
-rewrite <- e0.
-rewrite <- e.
 
+destruct e1.
+destruct e.
+(*
+rewrite <- e1.
+rewrite <- e.
+*)
 (*
 rewrite <- (HNcommute).
 rewrite <- (HMcommute).
@@ -890,12 +894,14 @@ simpl in HM0.
 rewrite (UIP_refl _ _ _) in HN0.
 simpl in HN0.
 simpl.
-(*
+
 rewrite (UIP_refl _ _ _).
-*)
+
 simpl.
 rewrite  HM0.
+
 rewrite HN0.
+
 simpl.
 unfold rlift.
 simpl.

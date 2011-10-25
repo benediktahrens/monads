@@ -152,7 +152,7 @@ Obligation Tactic := intros; try unf_Proper;
    reflexivity.
 
 Program Instance Var_s (V : IT) : 
-    ipo_mor_struct (a:=SM_ipo _ V) (b:=PCFE V) (Var (V:=V)).
+    ipo_mor_struct (a:=IDelta _ V) (b:=PCFE V) (Var (V:=V)).
 
 Definition VAR V := Build_ipo_mor (Var_s V).
 
@@ -242,7 +242,7 @@ Obligation Tactic := simpl; intros; try unf_Proper;
      simpl; intros;
      try apply subst_eval_rel; fin.
 
-Program Instance subst_s (V W : IT) (f : SM_ipo _ V ---> PCFE W) :
+Program Instance subst_s (V W : IT) (f : IDelta _ V ---> PCFE W) :
    ipo_mor_struct (a:=PCFE V) (b:=PCFE W) (subst f).
 
 Definition SUBST V W f := Build_ipo_mor (subst_s V W f).

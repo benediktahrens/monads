@@ -60,6 +60,7 @@ Proof.
 Qed.
 
 Definition SM_po := Build_Functor SM_po_s.
+Definition Delta := SM_po.
 
 Section Sm_ind.
 

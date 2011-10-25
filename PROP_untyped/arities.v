@@ -132,7 +132,7 @@ Canonical Structure POW l := Build_Functor (POW_struct l).
 
 Section pow_and_product.
 
-Variable P : RMonad SM_po. 
+Variable P : RMonad Delta. 
 
 Notation "'Var' x" := (rweta (RMonad_struct := P) _ x) (at level 55).
 Notation "x >>= f" := (rkleisli (RMonad_struct := P) f x) (at level 65).
@@ -153,17 +153,17 @@ Hint Rewrite (shift_eq (P:=P)) (shift_weta P)
 (** lshift serves to go under binders with substitution functions,
    ie. to adapt domain and codomain of functions to added fresh variables *)
 
-Fixpoint lshift_c (l : nat) (V W : TYPE) (f : SM_po V ---> P W) : 
+Fixpoint lshift_c (l : nat) (V W : TYPE) (f : Delta V ---> P W) : 
          V ** l ---> P (W ** l) :=
     match l return V ** l ---> P (W ** l) with
     | 0 => f
     | S n' => lshift_c (shift_not f)
     end.
 
-Definition lshift (l : nat) V W (f : SM_po V ---> P W) : 
-     SM_po (V ** l) ---> P (W ** l) := Sm_ind (lshift_c f).
+Definition lshift (l : nat) V W (f : Delta V ---> P W) : 
+     Delta (V ** l) ---> P (W ** l) := Sm_ind (lshift_c f).
 (*
-Program Instance lshift_c_po l V W (f : SM_po V ---> P W):
+Program Instance lshift_c_po l V W (f : Delta V ---> P W):
      PO_mor_struct (lshift_c (l:=l) f).
 Next Obligation.
 Proof.
@@ -178,7 +178,7 @@ Proof.
 
 Notation "x >>- f" := (lshift _ f x)(at level 60).
 
-Lemma lshift_eq l V W (f g : SM_po V ---> P W) 
+Lemma lshift_eq l V W (f g : Delta V ---> P W) 
      (H : forall  x, f x = g x):
     forall (x : V ** l ),
      lshift_c f x  = lshift_c g x .
@@ -210,13 +210,13 @@ Proof.
 Qed.
 
 Lemma lshift_weta_f (l : nat) V W (f : V ---> W) x:
-   x >>- (#SM_po f ;; rweta W) = Var (f ^^ l x).
+   x >>- (#Delta f ;; rweta W) = Var (f ^^ l x).
 Proof.
   tt l.
 Qed.
 
-Lemma kleisli_lshift (l : nat) V W (f : SM_po V ---> P W)
-         X (g : SM_po W ---> P X) (x : (V ** l)) :
+Lemma kleisli_lshift (l : nat) V W (f : Delta V ---> P W)
+         X (g : Delta W ---> P X) (x : (V ** l)) :
    (x >>- f) >>= (lshift _ g) = x >>- Sm_ind (fun y => f y >>= g).
 Proof.
   induction l;
@@ -390,7 +390,7 @@ Variable M : RMOD P PO.
 
 (** the product module substitution is defined by structural recursion *)
 
-Fixpoint pm_mkl l V W (f : SM_po V ---> P W) 
+Fixpoint pm_mkl l V W (f : Delta V ---> P W) 
       (X : prod_mod_c (fun V => M V) V l) : prod_mod_c _ W l :=
      match X in prod_mod_c _ _ l return prod_mod_c (fun V => M V) W l with
      | TTT => TTT _ W 
@@ -402,7 +402,7 @@ Fixpoint pm_mkl l V W (f : SM_po V ---> P W)
 
 
 
-Program Instance pm_mkl_struct l V W (f : SM_po V ---> P W) :
+Program Instance pm_mkl_struct l V W (f : Delta V ---> P W) :
  PO_mor_struct   (a := prod_mod_po M V l)  
                   (b := prod_mod_po M W l)  
  (pm_mkl (l:=l) f).
@@ -434,15 +434,15 @@ Ltac t x := induction x;
    try rew (rmkleta (M))
    end; repeat (cat || opt || rew kleisli_lshift).
 
-Lemma pm_mkl_eq l V W (f g : SM_po V ---> P W) 
+Lemma pm_mkl_eq l V W (f g : Delta V ---> P W) 
     (H : forall  x, f x = g x) (x : prod_mod_c _ V l) : 
                pm_mkl f x = pm_mkl g x.
 Proof.
   t x.
 Qed.
 
-Lemma pm_mkl_mkl l V (x : prod_mod_c _ V l) W (f : SM_po V ---> P W)
- X (g : SM_po W ---> P X) :
+Lemma pm_mkl_mkl l V (x : prod_mod_c _ V l) W (f : Delta V ---> P W)
+ X (g : Delta W ---> P X) :
   pm_mkl g (pm_mkl f x) = 
      pm_mkl (Sm_ind (fun (x0 : V) => rkleisli g (f x0))) x .
 Proof.
@@ -461,14 +461,14 @@ Hint Resolve pm_mkl_mkl pm_mkl_weta pm_mkl_eq : opt.
 Obligation Tactic := unfold Proper; red; opt.
 
 Program Instance pm_mkl_oid l V W : Proper 
- (A:= (SM_po V ---> P W) -> 
+ (A:= (Delta V ---> P W) -> 
         (prod_mod_po _ V l ---> prod_mod_po _ W l))
    (equiv ==> equiv) (@pm_mkl_po l V W).
 
 Obligation Tactic := repeat (unfold Proper, respectful || opt || 
                 apply pm_mkl_oid || rew (pm_mkl_eq _ )).
 
-Program Instance prod_mod_struct l : RModule_struct (F:=SM_po) P (D:=PO) PO  
+Program Instance prod_mod_struct l : RModule_struct (F:=Delta) P (D:=PO) PO  
    (fun V => prod_mod_po M V l) := {
   rmkleisli := pm_mkl_po l }.
 
@@ -507,7 +507,7 @@ Variable S : Signature.
 
 Section rep_struct.
 
-Variable P : RMonad SM_po.
+Variable P : RMonad Delta.
 
 (** a represention is - for each arity - a type of module morphisms *)
 
@@ -518,7 +518,7 @@ Definition Repr := forall i : sig_index S,
 End rep_struct.
  
 Record Representation := {
-  rep_monad :> RMonad SM_po ;
+  rep_monad :> RMonad Delta ;
   repr : Repr rep_monad }.
 
 
@@ -529,7 +529,7 @@ Record Representation := {
 
 Section arrows.
 
-Variables P Q : RMonad SM_po.
+Variables P Q : RMonad Delta.
 Variable f : RMonad_Hom P Q.
 
 Notation "x >>- f" := (shift_not f x)(at level 60).
@@ -537,7 +537,7 @@ Notation "x >-- f" := (lshift _ f x)(at level 60).
 
 (** lshifting is somehow compatible with monad morphisms *)
 
-Lemma lshift_monad_hom l V W (g : SM_po V ---> P W) (x : V ** l) :
+Lemma lshift_monad_hom l V W (g : Delta V ---> P W) (x : V ** l) :
     f _ (x >-- g) = x >-- (g ;; f _ ).
 Proof.
   induction l; 
@@ -590,7 +590,7 @@ Definition prod_mor_po l V := Build_PO_mor (prod_mor_struct l V).
 (** and it is also compatible with substitution *)
 
 Lemma prod_mod_c_kl (ar : [nat]) V (x : prod_mod_c _ V ar):
-forall (W : TYPE) (g : SM_po V ---> P W),
+forall (W : TYPE) (g : Delta V ---> P W),
  Prod_mor_c (l:=ar) (V:=W) (pm_mkl (M:=P) (W:=W) g x) =
      pm_mkl (M:=Q) (W:=W) (Sm_ind (fun (x0 : V) => f W (g x0)))
              (Prod_mor_c (l:=ar) (V:=V) x).

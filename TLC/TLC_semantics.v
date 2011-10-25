@@ -222,7 +222,7 @@ Program Definition BETA (V: IT) : IPO TY :=
 Obligation Tactic := fin; try unf_Proper; intros;
                         apply beta_subst; auto.
 
-Program Instance subst_s (V W : IT) (f : SM_ipo _ V ---> BETA W) :
+Program Instance subst_s (V W : IT) (f : IDelta _ V ---> BETA W) :
    ipo_mor_struct (a:=BETA V)(b:=BETA W)
          (fun t y => _subst f y).
 

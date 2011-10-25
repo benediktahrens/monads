@@ -24,8 +24,8 @@ Variables T U : Type.
 Variable f : T -> U.
 
 Section term_to_term.
-Variable P : RMonad (SM_ipo T).
-Variable Q : RMonad (SM_ipo U).
+Variable P : RMonad (IDelta T).
+Variable Q : RMonad (IDelta U).
 Variable M : gen_RMonad_Hom P Q
 	      (G1:=RETYPE (fun t => f t))
 	      (G2:=RETYPE_PO (fun t => f t)) 
@@ -102,8 +102,8 @@ End term_to_term.
 
 Section gen_pb_der.
 
-Variable P : RMonad (SM_ipo T).
-Variable Q : RMonad (SM_ipo U).
+Variable P : RMonad (IDelta T).
+Variable Q : RMonad (IDelta U).
 Variable h : gen_RMonad_Hom P Q 
               (G1:=RETYPE (fun t => f t))
 	      (G2:=RETYPE_PO (fun t => f t)) (NNNT1 (fun t => f t)).
@@ -265,8 +265,8 @@ End gen_pb_fib_and_eq.
 
 Section der_fibre.
 
-Variable P : RMonad (SM_ipo T).
-Variable Q : RMonad (SM_ipo U).
+Variable P : RMonad (IDelta T).
+Variable Q : RMonad (IDelta U).
 Variable M : gen_RMonad_Hom P Q 
                  (G1:=RETYPE (fun t => f t))
 	      (G2:=RETYPE_PO (fun t => f t)) 

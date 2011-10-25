@@ -40,7 +40,7 @@ Notation "y [* := z ]":= (Rsubstar z _ y)(at level 55).
 Section PCF_rep.
 
 Variable U : Type.
-Variable P : RMonad (SM_ipo U).
+Variable P : RMonad (IDelta U).
  (*Variable f : TY -> U.*)
 
 Variable Arrow : U -> U -> U.
@@ -137,7 +137,7 @@ Record PCFPO_rep := {
   type_arrow : type_type -> type_type -> type_type;
   type_bool : type_type ;
   type_nat : type_type ;
-  pcf_rep_monad :> RMonad (SM_ipo type_type);
+  pcf_rep_monad :> RMonad (IDelta type_type);
 (*  type_mor : TY -> type_type; *)
 (*  type_arrow_dist : forall s t, type_mor (s ~> t) = 
                          type_arrow (type_mor s) (type_mor t);*)

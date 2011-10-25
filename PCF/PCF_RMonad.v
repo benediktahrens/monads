@@ -9,7 +9,7 @@ Unset Automatic Introduction.
 
 Obligation Tactic := fin.
 
-Program Instance PCFEM_s : RMonad_struct (SM_ipo TY) PCFE := {
+Program Instance PCFEM_s : RMonad_struct (IDelta TY) PCFE := {
    rweta := VAR;
    rkleisli a b f := SUBST f
 }.
@@ -20,10 +20,10 @@ Proof.
   fin.
 Qed.
 
-Definition PCFEM : RMonad (SM_ipo TY) := Build_RMonad PCFEM_s.
+Definition PCFEM : RMonad (IDelta TY) := Build_RMonad PCFEM_s.
 
 
-Lemma shift_shift r s V W (f : SM_ipo _ V ---> PCFEM W)
+Lemma shift_shift r s V W (f : IDelta _ V ---> PCFEM W)
                 (x : (opt r V) s) :
    sshift_ (P:=PCFEM) (W:=W) f x = x >>- f .
 Proof.

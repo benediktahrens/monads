@@ -241,7 +241,7 @@ Proof.
 Qed.
 
 
-Lemma init_subst V t (y : PCF V t) W (f : SM_ipo _ V ---> PCFE W):
+Lemma init_subst V t (y : PCF V t) W (f : IDelta _ V ---> PCFE W):
       init (y >>= f) = 
         rkleisli (RMonad_struct := R) 
            (SM_ind (V:= retype (fun t => type_mor t)  V) 

@@ -9,7 +9,7 @@ Unset Transparent Obligations.
 Unset Automatic Introduction.
 
 
-Program Instance TLCBs : RMonad_struct (SM_ipo TY) (BETA) := {
+Program Instance TLCBs : RMonad_struct (IDelta TY) BETA := {
   rweta c := SM_ind (var (V:=c)) ;
   rkleisli := subst
 }.

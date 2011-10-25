@@ -29,7 +29,7 @@ Notation "[ T ]" := (list T) (at level 5).
 
 Section wPO_taut_mod.
 
-Variable P : RMonad SM_po.
+Variable P : RMonad Delta.
 Variable M : RModule P PO.
 
 Obligation Tactic := unfold Proper, respectful; mauto;
@@ -47,7 +47,7 @@ End wPO_taut_mod.
 (*
 Section monadic_subst_as_mod_hom.
 
-Variable P : RMonad SM_po.
+Variable P : RMonad Delta.
 
 (*
 Print RModule_Hom.
@@ -144,7 +144,7 @@ Variable l : [nat].
 
 Section ob.
 
-Variable P : RMonad SM_po.
+Variable P : RMonad Delta.
 Variable M : RModule P PO.
 
 Obligation Tactic := mauto; repeat (t || unfold Proper, respectful || 
@@ -161,7 +161,7 @@ Section mor.
 
 (** classic S-Modules on morphisms *)
 
-Variables P Q : RMonad SM_po.
+Variables P Q : RMonad Delta.
 Variable f : RMonad_Hom P Q.
 
 Obligation Tactic := repeat (mauto || rew prod_mod_c_kl || app pm_mkl_eq).
@@ -443,7 +443,7 @@ Obligation Tactic := cat;
       
 (** ** Monad with previously defined terms but new order, induced by equations *)
 
-Program Instance UTS_prop_rel_rmonad_s : RMonad_struct SM_po prop_rel := {
+Program Instance UTS_prop_rel_rmonad_s : RMonad_struct Delta prop_rel := {
   rweta c := Sm_ind (@Var S c);
   rkleisli := subst_prop_rel
 }.
@@ -552,7 +552,7 @@ Proof.
 Qed.
 
 Lemma sts_list_subst2 l X (v : prod_mod (UTSP) l X) 
-       W (f : SM_po X ---> UTSP W):
+       W (f : Delta X ---> UTSP W):
   UTSl_f_pm  (pm_mkl f v ) = list_subst (UTSl_f_pm v) f.
 Proof.
   induction v; simpl;

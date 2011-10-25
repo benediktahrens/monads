@@ -86,7 +86,7 @@ UTS_list (V : TYPE) : [nat] -> Type :=
 
 (** at first the diagonal preorder *)
 
-Definition UTS_sm V := SM_po (UTS V).
+Definition UTS_sm V := Delta (UTS V).
 
 (** mutual induction and recursion schemes.
     we won't make use of the latter *)
@@ -136,7 +136,7 @@ where "x //- f" := (rename f x)
 and "x //-- f" := (list_rename x f).
 
 Definition rename_sm V W (f : V ---> W) : 
-    UTS_sm V ---> UTS_sm W := #SM_po (rename f).
+    UTS_sm V ---> UTS_sm W := #Delta (rename f).
 
 (** functoriality of renaming for STS *)
 
@@ -266,8 +266,8 @@ with
 where "x >== f" := (subst f x) 
 and "x >>== f" := (list_subst x f).
 
-Definition subst_sm (V W : TYPE) (f : SM_po V ---> UTS_sm W) :
-    UTS_sm V ---> UTS_sm W := #SM_po (subst f).
+Definition subst_sm (V W : TYPE) (f : Delta V ---> UTS_sm W) :
+    UTS_sm V ---> UTS_sm W := #Delta (subst f).
   
 (** substitution of one variable only *)
 
@@ -563,8 +563,8 @@ Qed.
 
 Obligation Tactic := unfold Proper, respectful; fin.
 
-Program Instance UTS_sm_rmonad : RMonad_struct SM_po UTS_sm := {
-  rweta c := #SM_po (@Var c);
+Program Instance UTS_sm_rmonad : RMonad_struct Delta UTS_sm := {
+  rweta c := #Delta (@Var c);
   rkleisli := subst_sm
 }.
 
@@ -633,7 +633,7 @@ Notation "x >-- f" := (lshift _ f x) (at level 50).
 
 Existing Instance UTS_sm_rmonad.
 
-Lemma _shift_shift_eq V W (f : SM_po V ---> UTS_sm W) (x : V ') :
+Lemma _shift_shift_eq V W (f : Delta V ---> UTS_sm W) (x : V ') :
         x >>- f = x >- f. 
 Proof.
   t5.
@@ -641,7 +641,7 @@ Qed.
 
 Hint Resolve _shift_shift_eq : fin.
 
-Lemma _lshift_lshift_eq (l : nat) V (x : V ** l) W (f : SM_po V ---> UTS_sm W):
+Lemma _lshift_lshift_eq (l : nat) V (x : V ** l) W (f : Delta V ---> UTS_sm W):
                 x >-- f = x >>-- f. 
 Proof.
   induction l; t5.
@@ -662,7 +662,7 @@ Hint Resolve _lshift_lshift_eq : fin.
 Notation "v >>>= f" := (pm_mkl f v) (at level 67).
           
 Lemma sts_list_subst l X (v : prod_mod UTSM l X) 
-       W (f : SM_po X ---> UTS_sm W):
+       W (f : Delta X ---> UTS_sm W):
   UTSl_f_pm  (pm_mkl f v ) = (UTSl_f_pm v) >>== f.
 Proof.
   induction v; repeat (t5 || rew _lshift_lshift_eq ) .
@@ -793,7 +793,7 @@ Definition init_sm V := Sm_ind (@init V).
 
 (** init commutes with shift and lshift *)
 
-Lemma init_shift V W (f : SM_po V ---> UTS_sm W) (x : V ') :
+Lemma init_shift V W (f : Delta V ---> UTS_sm W) (x : V ') :
   init (x >>- f) = x >>- (f ;; @init_sm _ ).
 Proof.
   induction x; 
@@ -804,7 +804,7 @@ Hint Rewrite init_shift : fin.
 
 Ltac t6 := repeat (t5 || elim_option || apply lshift_eq || app init_lift).
 
-Lemma init_lshift (l : nat) V W (f : SM_po V ---> UTS_sm W) (x : V ** l) :
+Lemma init_lshift (l : nat) V W (f : Delta V ---> UTS_sm W) (x : V ** l) :
      init (x >-- f) = x >-- (f ;; @init_sm _).
 Proof.
   induction l; t6; tt;
@@ -822,18 +822,18 @@ Hint Resolve init_lshift : fin.
 
 (** init is a morphism of monads *)
 
-Lemma init_kleisli V (v : UTS V) W (f : SM_po V ---> UTS_sm W) :
+Lemma init_kleisli V (v : UTS V) W (f : Delta V ---> UTS_sm W) :
   init (v >== f) =
   rkleisli (f ;; @init_sm _ ) (init v).
 Proof.
   apply (@UTSind 
      (fun X (v : UTS X) => 
-         forall Y (f : SM_po X ---> UTS_sm Y),
+         forall Y (f : Delta X ---> UTS_sm Y),
       init (v >== f) =
       rkleisli (RMonad_struct := R) 
             (f ;; @init_sm _) (init v))
 
-     (fun X l (s : UTS_list X l) => forall Y (f : SM_po X ---> UTS_sm Y),
+     (fun X l (s : UTS_list X l) => forall Y (f : Delta X ---> UTS_sm Y),
            init_list (s >>== f) =
            rmkleisli (RModule_struct := prod_mod  R l)
               (f ;; @init_sm _ ) 
@@ -863,7 +863,7 @@ Lemma init_kleisli2 V (v : UTS V) W (f : V ---> UTS W) :
   rkleisli (RMonad_struct := R) (Sm_ind f ;; @init_sm _ ) (init v).
 Proof.
   simpl; intros;
-  match goal with [f : _  , v :  _ |-_] => rew (init_kleisli v (#SM_po f)) end;
+  match goal with [f : _  , v :  _ |-_] => rew (init_kleisli v (#Delta f)) end;
   app (rkl_eq R).
 Qed.
 

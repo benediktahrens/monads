@@ -248,7 +248,9 @@ Obligation Tactic := cat;
 
 Program Instance SM_ipo_s : Functor_struct sm_ipo_mor.
 
-Definition SM_ipo := Build_Functor SM_ipo_s.
+Definition IDelta := Build_Functor SM_ipo_s.
+(*Definition SM_ipo := Build_Functor SM_ipo_s.*)
+(*Definition IDelta := SM_ipo.*)
 
 Section SM_ind.
 
@@ -260,7 +262,7 @@ Variable f : forall t, V t -> W t.
 Obligation Tactic := idtac.
 
 Program Instance SM_ind_s : ipo_mor_struct 
-  (a:=SM_ipo V) (b:=W) f.
+  (a:=IDelta V) (b:=W) f.
 Next Obligation.
 Proof.
   intros;

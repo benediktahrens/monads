@@ -13,7 +13,7 @@ Section transp_lift_id.
 Variables U U' : Type.
 Variable f : U -> U'.
 (*Variable P : Monad (ITYPE U).*)
-Variable Q : RMonad (SM_ipo U').
+Variable Q : RMonad (IDelta U').
 
 Hypothesis H : forall t, f t = f t.
 Variable V : IPO U.
@@ -38,9 +38,9 @@ Variables U U' U'' : Type.
 Variable f : U -> U'.
 Variable f' : U' -> U''.
 
-Variable P : RMonad (SM_ipo U).
-Variable Q : RMonad (SM_ipo U').
-Variable R : RMonad (SM_ipo U'').
+Variable P : RMonad (IDelta U).
+Variable Q : RMonad (IDelta U').
+Variable R : RMonad (IDelta U'').
 
 Variable M : gen_RMonad_Hom P Q 
 	(G1:=RETYPE (fun t => f t))

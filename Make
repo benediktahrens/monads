@@ -149,38 +149,38 @@
 #./PCF_order_comp/RPCF_ULC_alt2.v
 #./PCF_order_comp/ULC_comp.v
 #./PCF_order_comp/ULC_syntax.v
-./PCF_order_comp/RPCF_rep_comp.v
+#./PCF_order_comp/RPCF_rep_comp.v
 #./PCF_order_comp/RPCF_ULC_alt.v
-./PCF_order_comp/RPCF_syntax_rep.v
+#./PCF_order_comp/RPCF_syntax_rep.v
 #./PCF_order_comp/RPCF_ULC.v
-./PCF_order_comp/RPCF_syntax_init.v
-./PCF_order_comp/RPCF_INIT.v
+#./PCF_order_comp/RPCF_syntax_init.v
+#./PCF_order_comp/RPCF_INIT.v
 #./PCF_order_comp/RPCF_ULC_sandbox.v
-./PCF_order_comp/RPCF_rep_cat.v
-./PCF_order_comp/RPCF_rep_eq.v
-./PCF_order_comp/RPCF_rep_id.v
-./PCF_order_comp/RPCF_rep.v
-./PCF_order_comp/RPCF_rep_hom.v
+#./PCF_order_comp/RPCF_rep_cat.v
+#./PCF_order_comp/RPCF_rep_eq.v
+#./PCF_order_comp/RPCF_rep_id.v
+#./PCF_order_comp/RPCF_rep.v
+#./PCF_order_comp/RPCF_rep_hom.v
 #./PCF_order_comp/RPCF_syntax.v
 
-./PCF_o_c/RPCF_rep_comp.v
-./PCF_o_c/RPCF_ULC_sandbox1.v
-./PCF_o_c/RPCF_rep_id.v
+#./PCF_o_c/RPCF_rep_comp.v
+#./PCF_o_c/RPCF_ULC_sandbox1.v
+#./PCF_o_c/RPCF_rep_id.v
 #./PCF_o_c/ULC_syntax2.v
 #./PCF_o_c/ULC_comp.v
-./PCF_o_c/RPCF_rep_cat.v
-./PCF_o_c/RPCF_syntax_rep.v
-./PCF_o_c/RPCF_rep_hom.v
+#./PCF_o_c/RPCF_rep_cat.v
+#./PCF_o_c/RPCF_syntax_rep.v
+#./PCF_o_c/RPCF_rep_hom.v
 #./PCF_o_c/RPCF_ULC.v
 #./PCF_o_c/RPCF_ULC_sandbox2.v
-./PCF_o_c/RPCF_INIT.v
+#./PCF_o_c/RPCF_INIT.v
 #./PCF_o_c/ULC_syntax_nounit.v # replaced by ULC/...
-./PCF_o_c/RPCF_syntax_init.v
-./PCF_o_c/RPCF_ULC_nounit.v
-./PCF_o_c/RPCF_rep_eq.v
-./PCF_o_c/RPCF_rep.v
+#./PCF_o_c/RPCF_syntax_init.v
+#./PCF_o_c/RPCF_ULC_nounit.v
+#./PCF_o_c/RPCF_rep_eq.v
+#./PCF_o_c/RPCF_rep.v
 #./PCF_o_c/RTLC_rep.v
-./PCF_o_c/ULC_syntax1.v
+#./PCF_o_c/ULC_syntax1.v
 #./PCF_o_c/RPCF_syntax.v #should be obsolete
 
 #### RPCF #########################
@@ -200,7 +200,7 @@
 ./PROP_untyped/arities.v
 ./PROP_untyped/representations.v
 ./PROP_untyped/initial.v
-./PROP_untyped/prop_arities.v
+#./PROP_untyped/prop_arities.v
 ./PROP_untyped/prop_arities_initial.v
 ./PROP_untyped/ex_ulcbeta.v
 

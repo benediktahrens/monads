@@ -29,7 +29,7 @@ ipo_mor_struct
  (unit_rweta_car c).
 
 Definition unit_rweta c:
-(SM_ipo unit) c ---> wunit_po (R (sunit c)) :=
+(IDelta unit) c ---> wunit_po (R (sunit c)) :=
   Build_ipo_mor (unit_rweta_po c).
 
 Obligation Tactic := cat; try unf_Proper; cat; 
@@ -43,7 +43,7 @@ ipo_mor_struct (a:=wunit_ob (R (a tt))) (b:=wunit_ob (R (b tt)))
 
 Definition unit_rkleisli :
 forall (a b : ITYPE unit)
-(f : (SM_ipo unit) a ---> wunit_po (R (sunit b))),
+(f : (IDelta unit) a ---> wunit_po (R (sunit b))),
 wunit_po (R (sunit a)) ---> wunit_po (R (sunit b)) :=
   fun a b f => Build_ipo_mor (unit_rkleisli_po a b f).
 
@@ -57,7 +57,7 @@ Obligation Tactic := cat; try unf_Proper;
    rew (rkleta R); cat.
 
 Program Instance unit_RMonad_struct : 
-    RMonad_struct (SM_ipo unit) (fun V => wunit_po (R (sunit V))) := {
+    RMonad_struct (IDelta unit) (fun V => wunit_po (R (sunit V))) := {
  rweta  := unit_rweta ;
  rkleisli := unit_rkleisli
 }.

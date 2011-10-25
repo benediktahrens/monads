@@ -368,7 +368,7 @@ Variable T : Type.
 
 Section shift.
 
-Variable P : RMonad (SM_ipo T).
+Variable P : RMonad (IDelta T).
 
 Variable u : T.
 
@@ -376,7 +376,7 @@ Variables V W : ITYPE T.
 
 Section shift_def.
 
-Variable f : SM_ipo T V ---> P W.
+Variable f : IDelta T V ---> P W.
 
 
 Definition sshift_  : 
@@ -388,7 +388,7 @@ Definition sshift_  :
 Obligation Tactic := idtac.
 
 Program Instance sshift_struct : 
-      ipo_mor_struct (a:=SM_ipo T (opt u V)) (b:=P(opt u W)) sshift_.
+      ipo_mor_struct (a:=IDelta T (opt u V)) (b:=P(opt u W)) sshift_.
 Next Obligation.
 Proof.
   intros.
@@ -400,14 +400,14 @@ Proof.
   apply IRel_refl.
 Qed.
 
-Definition sshift : SM_ipo T (opt u V) ---> P (opt u W) := 
+Definition sshift : IDelta T (opt u V) ---> P (opt u W) := 
            Build_ipo_mor sshift_struct.
 
 End shift_def.
 
 Section shift_eq.
 
-Variables f g : SM_ipo T V ---> P W.
+Variables f g : IDelta T V ---> P W.
 Hypothesis H : f == g.
 
 Lemma sshift_eq : sshift f == sshift g.
@@ -438,15 +438,15 @@ Variable E : Cat_struct morE.
 
 (*Variable F : Functor (ITYPE T) (IPO T).*)
 
-Variable P : RMonad (SM_ipo T).
+Variable P : RMonad (IDelta T).
 Variable u : T.
 
 Section der_on_obj.
 
 Variable M : RMOD P E.
 
-Lemma sshift_rkl c d e (f : SM_ipo T c ---> P d)
-    (g : SM_ipo T d ---> P e) :
+Lemma sshift_rkl c d e (f : IDelta T c ---> P d)
+    (g : IDelta T d ---> P e) :
 sshift (P:=P) u (V:=c) (W:=d) f;;
 rkleisli (a:=opt u d) (b:=opt u e) (sshift (P:=P) u (V:=d) (W:=e) g) ==
 sshift (P:=P) u (V:=c) (W:=e) (f ;; (rkleisli (a:=d) (b:=e) g)).
@@ -490,7 +490,7 @@ Hint Resolve sshift_rkl sshift_rweta : rmonad.
 Instance rmkl_sshift_oid :
 forall c d : ITYPE T,
 Proper (equiv ==> equiv)
-  (fun f : SM_ipo T c ---> P d =>
+  (fun f : IDelta T c ---> P d =>
    rmkleisli (RModule_struct := M) 
     (c:=opt u c) (d:=opt u d) (sshift (P:=P) u (V:=c) (W:=d) f)).
 Proof.
@@ -641,7 +641,7 @@ End fibre.
 (** we should establish isomorphisms DER PB -> PB DER *)
 Section der_pb.
 
-Variables P Q : RMonad (SM_ipo T).
+Variables P Q : RMonad (IDelta T).
 Variable h : RMonad_Hom P Q.
 Variable obE : Type.
 Variable morE : obE -> obE -> Type.
@@ -714,7 +714,7 @@ End fib_pb.
 
 Section Rsubstar.
 
-Variable P : RMonad (SM_ipo T).
+Variable P : RMonad (IDelta T).
 
 Section carrier.
 
@@ -723,7 +723,7 @@ Variable r : T.
 Variable W : P V r.
 
 Definition Rsubst_star_map : 
-  forall t, SM_ipo T (opt r V) t -> P V t :=
+  forall t, IDelta T (opt r V) t -> P V t :=
     fun t z => match z in opt _ _  s return P V s with
                | none => W
                | some _ v => rweta (RMonad_struct := P) _ _ v
@@ -742,7 +742,7 @@ Proof.
   apply IRel_refl.
 Qed.
 
-Definition Rsubstar_m : SM_ipo T (opt r V) ---> P V := 
+Definition Rsubstar_m : IDelta T (opt r V) ---> P V := 
  Build_ipo_mor Rsubstar_s.
 
 Definition Rsubstar : P (opt r V) ---> P V :=
@@ -773,7 +773,7 @@ Proof.
 Qed.
 
 Hypothesis rkleisli_monotone : forall c d 
-     (f g : SM_ipo T c ---> P d) ,
+     (f g : IDelta T c ---> P d) ,
    (forall t y, f t y <<< g t y) ->
         forall t y, 
     (rkleisli (RMonad_struct:=P) f) t y <<< rkleisli g t y.
@@ -865,8 +865,8 @@ FFib_Mod_Hom
 Variables T U : Type.
 Variable f : T -> U.
 
-Variable P : RMonad (SM_ipo T).
-Variable Q : RMonad (SM_ipo U).
+Variable P : RMonad (IDelta T).
+Variable Q : RMonad (IDelta U).
 
 Variable h : gen_RMonad_Hom P Q (NNNT1 f).
 Variable s : T.

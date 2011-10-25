@@ -110,7 +110,7 @@ sshift_ f y //- unit_passing = unit_passing y >- f tt
 
 
 Lemma unit_passing_shift u t (V W : ITYPE unit) 
- (f : (SM_ipo unit) V ---> ULCBETAM W)
+ (f : (IDelta unit) V ---> ULCBETAM W)
   (y : opt u V t):
 sshift_ f y //- (@unit_passing _ _ _ )= unit_passing y >- f tt.
 Proof.
