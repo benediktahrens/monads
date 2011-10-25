@@ -7,6 +7,12 @@ Unset Strict Implicit.
 Unset Transparent Obligations.
 Unset Automatic Introduction.
 
+Obligation Tactic := simpl; intros;
+	 unfold Rsubst_star_map; simpl;
+	apply clos_refl_trans_1n_contains;
+	apply relorig;
+	try apply app_abs;
+	try constructor.
 
 Program Instance PCFE_rep_struct : 
        PCFPO_rep_struct PCFEM  PCF.arrow PCF.Bool PCF.Nat := {
@@ -23,6 +29,7 @@ Program Instance PCFE_rep_struct :
   nats m := PCFconsts (Nats m);
   bottom t := PCFbottom t
 }.
+(*
 Next Obligation.
 Proof.
   unfold Rsubst_star_map.
@@ -113,7 +120,7 @@ Proof.
   apply relorig.
   constructor.
 Qed.
-
+*)
 
 Definition PCFE_rep : PCFPO_rep := 
   Build_PCFPO_rep (type_type:=TY) (type_arrow:=PCF.arrow)

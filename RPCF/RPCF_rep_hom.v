@@ -292,10 +292,10 @@ Check (CondB  (PCFPO_rep_struct := P) ;;
 
 Check FIB_RMOD_small_eq.
 *)
-
+(*
 Check FIB_RMOD_HOM.
 Check (CondB (PCFPO_rep_struct := P)).
-
+*)
 
 Obligation Tactic := 
         intros; simpl; repeat (rew_all || auto).

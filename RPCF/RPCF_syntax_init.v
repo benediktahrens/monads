@@ -516,7 +516,6 @@ Proof.
   auto.
 
   simpl.
-  Check Rec_A.
   assert (H:=Rec_A (PCFPO_rep_struct := R)
        (V:=retype (fun t => type_mor t) V)).
   simpl in H.

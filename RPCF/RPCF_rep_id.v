@@ -84,7 +84,7 @@ Proof.
   reflexivity.
 Qed.
 
-Check PCFPO_rep_Hom_struct.
+
 
 Program Instance PCFPO_id_struct : PCFPO_rep_Hom_struct 
    (P:=P) (R:=P) 

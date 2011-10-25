@@ -246,5 +246,7 @@ Proof.
   auto.
 Qed.
 
+Print Assumptions REP_s.
+
 Canonical Structure REP : Cat := Build_Cat REP_s.
 

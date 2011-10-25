@@ -7,13 +7,17 @@ Unset Strict Implicit.
 Unset Transparent Obligations.
 Unset Automatic Introduction.
 
-Notation "'TY'" := PCF.types.
+(*Notation "'TY'" := PCF.types.*)
+(*
 Notation "'Bool'" := PCF.Bool.
 Notation "'Nat'" := PCF.Nat.
-
+*)
+(*
 Notation "'IP'" := (IPO TY).
-Notation "a '~>' b" := (PCF.arrow a b) 
+*)
+(*Notation "a '~>' b" := (PCF.arrow a b) 
    (at level 69, right associativity).
+*)
 Notation "a 'x' b" := (product a b) (at level 30).
 Notation "M [ z ]" := (FIB_RMOD _ z M) (at level 35).
 Notation "'d' M // s" := (DER_RMOD _ _ s M) (at level 25).
@@ -39,10 +43,10 @@ Variable U : Type.
 Variable P : RMonad (SM_ipo U).
  (*Variable f : TY -> U.*)
 
-Variable ARROW : U -> U -> U.
-Variable BOOL : U.
-Variable NAT : U.
-Notation "a ~~> b" := (ARROW a b) (at level 60, right associativity).
+Variable Arrow : U -> U -> U.
+Variable Bool : U.
+Variable Nat : U.
+Notation "a ~~> b" := (Arrow a b) (at level 60, right associativity).
 
 (*  don't put it here, but we need it in the record,
     for the initial morphism has to have this 
@@ -59,14 +63,14 @@ Class PCFPO_rep_struct := {
   app : forall u v, (P[u ~~> v]) x (P[u]) ---> P[v];
   abs : forall u v, (d P //u)[v] ---> P[u ~~> v];
   rec : forall t, P[t ~~> t] ---> P[t];
-  tttt :  * ---> P[BOOL];
-  ffff :  * ---> P[BOOL];
-  nats : forall m:nat, * ---> P[NAT];
-  Succ : * ---> P[NAT ~~> NAT];
-  Pred : * ---> P[NAT ~~> NAT];
-  Zero : * ---> P[NAT ~~> BOOL];
-  CondN: * ---> P[BOOL ~~> NAT ~~> NAT ~~> NAT];
-  CondB: * ---> P[BOOL ~~> BOOL ~~> BOOL ~~> BOOL];
+  tttt :  * ---> P[Bool];
+  ffff :  * ---> P[Bool];
+  nats : forall m:nat, * ---> P[Nat];
+  Succ : * ---> P[Nat ~~> Nat];
+  Pred : * ---> P[Nat ~~> Nat];
+  Zero : * ---> P[Nat ~~> Bool];
+  CondN: * ---> P[Bool ~~> Nat ~~> Nat ~~> Nat];
+  CondB: * ---> P[Bool ~~> Bool ~~> Bool ~~> Bool];
   bottom: forall t, * ---> P[t];
 
   beta_red : forall r s V y z, 

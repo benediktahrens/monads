@@ -89,8 +89,9 @@ Proof.
   destruct (tcomp_arrow M u v).
   reflexivity.
 Defined.
+(*
 Print exsimio.
-
+*)
 Lemma exsimio_bool:
 (fun t : type_type P => tcomp N (tcomp M t)) (type_bool P) = type_bool R.
 Proof.
@@ -130,11 +131,17 @@ Proof. (* abs 2 *)
           (*(c:=retype(fun t => tcomp M t) c)*)).
   simpl in HM ,HN.
   simpl in *.
+(*
+
   Check eq_rect_eq.
   Check (eq_sym (exsimio u v)).
+
+*)
+
   generalize (@eq_sym (type_type R) (@tcomp Q R N (@tcomp P Q M (@type_arrow P u v)))
         (@type_arrow R (@tcomp Q R N (@tcomp P Q M u))
            (@tcomp Q R N (@tcomp P Q M v))) (exsimio u v)).
+
 (*
   generalize (eq_sym (exsimio u v)).
   
