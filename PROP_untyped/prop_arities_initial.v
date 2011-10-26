@@ -107,27 +107,49 @@ Variable S : Signature.
    category of pairs
 *)
 
+(*
 Class S_Module_s (Tau : forall R : REP S, RMOD R wOrd) := {
    S_Mod_Hom : forall (R S : REP S) (f : R ---> S), 
       Tau R ---> PbRMod f (Tau S)  }.
+*)
 
 Record S_Module := {
   s_mod :> forall R : REP S, RMOD R wOrd ;
-  s_mod_hom :> S_Module_s s_mod }.
+  s_mod_hom :> forall (R T : REP S)(f : R ---> T),
+         s_mod R ---> PbRMod f (s_mod T)  }.
 
 (** a half-equation is a natural transformation of between S-Modules. 
     we need the naturality condition in the following *)
+Locate "@".
+(*Notation "U @ f" := (S_Mod_Hom (S_Module_s := U) f)(at level 4).*)
+Locate "#".
+
+Notation "U @ f" := (s_mod_hom U f)(at level 4). 
+
 
 Class half_equation_struct (U V : S_Module) 
     (half_eq : forall R : REP S, s_mod U R ---> s_mod V R) := {
-  comm_eq_s : forall (R S : REP S)  (f : R ---> S), 
-     S_Mod_Hom (S_Module_s := U) f ;; PbRMod_Hom _ (half_eq S) == 
-                half_eq R ;; S_Mod_Hom (S_Module_s := V) f }.
+  comm_eq_s : forall (R T : REP S)  (f : R ---> T), 
+      U @ f ;; PbRMod_Hom _ (half_eq T) ==  half_eq R ;; V @ f }.
 
+(*
+Class half_equation_struct (U V : S_Module) 
+    (half_eq : forall R : REP S, s_mod U R ---> s_mod V R) := {
+  comm_eq_s : forall (R S : REP S)  (f : R ---> S), 
+     S_Mod_Hom (*S_Module_s := U*) f ;; PbRMod_Hom _ (half_eq S) == 
+                half_eq R ;; S_Mod_Hom (S_Module_s := V) f }.
+*)
+
+(*
+Class half_equation_struct (U V : S_Module) 
+    (half_eq : forall R : REP S, s_mod U R ---> s_mod V R) := {
+  comm_eq_s : forall (R S : REP S)  (f : R ---> S), 
+     S_Mod_Hom (*S_Module_s := U*) f ;; PbRMod_Hom _ (half_eq S) == 
+                half_eq R ;; S_Mod_Hom (S_Module_s := V) f }.
+*)
 
 Record half_equation (U V : S_Module) := {
-  half_eq :> forall R : REP S, 
-                 U R --->  V R ;
+  half_eq :> forall R : REP S, U R --->  V R ;
   half_eq_s :> half_equation_struct half_eq }.
 
 
@@ -174,10 +196,14 @@ Definition S_Mod_classic_mor := Build_RModule_Hom S_Mod_classic_mor_s.
 
 End mor.
 
+Definition S_Mod_classic := {|
+      s_mod := fun R => S_Mod_classic_ob R ;
+      s_mod_hom R T f := S_Mod_classic_mor f |}.
+(*
 Instance S_Mod_classic_s : S_Module_s (fun R => S_Mod_classic_ob R) := {
   S_Mod_Hom R S f := S_Mod_classic_mor f }.
-
-Definition S_Mod_classic := Build_S_Module S_Mod_classic_s.
+*)
+(*Definition S_Mod_classic := Build_S_Module S_Mod_classic_s.*)
 
 End S_Module_classic.
 
@@ -254,9 +280,11 @@ Print Assumptions sub_struct.
 
 Definition subst_module_mor (P : REP S) := Build_RModule_Hom (sub_struct P).
 
+Check half_equation_struct.
+
 
 Program Instance subst_half_s : half_equation_struct 
-      (U:=Build_S_Module (S_Mod_classic [[1 ; 0]])) (V:=S_Mod_classic [[0]]) subst_module_mor.
+      (U:= (S_Mod_classic [[1 ; 0]])) (V:=S_Mod_classic [[0]]) subst_module_mor.
 Next Obligation.
 Proof.
   
@@ -269,7 +297,7 @@ Proof.
   unfold Rsubstar_not.
   
   rew (rmon_hom_rkl f).
-  app (rkl_eq S0).
+  app (rkl_eq T).
   intros. 
   match goal with [H:option _ |- _]=>destruct H end;
   simpl.

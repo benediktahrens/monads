@@ -86,7 +86,7 @@ Definition beta_module_mor := Build_RModule_Hom beta_struct.
 End for_a_representation.
 
 Program Instance beta_half_s : half_equation_struct 
-      (U:=Build_S_Module (S_Mod_classic Lambda [[1 ; 0]])) 
+      (U:=S_Mod_classic Lambda [[1 ; 0]]) 
       (V:=S_Mod_classic Lambda [[0]]) 
       beta_module_mor.
 Next Obligation.
@@ -98,7 +98,7 @@ Proof.
   
   simpl.
   apply CONSTR_eq; auto.
-  destruct S; simpl.
+  destruct T; simpl.
   destruct R; simpl.
   assert (H:=@repr_hom_s _ _ _ _ f).
   simpl in *.
