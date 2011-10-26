@@ -42,11 +42,11 @@ Variable P : RMonad (IDelta U).
 Variable Q : RMonad (IDelta U').
 Variable R : RMonad (IDelta U'').
 
-Variable M : gen_RMonad_Hom P Q 
+Variable M : colax_RMonad_Hom P Q 
 	(G1:=RETYPE (fun t => f t))
 	(G2:=RETYPE_PO (fun t => f t))    
 	(NNNT1 (fun t => f t)).
-Variable N : gen_RMonad_Hom Q R 
+Variable N : colax_RMonad_Hom Q R 
 	 (G1:=RETYPE (fun t => f' t))
          (G2:=RETYPE_PO (fun t => f' t)) 
 	 (NNNT1 (fun t => f' t)).
@@ -96,7 +96,7 @@ Definition RMon_car:
    fun c => Build_ipo_mor (RMon_cc c).
 
 Program Instance RMon_comp_s :
-gen_RMonad_Hom_struct 
+ colax_RMonad_Hom_struct 
  (P:=P) (Q:=R) (G1:=RETYPE (fun t => f' (f t)))
    (G2:=RETYPE_PO (fun t => f' (f t)))
    (NNNT1 (fun t => f' (f t)))
@@ -137,6 +137,6 @@ Proof.
 Qed.
 
 
-Definition RMon_comp := Build_gen_RMonad_Hom RMon_comp_s.
+Definition RMon_comp := Build_colax_RMonad_Hom RMon_comp_s.
 
 End comp.

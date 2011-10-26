@@ -151,12 +151,12 @@ Section Rep_Hom_Class.
 
 Variable f : type_type P -> type_type R.
 (*Hypothesis H : forall t, f (type_mor P t) = type_mor R t.*)
-Hypothesis H' : forall u v, f (u ~~> v) = f u ~~> f v.
+Hypothesis Harrow : forall u v, f (u ~~> v) = f u ~~> f v.
 Hypothesis Hbool : f (type_bool _ ) = type_bool _ .
 Hypothesis Hnat : f (type_nat _ ) = type_nat _ .
 
 
-Variable M : gen_RMonad_Hom P R 
+Variable M : colax_RMonad_Hom P R 
     (G1:=RETYPE (fun t => f t))
     (G2:=RETYPE_PO (fun t => f t)) (NNNT1 (fun t => f t)).
 
@@ -309,7 +309,7 @@ Program Definition Succ_hom' :=
                 gen_pb_fib M _ _ 
            ==
            unit_rmod M  ;; 
-           gen_PbRMod_Hom M (Succ (PCFPO_rep_struct := R)))).
+           colax_PbRMod_Hom M (Succ (PCFPO_rep_struct := R)))).
 
 Program Definition CondB_hom' := CondB (PCFPO_rep_struct := P) ;;
                 FIB_RMOD_HOM M _ ;;
@@ -317,7 +317,7 @@ Program Definition CondB_hom' := CondB (PCFPO_rep_struct := P) ;;
                 gen_pb_fib _ _ _ 
            ==
            unit_rmod M  ;; 
-           gen_PbRMod_Hom M (CondB (PCFPO_rep_struct := R)).
+           colax_PbRMod_Hom M (CondB (PCFPO_rep_struct := R)).
 
 
 Program Definition CondN_hom' := CondN (PCFPO_rep_struct := P) ;;
@@ -326,7 +326,7 @@ Program Definition CondN_hom' := CondN (PCFPO_rep_struct := P) ;;
                 gen_pb_fib _ _ _ 
            ==
            unit_rmod M  ;; 
-           gen_PbRMod_Hom M (CondN (PCFPO_rep_struct := R)).
+           colax_PbRMod_Hom M (CondN (PCFPO_rep_struct := R)).
 
 
 Program Definition Pred_hom' := Pred (PCFPO_rep_struct := P) ;;
@@ -335,7 +335,7 @@ Program Definition Pred_hom' := Pred (PCFPO_rep_struct := P) ;;
                 gen_pb_fib _ _ _ 
            ==
            unit_rmod M  ;; 
-           gen_PbRMod_Hom M (Pred (PCFPO_rep_struct := R)) .
+           colax_PbRMod_Hom M (Pred (PCFPO_rep_struct := R)) .
 
 Program Definition Zero_hom' := Zero (PCFPO_rep_struct := P) ;;
                 FIB_RMOD_HOM M _ ;;
@@ -343,7 +343,7 @@ Program Definition Zero_hom' := Zero (PCFPO_rep_struct := P) ;;
                 gen_pb_fib M _ _ 
            ==
            unit_rmod M  ;; 
-           gen_PbRMod_Hom M (Zero (PCFPO_rep_struct := R)).
+           colax_PbRMod_Hom M (Zero (PCFPO_rep_struct := R)).
 
 
 Program Definition fff_hom' := ffff (PCFPO_rep_struct := P) ;;
@@ -352,7 +352,7 @@ Program Definition fff_hom' := ffff (PCFPO_rep_struct := P) ;;
                 gen_pb_fib M _ _ 
            ==
            unit_rmod M  ;; 
-           gen_PbRMod_Hom M (ffff (PCFPO_rep_struct := R)).
+           colax_PbRMod_Hom M (ffff (PCFPO_rep_struct := R)).
 
 Program Definition ttt_hom' := tttt (PCFPO_rep_struct := P) ;;
                 FIB_RMOD_HOM M _ ;;
@@ -360,7 +360,7 @@ Program Definition ttt_hom' := tttt (PCFPO_rep_struct := P) ;;
                 gen_pb_fib M _ _ 
            ==
            unit_rmod M  ;; 
-           gen_PbRMod_Hom M (tttt (PCFPO_rep_struct := R)).
+           colax_PbRMod_Hom M (tttt (PCFPO_rep_struct := R)).
  
 Program Definition bottom_hom' := forall u,
            bottom u ;; 
@@ -369,7 +369,7 @@ Program Definition bottom_hom' := forall u,
                 gen_pb_fib M _ _ 
            ==
            unit_rmod M  ;; 
-           gen_PbRMod_Hom _ (bottom (f u)).
+           colax_PbRMod_Hom _ (bottom (f u)).
 
 Program Definition nats_hom' := forall m,
            nats m ;;
@@ -378,19 +378,19 @@ Program Definition nats_hom' := forall m,
                 gen_pb_fib M _ _ 
            ==
            unit_rmod M  ;; 
-           gen_PbRMod_Hom _ (nats m).
+           colax_PbRMod_Hom _ (nats m).
 
 Program Definition app_hom' := forall u v, 
           product_mor _ 
              (FIB_RMOD_HOM M ((u ~~> v)) ;;
-              FIB_RMOD_small_eq _ (H' _ _);;
+              FIB_RMOD_small_eq _ (Harrow _ _);;
               gen_pb_fib _ _ _ )
              (FIB_RMOD_HOM M (u) ;;
               gen_pb_fib _ _ _ )
             ;;
-           gen_PROD_PM _ _ _ _ 
+           colax_PROD_PM _ _ _ _ 
             ;;
-           gen_PbRMod_Hom _ (app (f u) (f v))
+           colax_PbRMod_Hom _ (app (f u) (f v))
            ==
            app u v;;
              FIB_RMOD_HOM M _ ;;
@@ -413,11 +413,11 @@ Program Definition rec_hom' := forall t,
         gen_pb_fib M _ _ 
       ==
       FIB_RMOD_HOM M _ ;;
-      FIB_RMOD_small_eq _ (H' _ _) ;;
+      FIB_RMOD_small_eq _  (Harrow _ _) ;;
       gen_pb_fib M _ _ ;;
-      gen_PbRMod_Hom M (rec (f t)) .
+      colax_PbRMod_Hom M (rec (f t)) .
 
-Program Definition  abs_hom2' := forall u v,
+Program Definition  abs_hom' := forall u v,
      abs u v ;;
         FIB_RMOD_HOM M _ 
 (*        FIB_RMOD_small_eq _ (H' _ _ ) ;;
@@ -425,9 +425,9 @@ Program Definition  abs_hom2' := forall u v,
              ==
         der_fib_hom_noeq _ _ _ ;; 
         gen_pb_fib _ _ _ ;;
-        gen_PbRMod_Hom M (abs (f u) (f v)) ;;
+        colax_PbRMod_Hom M (abs (f u) (f v)) ;;
 	gen_fib_pb _ _ _  ;;
-	FIB_RMOD_small_eq _ (eq_sym (H' _ _ )) .
+	FIB_RMOD_small_eq _ (eq_sym (Harrow _ _ )) .
 
 Class PCFPO_rep_Hom_struct := {
 
@@ -465,7 +465,7 @@ Class PCFPO_rep_Hom_struct := {
 ;*)
   rec_hom : rec_hom'
 ;
-  abs_hom2 : abs_hom2'
+  abs_hom : abs_hom'
 }.
 
 End Rep_Hom_Class.
@@ -478,12 +478,12 @@ Record PCFPO_rep_Hom := {
   tcomp_arrow : forall u v, tcomp (u ~~> v) = tcomp u ~~> tcomp v;
   tcomp_nat : tcomp (type_nat _ ) = type_nat R ;
   tcomp_bool : tcomp (type_bool _ ) = type_bool R ;
-  rep_Hom_monad :> gen_RMonad_Hom P R (NNNT1 (fun t => tcomp t));
-  rep_gen_Hom_monad_struct :> PCFPO_rep_Hom_struct 
+  rep_Hom_monad :> colax_RMonad_Hom P R (NNNT1 (fun t => tcomp t));
+  rep_colax_Hom_monad_struct :> PCFPO_rep_Hom_struct 
                  tcomp_arrow tcomp_bool tcomp_nat rep_Hom_monad
 }.
 
 End rep_hom.
 
-Existing Instance rep_gen_Hom_monad_struct.
+Existing Instance rep_colax_Hom_monad_struct.
 

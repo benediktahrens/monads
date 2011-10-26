@@ -61,7 +61,7 @@ Hypothesis type_arrow : forall s t, f (s ~> t) = f s ~~> f t.
 
 Class PCFPO_rep_struct := {
   app : forall u v, (P[u ~~> v]) x (P[u]) ---> P[v];
-  abs : forall u v, (d P //u)[v] ---> P[u ~~> v];
+  abs : forall u v, (d P // u)[v] ---> P[u ~~> v];
   rec : forall t, P[t ~~> t] ---> P[t];
   tttt :  * ---> P[Bool];
   ffff :  * ---> P[Bool];

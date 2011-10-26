@@ -252,7 +252,7 @@ Proof.
 Qed.
   
 Program Instance init_mon_s : 
-     gen_Monad_Hom_struct (P:=PCFM) (Q:=R)
+     colax_Monad_Hom_struct (P:=PCFM) (Q:=R)
              (F0:=RETYPE (fun t => type_mor R t)) 
      (fun V t v => match v with ctype _ y => init y end).
 Next Obligation.
@@ -379,7 +379,7 @@ Proof.
   auto.
 Qed.
 
-Canonical Structure init_mon := Build_gen_Monad_Hom init_mon_s.
+Canonical Structure init_mon := Build_colax_Monad_Hom init_mon_s.
 
 Obligation Tactic := simpl; intros; repeat elim_unit; auto.
 
@@ -499,7 +499,7 @@ Proof.
   
   (*1*)
   assert (Hw:=gen_monad_hom_weta 
-     (gen_Monad_Hom_struct := rep_Hom_monad)).
+     (colax_Monad_Hom_struct := rep_Hom_monad)).
      simpl in Hw.
   assert (Hw' := Hw _ _ (ctype _ v)).
   simpl in Hw'.

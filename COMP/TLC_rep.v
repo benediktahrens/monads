@@ -66,7 +66,7 @@ Section Rep_Hom_Class.
 
 Variable f : type_type P -> type_type R.
 Variable H : forall t, f (type_mor P t) = type_mor R t.
-Variable M : gen_Monad_Hom P R (RETYPE (fun t => f t)).
+Variable M : colax_Monad_Hom P R (RETYPE (fun t => f t)).
 
 Definition MM := PMod_ind_Hom M.
 
@@ -157,7 +157,7 @@ End Rep_Hom_Class.
 Record TLC_rep_Hom := {
   tcomp : type_type P -> type_type R ;
   ttriag : forall t, tcomp (type_mor P t) = type_mor R t;
-  rep_Hom_monad :> gen_Monad_Hom P R (RETYPE (fun t => tcomp t));
+  rep_Hom_monad :> colax_Monad_Hom P R (RETYPE (fun t => tcomp t));
   rep_gen_Hom_monad_struct :> TLC_rep_Hom_struct ttriag rep_Hom_monad
 }.
 
@@ -338,7 +338,7 @@ Definition id_rep_car:
 Obligation Tactic := idtac.
 
 Program Instance blalala : 
-       gen_Monad_Hom_struct (P:=P) (Q:=P) (F0:=RETYPE (fun t => t))
+     colax_Monad_Hom_struct (P:=P) (Q:=P) (F0:=RETYPE (fun t => t))
        id_rep_car.
 Next Obligation.
 Proof.
@@ -366,7 +366,7 @@ Proof.
   auto.
 Qed.
 
-Definition id_Rep_monad := Build_gen_Monad_Hom blalala.
+Definition id_Rep_monad := Build_colax_Monad_Hom blalala.
 
 Program Instance Rep_id_struct : 
          TLC_rep_Hom_struct (f := fun t => t) 

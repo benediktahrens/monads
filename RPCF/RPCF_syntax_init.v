@@ -1,4 +1,4 @@
-Require Import Coq.Logic.Eqdep.
+aRequire Import Coq.Logic.Eqdep.
 
 Require Export CatSem.RPCF.RPCF_syntax_rep.
 Require Export CatSem.RPCF.RPCF_rep_hom.
@@ -683,7 +683,7 @@ Obligation Tactic := unfold
                        nats_hom'  , 
                        app_hom'   ,
                        rec_hom'   , 
-                       abs_hom2'  ;
+                       abs_hom'  ;
    simpl; intros; repeat elim_unit; auto.
 
 Program Instance initR_s : 

@@ -86,7 +86,7 @@ Section bla.
 Variable P : Monad (ITYPE U).
 Variable Q : Monad (ITYPE U').
 
-Variable M : gen_Monad_Hom P Q (RETYPE).
+Variable M : colax_Monad_Hom P Q (RETYPE).
 
 Variable s : U.
 
@@ -101,7 +101,7 @@ Next Obligation.
 Proof.
   simpl.
   intros.
-  assert (H:= gen_monad_hom_kl (gen_Monad_Hom_struct := M)).
+  assert (H:= gen_monad_hom_kl (colax_Monad_Hom_struct := M)).
   simpl in H.
   rewrite <- H.
   apply f_equal.
@@ -126,7 +126,7 @@ Next Obligation.
 Proof.
   simpl.
   intros.
-  assert (H:= gen_monad_hom_kl (gen_Monad_Hom_struct := M)).
+  assert (H:= gen_monad_hom_kl (colax_Monad_Hom_struct := M)).
   simpl in H.
   rewrite <- H.
   apply f_equal.
@@ -183,7 +183,7 @@ Proof.
         (retype_map (kleisli (shift (P:=P)(W:=W) f))
             (ctype (V:=P (opt r V)) (t:=s)  x)))).
   auto.*)
-  assert (H'':= gen_monad_hom_kl (gen_Monad_Hom_struct := M)).
+  assert (H'':= gen_monad_hom_kl (colax_Monad_Hom_struct := M)).
   simpl in H''.
   rewrite H''.
 
@@ -215,7 +215,7 @@ Proof.
   clear v.
   intro v.
   rewrite <- retype_nt.
-  assert (H4 := NTcomm (gen_Monad_Hom_NatTrans M)).
+  assert (H4 := NTcomm (colax_Monad_Hom_NatTrans M)).
   simpl in H4.
   rewrite <- H4.
   rewrite H.
@@ -230,8 +230,8 @@ Proof.
   
   simpl.
   rewrite <- retype_nt.
-  assert (H4 := NTcomm (gen_Monad_Hom_NatTrans M)).
-  assert (H12 := gen_monad_hom_weta (gen_Monad_Hom_struct := M)).
+  assert (H4 := NTcomm (colax_Monad_Hom_NatTrans M)).
+  assert (H12 := gen_monad_hom_weta (colax_Monad_Hom_struct := M)).
   simpl in H12.
   rewrite H12.
   assert (H13 := etakl Q).
@@ -262,7 +262,7 @@ Proof.
   simpl.
 
   rewrite <- retype_nt.
-  assert (H'':= gen_monad_hom_kl (gen_Monad_Hom_struct := M)).
+  assert (H'':= gen_monad_hom_kl (colax_Monad_Hom_struct := M)).
   simpl in H''.
   rewrite H''.
 
@@ -294,7 +294,7 @@ Proof.
   clear v.
   intro v.
   rewrite <- retype_nt.
-  assert (H4 := NTcomm (gen_Monad_Hom_NatTrans M)).
+  assert (H4 := NTcomm (colax_Monad_Hom_NatTrans M)).
   simpl in H4.
   rewrite <- H4.
   rewrite H.
@@ -311,8 +311,8 @@ Proof.
   
   simpl.
   rewrite <- retype_nt.
-  assert (H4 := NTcomm (gen_Monad_Hom_NatTrans M)).
-  assert (H12 := gen_monad_hom_weta (gen_Monad_Hom_struct := M)).
+  assert (H4 := NTcomm (colax_Monad_Hom_NatTrans M)).
+  assert (H12 := gen_monad_hom_weta (colax_Monad_Hom_struct := M)).
   simpl in H12.
   rewrite H12.
   
@@ -371,7 +371,7 @@ Proof.
   clear f.
   intro x.
   clear V.
-  assert (H'':= gen_monad_hom_kl (gen_Monad_Hom_struct := M)).
+  assert (H'':= gen_monad_hom_kl (colax_Monad_Hom_struct := M)).
   simpl in H''.
   
   rewrite <- retype_nt.
@@ -380,7 +380,7 @@ Proof.
   clear x.
   intro x.
   clear dependent obD.
-  assert (H := NTcomm (gen_Monad_Hom_NatTrans M)).
+  assert (H := NTcomm (colax_Monad_Hom_NatTrans M)).
   simpl in H.
   rewrite <- H.
   simpl.
@@ -402,13 +402,13 @@ Proof.
   clear dependent V.
   clear dependent obD.
   
-  assert (H := NTcomm (gen_Monad_Hom_NatTrans M)).
+  assert (H := NTcomm (colax_Monad_Hom_NatTrans M)).
   rewrite <- retype_nt.
   auto.
   
   simpl in H.
   
-  assert (H12 := gen_monad_hom_weta (gen_Monad_Hom_struct := M)).
+  assert (H12 := gen_monad_hom_weta (colax_Monad_Hom_struct := M)).
   simpl in H12.
   rewrite H12.
   
@@ -469,7 +469,7 @@ Variable f : U -> U'.
 Variable P : Monad (ITYPE U).
 Variable Q : Monad (ITYPE U').
 
-Variable M : gen_Monad_Hom P Q (RETYPE f).
+Variable M : colax_Monad_Hom P Q (RETYPE f).
 Variables V W : ITYPE U.
 Variable f' : V ---> P W.
 Variable t : U.
@@ -482,7 +482,7 @@ M W (f t) (ctype f (V:=P W) (t:=t) (kleisli f' t y)) =
        (f t) (M V (f t) (ctype f (V:=P V) (t:=t) y)).
 
 Proof.
-  assert (H:= gen_monad_hom_kl (gen_Monad_Hom_struct := M)).
+  assert (H:= gen_monad_hom_kl (colax_Monad_Hom_struct := M)).
   simpl in H.
   assert (H':= H _ _ f' _ (ctype _ y)).
   simpl in H'.
@@ -497,7 +497,7 @@ Lemma MonadHomWe :
      weta (Monad_struct := Q)
         (retype f V) (f t) (ctype f (V:=V) (t:=t) z).
 Proof.
-  assert (H:= gen_monad_hom_weta (gen_Monad_Hom_struct := M)).
+  assert (H:= gen_monad_hom_weta (colax_Monad_Hom_struct := M)).
   simpl in H.
   assert (H':= H _ _ (ctype _ z)).
   simpl in H'.
@@ -510,7 +510,7 @@ Lemma MonadHomLift :
   lift (retype_map (W:=W) g) (f t) (M V (f t) (ctype f (V:=P V) (t:=t) y)) =
      M W (f t) (ctype f (V:=P W) (t:=t) (lift g t y)).
 Proof.
-  assert (H3 := NTcomm (gen_Monad_Hom_NatTrans M)).
+  assert (H3 := NTcomm (colax_Monad_Hom_NatTrans M)).
   simpl in H3.
   assert (H4:= H3 _ _ g _ (ctype _ y)).
   simpl in H4.
@@ -666,8 +666,8 @@ Variable P : Monad (ITYPE U).
 Variable Q : Monad (ITYPE U').
 Variable R : Monad (ITYPE U'').
 
-Variable M : gen_Monad_Hom P Q (RETYPE (fun t => f t)).
-Variable N : gen_Monad_Hom Q R (RETYPE (fun t => f' t)).
+Variable M : colax_Monad_Hom P Q (RETYPE (fun t => f t)).
+Variable N : colax_Monad_Hom Q R (RETYPE (fun t => f' t)).
 
 Definition comp_rep_car : (forall c : ITYPE U,
         RETYPE (fun t => f' (f t)) (P c) ---> 
@@ -684,7 +684,7 @@ Definition comp_rep_car : (forall c : ITYPE U,
 Obligation Tactic := idtac.
 
 Program Instance comp_rep_mon_hom_s : 
-       gen_Monad_Hom_struct (P:=P) (Q:=R) 
+       colax_Monad_Hom_struct (P:=P) (Q:=R) 
        (F0:=RETYPE (fun t => f' (f t)))
        comp_rep_car.
 Next Obligation.
@@ -729,7 +729,7 @@ Proof.
 Qed.
 
 Definition comp_Rep_monad := 
-    Build_gen_Monad_Hom comp_rep_mon_hom_s.
+    Build_colax_Monad_Hom comp_rep_mon_hom_s.
 
 End comp_monad.
 

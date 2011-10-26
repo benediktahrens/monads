@@ -158,7 +158,7 @@ Definition id_rep_car:
 Obligation Tactic := idtac.
 
 Program Instance blalala : 
-       gen_Monad_Hom_struct (P:=P) (Q:=P) (F0:=RETYPE (fun t => t))
+       colax_Monad_Hom_struct (P:=P) (Q:=P) (F0:=RETYPE (fun t => t))
        id_rep_car.
 Next Obligation.
 Proof.
@@ -186,7 +186,7 @@ Proof.
   auto.
 Qed.
 
-Definition id_Rep_monad := Build_gen_Monad_Hom blalala.
+Definition id_Rep_monad := Build_colax_Monad_Hom blalala.
 
 Program Instance Rep_id_struct : 
          PCF_rep_Hom_struct (f := fun t => t) 

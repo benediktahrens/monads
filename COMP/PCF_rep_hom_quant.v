@@ -133,7 +133,7 @@ Section Rep_Hom_Class.
 Variable f : type_type P -> type_type R.
 Variable H : forall t, f (type_mor P t) = type_mor R t.
 Hypothesis H' : forall u v, f (u ~~> v) = f u ~~> f v.
-Variable M : gen_Monad_Hom P R (RETYPE (fun t => f t)).
+Variable M : colax_Monad_Hom P R (RETYPE (fun t => f t)).
 (*
 Check (fun (m : nat) =>
         nats (PCF_rep_struct :=P) m ;; 
@@ -322,7 +322,7 @@ Record PCF_rep_Hom := {
   tcomp : type_type P -> type_type R ;
   tcomp_arrow : forall u v, tcomp (u ~~> v) = tcomp u ~~> tcomp v;
   ttriag : forall t, tcomp (type_mor P t) = type_mor R t;
-  rep_Hom_monad :> gen_Monad_Hom P R (RETYPE (fun t => tcomp t));
+  rep_Hom_monad :> colax_Monad_Hom P R (RETYPE (fun t => tcomp t));
   rep_gen_Hom_monad_struct :> 
      PCF_rep_Hom_struct ttriag tcomp_arrow rep_Hom_monad
 }.

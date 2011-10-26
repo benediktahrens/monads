@@ -120,17 +120,18 @@ Record S_Module := {
 
 (** a half-equation is a natural transformation of between S-Modules. 
     we need the naturality condition in the following *)
-Locate "@".
+
 (*Notation "U @ f" := (S_Mod_Hom (S_Module_s := U) f)(at level 4).*)
-Locate "#".
+
 
 Notation "U @ f" := (s_mod_hom U f)(at level 4). 
 
-
 Class half_equation_struct (U V : S_Module) 
-    (half_eq : forall R : REP S, s_mod U R ---> s_mod V R) := {
+    (half_eq : forall R : REP S, (*s_mod*) U R ---> (*s_mod*) V R) := {
   comm_eq_s : forall (R T : REP S)  (f : R ---> T), 
       U @ f ;; PbRMod_Hom _ (half_eq T) ==  half_eq R ;; V @ f }.
+
+
 
 (*
 Class half_equation_struct (U V : S_Module) 
@@ -280,8 +281,6 @@ Print Assumptions sub_struct.
 
 Definition subst_module_mor (P : REP S) := Build_RModule_Hom (sub_struct P).
 
-Check half_equation_struct.
-
 
 Program Instance subst_half_s : half_equation_struct 
       (U:= (S_Mod_classic [[1 ; 0]])) (V:=S_Mod_classic [[0]]) subst_module_mor.
@@ -326,7 +325,7 @@ Definition half_eq_classic (U : S_Module)(codl : [nat]) :=
        - an algebraic codomain [S_Mod_alg codl]
        - two half-equations [eq1 eq2 : domS -> S_Mod_alg codl] *)
 
-Record eq_classic := {
+Record ineq_classic := {
   Dom : S_Module ;
   Cod : [nat] ;
   eq1 : half_eq_classic Dom Cod ;
@@ -360,19 +359,19 @@ Definition verifies_eq (e : eq_alg) (P : REP Sig) :=
        (*half_eq*) (eq1 e) P _ x << (*half_eq*) (eq2 e)_ _ x.
 *)
 
-Definition verifies_eq (e : eq_classic) (P : REP S) :=
+Definition verifies_ineq (e : ineq_classic) (P : REP S) :=
   forall c (x : Dom e P c), 
         eq1 _ _ _ x <<  eq2 _ _ _ x.
 
 (** a set of (in)equations, indexed by a set A *)
 
-Definition Prop_Sig (A : Type) := A -> eq_classic.
+Definition Inequations (A : Type) := A -> ineq_classic.
 
 
 (** [R] verifies [T] iff it verifies any equation of [T] *)
 
-Definition verifies_psig A (T : Prop_Sig A) (R : REP S) :=
-      forall a, verifies_eq (T a) R.
+Definition verifies_ineqs A (T : Inequations A) (R : REP S) :=
+      forall a, verifies_ineq (T a) R.
 
 (** ** Subcategory of Rep(Sig) of representations verifying equations *)
 
@@ -385,17 +384,17 @@ Section subcat.
 *)
 
 Variable A : Type.
-Variable T : Prop_Sig A.
+Variable T : Inequations A.
 
 (** lemma stating that the properties are closed under composition and 
     identity *)
 
-Program Instance Prop_Rep : SubCat_compat (REP S)
-     (fun P => verifies_psig T P) (fun a b f => True).
+Program Instance Ineq_Rep : SubCat_compat (REP S)
+     (fun P => verifies_ineqs T P) (fun a b f => True).
 
 (** hence we obtain a category, the category of representations of [(Sig, T)] *)
 
-Definition PROP_REP : Cat := SubCat Prop_Rep.
+Definition INEQ_REP : Cat := SubCat Ineq_Rep.
 
 
 (** * Initiality in the subcategory 
@@ -410,7 +409,7 @@ first thing to do is to build the correct order on the set of terms:
 *)
 
 Definition prop_rel_c X (x y : UTS S X) : Prop :=
-      forall R : PROP_REP, init (FINJ _ R) x << init (FINJ _ R) y.
+      forall R : INEQ_REP, init (FINJ _ R) x << init (FINJ _ R) y.
 
 (** this ordering is a preorder *)
 
@@ -490,7 +489,7 @@ This lemma corresponds to one direction of Lemma 36 *)
 Lemma lemma36 (l : [nat]) (V : Type)
     (x y : prod_mod_c (fun x : Type => UTS S x) V l)
     (H : prod_mod_c_rel (M:=prop_rel) x y) 
-    (R : PROP_REP):
+    (R : INEQ_REP):
 Rel (PO_obj_struct := prod_mod_po (SC_inj_ob R) V l) 
   (Prod_mor_c (init_mon (SC_inj_ob R)) x)
   (Prod_mor_c (init_mon (SC_inj_ob R)) y).
@@ -627,7 +626,7 @@ other direction of Lemma 36
 
 Lemma lemma36_2 (l : [nat]) (V : Type)
     (x y : prod_mod_c (fun x : Type => UTS S x) V l)
-    (H : forall R : PROP_REP,
+    (H : forall R : INEQ_REP,
         Rel (PO_obj_struct := prod_mod_po (SC_inj_ob R) V l) 
   (Prod_mor_c (init_mon (Sig:=S) (SC_inj_ob R)) x)
   (Prod_mor_c (init_mon (Sig:=S) (SC_inj_ob R)) y) ) :
@@ -748,7 +747,7 @@ the new nice representation [UTSPROPRepr] verifies the equations of [T], contrar
 
 Section weak_init.
 
-Variable R : PROP_REP.
+Variable R : INEQ_REP.
 
 (** the initial morphism is the same as before
       - we need to show that it is monotone, which is by definition
@@ -809,7 +808,7 @@ End weak_init.
 (** ** V (init) = V (init_prop)
 *)
 
-Lemma bb2b (R : PROP_REP) a l (x : prod_mod_c (fun x : Type => UTS S x) a l):
+Lemma bb2b (R : INEQ_REP) a l (x : prod_mod_c (fun x : Type => UTS S x) a l):
   Prod_mor_c (init_prop_mon R) x = Prod_mor_c (init_mon (SC_inj_ob R)) x.
 Proof.
   reflexivity.
@@ -820,7 +819,7 @@ Qed.
 
 Lemma lemma36_2a (l : [nat]) (V : Type)
     (x y : prod_mod_c (fun x : Type => UTS S x) V l)
-    (H : forall R : PROP_REP,
+    (H : forall R : INEQ_REP,
         Rel (PO_obj_struct := prod_mod_po (SC_inj_ob R) V l) 
   (Prod_mor_c (init_prop_mon  (R)) x)
   (Prod_mor_c (init_prop_mon  (R)) y) ) :
@@ -841,9 +840,9 @@ Qed.
       - and for a2 as well
 *)
 
-Lemma UTSPRepr_sig_prop : verifies_psig T UTSProp.
+Lemma UTSPRepr_sig_prop : verifies_ineqs T UTSProp.
 Proof.
-  unfold verifies_psig, verifies_eq.
+  unfold verifies_ineqs, verifies_ineq.
   simpl; intros.
   apply lemma36_2a.
   intros. 
@@ -860,8 +859,8 @@ Proof.
   rewrite <- H5'.
   
   destruct R.
-  unfold verifies_psig in v.
-  unfold verifies_eq in v.
+  unfold verifies_ineqs in v.
+  unfold verifies_ineq in v.
   simpl in *.
   apply v.
 Qed.
@@ -907,15 +906,15 @@ Qed.
 (** ** yielding an object of the subcategory 
 *)
 
-Definition UTSPROP : PROP_REP := 
- exist (fun R : Representation S => verifies_psig (A:=A) T R) UTSProp
+Definition UTSPROP : INEQ_REP := 
+ exist (fun R : Representation S => verifies_ineqs (*A:=A*) T R) UTSProp
   UTSPRepr_sig_prop.
 
 (** ** Initiality in the subcategory *)
 
 Section init.
 
-Variable R : PROP_REP.
+Variable R : INEQ_REP.
 
 (** the initial morphism is the same as before
       - we need to show that it is monotone, which is by definition
@@ -1005,7 +1004,7 @@ End init.
 
 (** ** Initiality verified by Coq *)
 
-Program Instance INITIAL_PROP : Initial PROP_REP := {
+Program Instance INITIAL_INEQ_REP : Initial INEQ_REP := {
   Init := UTSPROP ;
   InitMor := init_prop ;
   InitMorUnique := init_prop_unique

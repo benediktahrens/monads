@@ -120,12 +120,12 @@ Program Instance Rep_comp_struct :
       (RMon_comp M N).
 Obligation 12.
 Proof. (* abs 2 *)
-  unfold abs_hom2';
+  unfold abs_hom';
   simpl.
   intros u v c y.
-  assert (HM:=abs_hom2 (u:=u)(v:=v) 
+  assert (HM:=abs_hom (u:=u)(v:=v) 
         (PCFPO_rep_Hom_struct :=M) (*c:=c)y*)).
-  assert (HN:=abs_hom2 (u:=tcomp M u)
+  assert (HN:=abs_hom (u:=tcomp M u)
                       (v:=tcomp M v)
           (PCFPO_rep_Hom_struct :=N)
           (*(c:=retype(fun t => tcomp M t) c)*)).

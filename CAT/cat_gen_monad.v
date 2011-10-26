@@ -14,11 +14,11 @@ Variable P : Monad C.
 
 Obligation Tactic := cat.
 
-Program Instance gen_Monad_Hom_id_s : gen_Monad_Hom_struct (P:=P)
+Program Instance colax_Monad_Hom_id_s : colax_Monad_Hom_struct (P:=P)
   (F0 := Id C)
  (fun c => id _ ).
 
-Definition gen_Monad_Hom_id := Build_gen_Monad_Hom gen_Monad_Hom_id_s.
+Definition colax_Monad_Hom_id := Build_colax_Monad_Hom colax_Monad_Hom_id_s.
 
 End id.
 
@@ -32,11 +32,11 @@ Variable E : Cat.
 Variable R : Monad E.
 
 Variable F : Functor C D.
-Variable S : gen_Monad_Hom P Q F.
+Variable S : colax_Monad_Hom P Q F.
 Variable G : Functor D E.
-Variable T : gen_Monad_Hom Q R G.
+Variable T : colax_Monad_Hom Q R G.
 
-Program Instance gen_Monad_Hom_comp_s : gen_Monad_Hom_struct (P:=P)
+Program Instance colax_Monad_Hom_comp_s : colax_Monad_Hom_struct (P:=P)
   (F0 := G O F)
  (fun c => #G(S c) ;; T (F c)).
 Next Obligation.
@@ -45,23 +45,23 @@ Proof.
   rewrite <- FComp.
   rewrite <- FComp.
   rewrite assoc.  
-  rerew (gen_monad_hom_kl (gen_Monad_Hom_struct := T)).
+  rerew (gen_monad_hom_kl (colax_Monad_Hom_struct := T)).
   rewrite <- assoc.
   rewrite <- FComp.
-  rerew (gen_monad_hom_kl (gen_Monad_Hom_struct := S)).
+  rerew (gen_monad_hom_kl (colax_Monad_Hom_struct := S)).
   apply hom_refl.
 Qed.
 Next Obligation.
 Proof.
   rewrite <- assoc.
   rewrite <- FComp.
-  rewrite (gen_monad_hom_weta (gen_Monad_Hom_struct := S)).
-  rewrite (gen_monad_hom_weta (gen_Monad_Hom_struct := T)).
+  rewrite (gen_monad_hom_weta (colax_Monad_Hom_struct := S)).
+  rewrite (gen_monad_hom_weta (colax_Monad_Hom_struct := T)).
   apply hom_refl.
 Qed.
 
-Definition gen_Monad_Hom_comp := 
-    Build_gen_Monad_Hom gen_Monad_Hom_comp_s.
+Definition colax_Monad_Hom_comp := 
+    Build_colax_Monad_Hom colax_Monad_Hom_comp_s.
 
 End comp.
 
@@ -75,7 +75,7 @@ Variable Q : Monad D.
 
 Record gen_Monad_Hom_type  := {
  base_f : Functor C D ;
- gen_mon_hom :> gen_Monad_Hom P Q base_f
+ gen_mon_hom :> colax_Monad_Hom P Q base_f
 }.
 
 (*

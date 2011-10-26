@@ -518,7 +518,7 @@ Variable D : Cat morD.
 Variable D : Cat.
 Variable Q : Monad D. (*ITYPE.*)
 Variable F : Functor C D.
-Variable Si : gen_Monad_Hom R Q F.
+Variable Si : colax_Monad_Hom R Q F.
 Variable N : MOD Q ITYPE.
 
 Program Instance FIB_PM_struct s: Module_Hom_struct 

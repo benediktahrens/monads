@@ -54,7 +54,7 @@ Definition F_mod : MOD P D := Build_Module F_mod_s.
 (** generalizing the previos one *)
 
 
-Class gen_Monad_Hom_struct (Tau : forall c, F (P c) ---> Q (F c)) := {
+Class colax_Monad_Hom_struct (Tau : forall c, F (P c) ---> Q (F c)) := {
   gen_monad_hom_kl : forall c d (f : c ---> P d),
        #F (kleisli f) ;; Tau _  == 
           Tau _ ;; (kleisli (#F f ;; Tau _ )) ;
@@ -62,9 +62,9 @@ Class gen_Monad_Hom_struct (Tau : forall c, F (P c) ---> Q (F c)) := {
        #F (weta c) ;; Tau _  == weta _ 
 }.
 
-Record gen_Monad_Hom := {
+Record colax_Monad_Hom := {
   gen_monad_hom:> forall c, F (P c) ---> Q (F c);
-  gen_monad_hom_struct :> gen_Monad_Hom_struct gen_monad_hom
+  gen_monad_hom_struct :> colax_Monad_Hom_struct gen_monad_hom
 }.
 
 
@@ -72,9 +72,9 @@ Existing Instance gen_monad_hom_struct.
 
 Section Monad_Hom_NT_PB.
 
-Variable M : gen_Monad_Hom.
+Variable M : colax_Monad_Hom.
 
-Program Instance gen_Monad_Hom_NatTrans : 
+Program Instance colax_Monad_Hom_NatTrans : 
    NT_struct (F:=CompF (MFunc P) F)
             (G:=CompF F (MFunc Q)) (fun c : C => M c).
 Next Obligation.
@@ -82,14 +82,14 @@ Proof.
   simpl; intros.
   unfold lift.
   simpl.
-  assert (H:=gen_monad_hom_kl (gen_Monad_Hom_struct := M) (f;; weta d)).
+  assert (H:=gen_monad_hom_kl (colax_Monad_Hom_struct := M) (f;; weta d)).
   simpl in *.
   rewrite H.
   apply praecomp.
   apply kleisli_oid.
   rewrite FComp.
   rewrite assoc.
-  rewrite (gen_monad_hom_weta (gen_Monad_Hom_struct := M)).
+  rewrite (gen_monad_hom_weta (colax_Monad_Hom_struct := M)).
   cat.
 Qed.
 
@@ -128,7 +128,7 @@ Proof.
   rewrite FComp.
   repeat rewrite assoc.
   apply praecomp.
-  assert (H:=gen_monad_hom_kl (gen_Monad_Hom_struct := M)).
+  assert (H:=gen_monad_hom_kl (colax_Monad_Hom_struct := M)).
   simpl in *.
   mod.
 Qed.
@@ -182,7 +182,7 @@ End Monad_Hom_NT_PB.
 (*End gen_monad_morphism.*)
 
 
-Variable M : gen_Monad_Hom.
+Variable M : colax_Monad_Hom.
 
 Program Instance PMod_ind_Hom_s : Module_Hom_struct
       (S:= F_mod) (T:=PModule M Q) M.

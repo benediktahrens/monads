@@ -868,14 +868,14 @@ Variable f : T -> U.
 Variable P : RMonad (IDelta T).
 Variable Q : RMonad (IDelta U).
 
-Variable h : gen_RMonad_Hom P Q (NNNT1 f).
+Variable h : colax_RMonad_Hom P Q (NNNT1 f).
 Variable s : T.
 
 Obligation Tactic := idtac.
 
 Program Instance fib_rmod_hom_car_po c : 
    PO_mor_struct (a:=((FIB_RMOD P s) P) c)
-                  (b:=((FIB_RMOD P (f s)) (gen_PbRMod h Q)) c)
+                  (b:=((FIB_RMOD P (f s)) (colax_PbRMod h Q)) c)
     (fun z => h c (f s) (ctype f z)).
 Next Obligation.
 Proof.
@@ -894,13 +894,13 @@ Qed.
 (*Definition fib_rmod_hom_c c := Build_PO_mor (fib_rmod_hom_car_po c).*)
 
 Definition FIB_RMOD_HOM_car (c : ITYPE T):
-  ((FIB_RMOD P s) P) c ---> ((FIB_RMOD P (f s)) (gen_PbRMod h Q)) c :=
+  ((FIB_RMOD P s) P) c ---> ((FIB_RMOD P (f s)) (colax_PbRMod h Q)) c :=
    Build_PO_mor (fib_rmod_hom_car_po c).
 
 Obligation Tactic := idtac.
 
 Program Instance FIB_RMOD_HOM_s : RModule_Hom_struct
-   (M:=FIB_RMOD _ s P) (N:=FIB_RMOD _ (f s) (gen_PbRMod h Q))
+   (M:=FIB_RMOD _ s P) (N:=FIB_RMOD _ (f s) (colax_PbRMod h Q))
    FIB_RMOD_HOM_car.
 Next Obligation.
 Proof.

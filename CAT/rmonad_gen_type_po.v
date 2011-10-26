@@ -26,7 +26,7 @@ Variable f : T -> U.
 Section term_to_term.
 Variable P : RMonad (IDelta T).
 Variable Q : RMonad (IDelta U).
-Variable M : gen_RMonad_Hom P Q
+Variable M : colax_RMonad_Hom P Q
 	      (G1:=RETYPE (fun t => f t))
 	      (G2:=RETYPE_PO (fun t => f t)) 
               (NNNT1 (fun t => f t)).
@@ -91,11 +91,11 @@ Qed.
 End lemmata.
 
 Program Instance unit_rmod_s : RModule_Hom_struct
-  (M:= Term (C:=RMOD P Ord)) (N:= gen_PbRMod M (Term (C:=RMOD Q Ord)))
+  (M:= Term (C:=RMOD P Ord)) (N:= colax_PbRMod M (Term (C:=RMOD Q Ord)))
   (fun V => id PO_TERM).
 
 Definition unit_rmod : 
-  Term (C:=RMOD P Ord) ---> gen_PbRMod M (Term (C:=RMOD Q Ord)) :=
+  Term (C:=RMOD P Ord) ---> colax_PbRMod M (Term (C:=RMOD Q Ord)) :=
      Build_RModule_Hom unit_rmod_s.
 
 End term_to_term.
@@ -104,7 +104,7 @@ Section gen_pb_der.
 
 Variable P : RMonad (IDelta T).
 Variable Q : RMonad (IDelta U).
-Variable h : gen_RMonad_Hom P Q 
+Variable h : colax_RMonad_Hom P Q 
               (G1:=RETYPE (fun t => f t))
 	      (G2:=RETYPE_PO (fun t => f t)) (NNNT1 (fun t => f t)).
 
@@ -119,8 +119,8 @@ Variable N : RMOD Q E.
 Obligation Tactic := idtac.
 
 Program Instance gen_pb_der_s : RModule_Hom_struct
-   (M:= DER_RMOD _ _ u (gen_PbRMod h N))
-   (N:=gen_PbRMod h (DER_RMOD _ _ (f u) N))
+   (M:= DER_RMOD _ _ u (colax_PbRMod h N))
+   (N:= colax_PbRMod h (DER_RMOD _ _ (f u) N))
    (fun c => rmlift N (@der_comm _ _ _ _ c)).
 Next Obligation.
 Proof.
@@ -135,7 +135,7 @@ Proof.
   simpl.
   destruct z as [t z | ];
   simpl. 
-  assert (H:= NTcomm (gen_RMonad_Hom_NatTrans h)).
+  assert (H:= NTcomm (colax_RMonad_Hom_NatTrans h)).
   simpl in H.
   generalize (g t z).
   clear z.
@@ -169,8 +169,8 @@ Proof.
   auto.
 Qed.
   
-Definition gen_pb_der : DER_RMOD _ _ u (gen_PbRMod h N) ---> 
-         gen_PbRMod h (DER_RMOD _ _ (f u) N) := 
+Definition gen_pb_der : DER_RMOD _ _ u (colax_PbRMod h N) ---> 
+         colax_PbRMod h (DER_RMOD _ _ (f u) N) := 
  Build_RModule_Hom gen_pb_der_s.
 
 End gen_pb_der.
@@ -200,28 +200,28 @@ Variable G2 : Functor D D'.
 
 Variable N : NT (CompF G1 F') (CompF F G2).
 
-Variable h : gen_RMonad_Hom P Q N.
+Variable h : colax_RMonad_Hom P Q N.
 
 Variable t : T.
 
 Variable M : RMOD Q (IPO T).
 
 Program Instance gen_pb_fib_s : RModule_Hom_struct
-  (M:= FIB_RMOD _ t (gen_PbRMod h M))
-  (N:=gen_PbRMod h (FIB_RMOD _ t M))
+  (M:= FIB_RMOD _ t (colax_PbRMod h M))
+  (N:= colax_PbRMod h (FIB_RMOD _ t M))
   (fun c => id _ ).
 
-Definition gen_pb_fib : FIB_RMOD _ t (gen_PbRMod h M) ---> 
-          gen_PbRMod h (FIB_RMOD _ t M) := Build_RModule_Hom gen_pb_fib_s.
+Definition gen_pb_fib : FIB_RMOD _ t (colax_PbRMod h M) ---> 
+          colax_PbRMod h (FIB_RMOD _ t M) := Build_RModule_Hom gen_pb_fib_s.
 
 
 Program Instance gen_fib_pb_s : RModule_Hom_struct
-  (M:=gen_PbRMod h (FIB_RMOD _ t M))
-  (N:= FIB_RMOD _ t (gen_PbRMod h M))
+  (M:=colax_PbRMod h (FIB_RMOD _ t M))
+  (N:= FIB_RMOD _ t (colax_PbRMod h M))
   (fun c => id _ ).
 
-Definition gen_fib_pb : gen_PbRMod h (FIB_RMOD _ t M) ---> 
-   FIB_RMOD _ t (gen_PbRMod h M) 
+Definition gen_fib_pb : colax_PbRMod h (FIB_RMOD _ t M) ---> 
+   FIB_RMOD _ t (colax_PbRMod h M) 
        := Build_RModule_Hom gen_fib_pb_s.
 
 Variable u : T.
@@ -267,7 +267,7 @@ Section der_fibre.
 
 Variable P : RMonad (IDelta T).
 Variable Q : RMonad (IDelta U).
-Variable M : gen_RMonad_Hom P Q 
+Variable M : colax_RMonad_Hom P Q 
                  (G1:=RETYPE (fun t => f t))
 	      (G2:=RETYPE_PO (fun t => f t)) 
                   (NNNT1 (fun t => f t) ).
@@ -311,14 +311,14 @@ Qed.
 Definition der_fib_hom_noeq_d:
 (forall c : ITYPE T,
   ((FIB_RMOD P s) ((DER_RMOD (IPO T) P r) P)) c --->
-  ((FIB_RMOD P (f s)) (gen_PbRMod M ((DER_RMOD (IPO U) Q (f r)) Q))) c):=
+  ((FIB_RMOD P (f s)) (colax_PbRMod M ((DER_RMOD (IPO U) Q (f r)) Q))) c):=
  fun c => Build_PO_mor (der_fib_hom_noeq_car c).
 
 Obligation Tactic := idtac.
 
 Program Instance der_fib_hom_noeq_s : RModule_Hom_struct
   (M:=FIB_RMOD _ s (DER_RMOD _ _ r P))
-  (N:=FIB_RMOD _ (f s) (gen_PbRMod M (DER_RMOD _ _ (f r) Q)))
+  (N:=FIB_RMOD _ (f s) (colax_PbRMod M (DER_RMOD _ _ (f r) Q)))
   der_fib_hom_noeq_d.
 Next Obligation.
 Proof.
@@ -358,7 +358,7 @@ Qed.
  
 Definition der_fib_hom_noeq :
   FIB_RMOD _ s (DER_RMOD _ _ r P) ---> 
-     FIB_RMOD _ (f s) (gen_PbRMod M (DER_RMOD _ _ (f r) Q)) :=
+     FIB_RMOD _ (f s) (colax_PbRMod M (DER_RMOD _ _ (f r) Q)) :=
      Build_RModule_Hom der_fib_hom_noeq_s.
 
 Variable r' : U.
@@ -366,7 +366,7 @@ Hypothesis H : f r = r'.
 
 Program Instance der_fib_hom_d c : PO_mor_struct
   (a:=((FIB_RMOD P s) ((DER_RMOD (IPO T) P r) P)) c)
-  (b:=((FIB_RMOD P (f s)) (gen_PbRMod M ((DER_RMOD (IPO U) Q r') Q))) c)
+  (b:=((FIB_RMOD P (f s)) (colax_PbRMod M ((DER_RMOD (IPO U) Q r') Q))) c)
   (fun x => eq_rect (f r) 
              (fun r' : U => Q (opt r' (RETYPE _ c)) (f s))
   (rlift Q (@der_comm _ _ _ _ _) _ 
@@ -388,14 +388,14 @@ Qed.
 
 Definition der_fib_hom_e c : 
   ((FIB_RMOD P s) ((DER_RMOD (IPO T) P r) P)) c ---> 
-  ((FIB_RMOD P (f s)) (gen_PbRMod M ((DER_RMOD (IPO U) Q r') Q))) c :=
+  ((FIB_RMOD P (f s)) (colax_PbRMod M ((DER_RMOD (IPO U) Q r') Q))) c :=
   Build_PO_mor (der_fib_hom_d c).
  
 Obligation Tactic := idtac.
 
 Program Instance der_fib_hom_s : RModule_Hom_struct
    (M:=FIB_RMOD _ s (DER_RMOD _ _ r P))
-   (N:=FIB_RMOD _ (f s) (gen_PbRMod M (DER_RMOD _ _ r' Q)))
+   (N:=FIB_RMOD _ (f s) (colax_PbRMod M (DER_RMOD _ _ r' Q)))
    der_fib_hom_e.
 Next Obligation.
 Proof.
@@ -436,7 +436,7 @@ Qed.
   
 Definition der_fib_hom :
   FIB_RMOD _ s (DER_RMOD _ _ r P) ---> 
-     FIB_RMOD _ (f s) (gen_PbRMod M (DER_RMOD _ _ r' Q)) :=
+     FIB_RMOD _ (f s) (colax_PbRMod M (DER_RMOD _ _ r' Q)) :=
      Build_RModule_Hom der_fib_hom_s.
 
 End der_fibre.

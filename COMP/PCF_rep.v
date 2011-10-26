@@ -62,7 +62,7 @@ Section Rep_Hom_Class.
 
 Variable f : type_type P -> type_type R.
 Variable H : forall t, f (type_mor P t) = type_mor R t.
-Variable M : gen_Monad_Hom P R (RETYPE (fun t => f t)).
+Variable M : colax_Monad_Hom P R (RETYPE (fun t => f t)).
 
 Definition MM := PMod_ind_Hom M.
 
@@ -213,7 +213,7 @@ End Rep_Hom_Class.
 Record PCF_rep_Hom := {
   tcomp : type_type P -> type_type R ;
   ttriag : forall t, tcomp (type_mor P t) = type_mor R t;
-  rep_Hom_monad :> gen_Monad_Hom P R (RETYPE (fun t => tcomp t));
+  rep_Hom_monad :> colax_Monad_Hom P R (RETYPE (fun t => tcomp t));
   rep_gen_Hom_monad_struct :> PCF_rep_Hom_struct ttriag rep_Hom_monad
 }.
 

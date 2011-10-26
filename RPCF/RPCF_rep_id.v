@@ -48,7 +48,7 @@ Definition id_rep_c :
 
 
 Program Instance RMon_id_s :
-  gen_RMonad_Hom_struct (P:=P) (Q:=P) 
+  colax_RMonad_Hom_struct (P:=P) (Q:=P) 
    (G1:=RETYPE (fun u : type_type P => u))
    (G2:=RETYPE_PO (fun u : type_type P => u))
    (NNNT1 (fun u : type_type P => u)) id_rep_c.
@@ -73,7 +73,7 @@ Proof.
   auto.
 Qed.
 
-Definition RMon_id := Build_gen_RMonad_Hom RMon_id_s.
+Definition RMon_id := Build_colax_RMonad_Hom RMon_id_s.
 
 Lemma id_arrow_dist:
 forall u v : type_type P,
@@ -203,7 +203,7 @@ Proof.
 Qed.
 Next Obligation.
 Proof.
-  unfold abs_hom2';
+  unfold abs_hom';
   simpl.
   intros u v c y.
   unfold rlift.

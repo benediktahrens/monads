@@ -23,7 +23,7 @@ Variable P : Monad C.
 Variable R : Monad D.
 Variable F : Functor C D.
 
-Variable M : gen_Monad_Hom P R F.
+Variable M : colax_Monad_Hom P R F.
 
 
 Program Instance unit_mod_s : Module_Hom_struct
