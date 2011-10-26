@@ -910,7 +910,7 @@ Section unique.
 
 Variable f : UTSPROP ---> R.
 
-Existing Instance REPRESENTATION_struct.
+Existing Instance REP_struct.
 
 (** the proof uses initiality of init in the case without equations
      - unicity is only concerned with data

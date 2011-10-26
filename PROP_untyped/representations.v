@@ -144,13 +144,13 @@ Obligation Tactic := simpl; intros; try unf_Proper;
 
 (** ** Category of Representations *)
 
-Program Instance REPRESENTATION_struct : 
+Program Instance REP_struct : 
          Cat_struct (@Representation_Hom S) := {
   mor_oid a c := eq_Rep_oid a c;
   id a := Rep_Id a;
   comp P Q R f g := Rep_Comp f g }.
 
-Definition REP := Build_Cat REPRESENTATION_struct.
+Definition REP := Build_Cat REP_struct.
 
 End cat_of_reps.
 
