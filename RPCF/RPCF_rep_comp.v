@@ -73,10 +73,10 @@ Qed.
 Obligation Tactic := idtac.
 
 Lemma exsimio:
-forall u v : type_type P,
-  (fun t : type_type P => tcomp N (tcomp M t)) (u ~~> v) =
-  (fun t : type_type P => tcomp N (tcomp M t)) u ~~>
-  (fun t : type_type P => tcomp N (tcomp M t)) v.
+forall u v : Sorts P,
+  (fun t : Sorts P => Sorts_map N (Sorts_map M t)) (u ~~> v) =
+  (fun t : Sorts P => Sorts_map N (Sorts_map M t)) u ~~>
+  (fun t : Sorts P => Sorts_map N (Sorts_map M t)) v.
 Proof.
   simpl; intros.
   
@@ -85,33 +85,33 @@ Proof.
   assert (H':=tcomp_arrow N (tcomp M u) (tcomp M v)).
 *)
   
-  destruct (tcomp_arrow N (tcomp M u) (tcomp M v)).
-  destruct (tcomp_arrow M u v).
+  destruct (HArrow N (Sorts_map M u) (Sorts_map M v)).
+  destruct (HArrow M u v).
   reflexivity.
 Defined.
 (*
 Print exsimio.
 *)
 Lemma exsimio_bool:
-(fun t : type_type P => tcomp N (tcomp M t)) (type_bool P) = type_bool R.
+(fun t : Sorts P => Sorts_map N (Sorts_map M t)) (Bool P) = Bool R.
 Proof.
-  destruct (tcomp_bool N).
-  destruct (tcomp_bool M).
+  destruct (HBool N).
+  destruct (HBool M).
   reflexivity.
 Qed.
 
 Lemma exsimio_nat:
-(fun t : type_type P => tcomp N (tcomp M t)) (type_nat P) = type_nat R.
+(fun t : Sorts P => Sorts_map N (Sorts_map M t)) (Nat P) = Nat R.
 Proof.
-  destruct (tcomp_nat N).
-  destruct (tcomp_nat M).
+  destruct (HNat N).
+  destruct (HNat M).
   reflexivity.
 Qed.
 
 
 Program Instance Rep_comp_struct : 
   PCFPO_rep_Hom_struct (P:=P) (R:=R)
-        (f := fun t => tcomp N (tcomp M t)) 
+        (Sorts_map := fun t => Sorts_map N (Sorts_map M t)) 
         exsimio
         exsimio_bool
         exsimio_nat
@@ -125,8 +125,8 @@ Proof. (* abs 2 *)
   intros u v c y.
   assert (HM:=abs_hom (u:=u)(v:=v) 
         (PCFPO_rep_Hom_struct :=M) (*c:=c)y*)).
-  assert (HN:=abs_hom (u:=tcomp M u)
-                      (v:=tcomp M v)
+  assert (HN:=abs_hom (u:=Sorts_map M u)
+                      (v:=Sorts_map M v)
           (PCFPO_rep_Hom_struct :=N)
           (*(c:=retype(fun t => tcomp M t) c)*)).
   simpl in HM ,HN.
@@ -138,9 +138,9 @@ Proof. (* abs 2 *)
 
 *)
 
-  generalize (@eq_sym (type_type R) (@tcomp Q R N (@tcomp P Q M (@type_arrow P u v)))
-        (@type_arrow R (@tcomp Q R N (@tcomp P Q M u))
-           (@tcomp Q R N (@tcomp P Q M v))) (exsimio u v)).
+  generalize (@eq_sym (Sorts R) (@Sorts_map Q R N (@Sorts_map P Q M (@Arrow P u v)))
+        (@Arrow R (@Sorts_map Q R N (@Sorts_map P Q M u))
+           (@Sorts_map Q R N (@Sorts_map P Q M v))) (exsimio u v)).
 
 (*
   generalize (eq_sym (exsimio u v)).
@@ -633,10 +633,10 @@ Proof. (* app *)
   intros u v c y.
   assert (HM:=app_hom (u:=u)(v:=v) 
         (PCFPO_rep_Hom_struct :=M) (c:=c)y).
-  assert (HN:=app_hom (u:=tcomp M u)
-                      (v:=tcomp M v)
+  assert (HN:=app_hom (u:=Sorts_map M u)
+                      (v:=Sorts_map M v)
           (PCFPO_rep_Hom_struct :=N)
-           (c:=retype(fun t => tcomp M t) c)).
+           (c:=retype(fun t => Sorts_map M t) c)).
   simpl in HM ,HN.
 
   generalize (exsimio u v) as e.
@@ -750,11 +750,11 @@ Proof. (* nat *)
   clear t.
   assert (HM:=nats_hom m (PCFPO_rep_Hom_struct :=M)(c:=c) tt).
   assert (HN:=nats_hom m (PCFPO_rep_Hom_struct :=N)
-           (c:=retype(fun t => tcomp M t) c)tt).
+           (c:=retype(fun t => Sorts_map M t) c)tt).
   simpl in HM ,HN.
   
   generalize (nats_hom'_obligation_1 (P:=P) (R:=R)
-     (f:=fun t : type_type P => tcomp N (tcomp M t)) exsimio_nat m) as e.
+     (Sorts_map:=fun t : Sorts P => Sorts_map N (Sorts_map M t)) exsimio_nat m) as e.
   
 (*
   generalize (
@@ -919,7 +919,7 @@ Proof. (* bottom *)
   assert (HM:=bottom_hom (PCFPO_rep_Hom_struct :=M)
         (c:=c) u tt).
   assert (HN:=bottom_hom (PCFPO_rep_Hom_struct :=N)
-           (c:=retype(fun t => tcomp M t) c) (tcomp M u) tt).
+           (c:=retype(fun t => Sorts_map M t) c) (Sorts_map M u) tt).
   simpl in HM ,HN.
   
   rewrite HM.
@@ -928,7 +928,7 @@ Proof. (* bottom *)
   simpl.
   assert (h:=rmod_hom_rmkl 
     (bottom (PCFPO_rep_struct := R)
-      (tcomp N (tcomp M u)))).
+      (Sorts_map N (Sorts_map M u)))).
   simpl in h.
   rewrite <- h.
   auto.
@@ -942,11 +942,11 @@ Proof. (* tttt *)
   clear t.
   assert (HM:=ttt_hom (PCFPO_rep_Hom_struct :=M)(c:=c) tt).
   assert (HN:=ttt_hom (PCFPO_rep_Hom_struct :=N)
-           (c:=retype(fun t => tcomp M t) c)tt).
+           (c:=retype(fun t => Sorts_map M t) c)tt).
   simpl in HM ,HN.
   
   generalize (ttt_hom'_obligation_1 (P:=P) (R:=R)
-     (f:=fun t : type_type P => tcomp N (tcomp M t)) exsimio_bool).
+     (Sorts_map:=fun t : _ P => Sorts_map N (Sorts_map M t)) exsimio_bool).
   
 (*
   generalize (
@@ -1098,11 +1098,11 @@ Proof. (* ffff *)
   clear t.
   assert (HM:=fff_hom (PCFPO_rep_Hom_struct :=M)(c:=c) tt).
   assert (HN:=fff_hom (PCFPO_rep_Hom_struct :=N)
-           (c:=retype(fun t => tcomp M t) c)tt).
+           (c:=retype(fun t => Sorts_map M t) c)tt).
   simpl in HM ,HN.
   
   generalize (fff_hom'_obligation_1 (P:=P) (R:=R)
-     (f:=fun t : type_type P => tcomp N (tcomp M t)) exsimio_bool).
+     (Sorts_map:=fun t : _ P => _ N (_ M t)) exsimio_bool).
   
 (*
   generalize (
@@ -1254,11 +1254,11 @@ Proof. (* succ *)
   clear t.
   assert (HM:=Succ_hom (PCFPO_rep_Hom_struct :=M)(c:=c) tt).
   assert (HN:=Succ_hom (PCFPO_rep_Hom_struct :=N)
-           (c:=retype(fun t => tcomp M t) c)tt).
+           (c:=retype(fun t => Sorts_map M t) c)tt).
   simpl in HM ,HN.
   
   generalize (Succ_hom'_obligation_1 (P:=P) (R:=R)
-     (f:=fun t : type_type P => tcomp N (tcomp M t)) exsimio exsimio_nat).
+     (Sorts_map:=fun t : _ P => _ N (_ M t)) exsimio exsimio_nat).
 
   destruct N as [gN HNarrow HNbool HNnat TN TNs].
   destruct M as [gM HMarrow HMbool HMnat TM TMs].
@@ -1412,11 +1412,11 @@ Proof. (* zero *)
   clear t.
   assert (HM:=Zero_hom (PCFPO_rep_Hom_struct :=M)(c:=c) tt).
   assert (HN:=Zero_hom (PCFPO_rep_Hom_struct :=N)
-           (c:=retype(fun t => tcomp M t) c)tt).
+           (c:=retype(fun t => Sorts_map M t) c)tt).
   simpl in HM ,HN.
   
   generalize (Zero_hom'_obligation_1 (P:=P) (R:=R)
-     (f:=fun t : type_type P => tcomp N (tcomp M t)) exsimio exsimio_bool
+     (Sorts_map:=fun t : _ P => _ N (_ M t)) exsimio exsimio_bool
      exsimio_nat).
    
   destruct N as [gN HNarrow HNnat HNbool TN TNs].
@@ -1566,11 +1566,11 @@ Proof. (* pred *)
   clear t.
   assert (HM:=Pred_hom (PCFPO_rep_Hom_struct :=M)(c:=c) tt).
   assert (HN:=Pred_hom (PCFPO_rep_Hom_struct :=N)
-           (c:=retype(fun t => tcomp M t) c)tt).
+           (c:=retype(fun t => Sorts_map M t) c)tt).
   simpl in HM ,HN.
   
   generalize (Pred_hom'_obligation_1 (P:=P) (R:=R)
-     (f:=fun t : type_type P => tcomp N (tcomp M t)) exsimio exsimio_nat).
+     (Sorts_map:=fun t : _ P => _ N (_ M t)) exsimio exsimio_nat).
 
   destruct N as [gN HNarrow HNnat HNbool TN TNs].
   destruct M as [gM HMarrow HMnat HMbool TM TMs].
@@ -1709,11 +1709,11 @@ Proof. (* condN *)
   clear t.
   assert (HM:=CondN_hom (PCFPO_rep_Hom_struct :=M)(c:=c) tt).
   assert (HN:=CondN_hom (PCFPO_rep_Hom_struct :=N)
-           (c:=retype(fun t => tcomp M t) c)tt).
+           (c:=retype(fun t => Sorts_map M t) c)tt).
   simpl in HM ,HN.
   
   generalize (CondN_hom'_obligation_1 (P:=P) (R:=R)
-     (f:=fun t : type_type P => tcomp N (tcomp M t)) exsimio exsimio_bool
+     (Sorts_map:=fun t : _ P => _ N (_ M t)) exsimio exsimio_bool
      exsimio_nat).
   
   destruct N as [gN HNarrow HNbool HNnat TN TNs].
@@ -1854,11 +1854,11 @@ Proof.
   clear t.
   assert (HM:=CondB_hom (PCFPO_rep_Hom_struct :=M)(c:=c) tt).
   assert (HN:=CondB_hom (PCFPO_rep_Hom_struct :=N)
-           (c:=retype(fun t => tcomp M t) c)tt).
+           (c:=retype(fun t => Sorts_map M t) c)tt).
   simpl in HM ,HN.
   
   generalize (CondB_hom'_obligation_1 (P:=P) (R:=R)
-     (f:=fun t : type_type P => tcomp N (tcomp M t)) exsimio exsimio_bool).
+     (Sorts_map:=fun t : _ P => _ N (_ M t)) exsimio exsimio_bool).
   
 destruct N as [gN HNarrow HNbool HNnat TN TNs].
   destruct M as [gM HMarrow HMbool HMnat TM TMs].
@@ -1985,8 +1985,8 @@ Proof. (* rec *)
   simpl.
   intros t c y.
   assert (HM:=rec_hom (t:=t) (PCFPO_rep_Hom_struct :=M) (c:=c)y).
-  assert (HN:=rec_hom (t:=tcomp M t) (PCFPO_rep_Hom_struct :=N)
-           (c:=retype(fun t => tcomp M t) c)).
+  assert (HN:=rec_hom (t:=Sorts_map M t) (PCFPO_rep_Hom_struct :=N)
+           (c:=retype(fun t => Sorts_map M t) c)).
   simpl in HM ,HN.
   
   generalize (exsimio t t).

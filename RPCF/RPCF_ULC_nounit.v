@@ -471,7 +471,7 @@ Ltac sim := unfold substar; simpl ;
 Obligation Tactic := idtac.
 
 Program Instance PCF_ULC_rep_s : 
- PCFPO_rep_struct (U:=unit) ULCBETAM (fun _ _ => tt) tt  tt := {
+ PCFPO_rep_struct (Sorts:=unit) ULCBETAM (fun _ _ => tt) tt  tt := {
 
   app r s := ulc_app r s;
   abs r s := ulc_abs r s;
@@ -908,7 +908,7 @@ reflexivity.
 Qed.
 
 Definition PCF_ULC : PCFPO_rep := Build_PCFPO_rep 
-      (type_type:=unit) (type_arrow := fun _ _ => tt)
+      (Sorts:=unit) (Arrow := fun _ _ => tt)
       (pcf_rep_monad:=ULCBETAM)
       (*fun _ _ => eq_refl*)
       PCF_ULC_rep_s.

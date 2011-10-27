@@ -12,7 +12,7 @@ Unset Automatic Introduction.
 
 Inductive eq_Rep (P R : PCFPO_rep) : relation (PCFPO_rep_Hom P R) :=
  | eq_rep : forall (a c : PCFPO_rep_Hom P R), 
-            forall H : (forall t, tcomp c t = tcomp a t),
+            forall H : (forall t, Sorts_map c t = Sorts_map a t),
             (forall V, rep_Hom_monad a V ;; rlift R (Transp H V)
                                     == 
                        Transp_PO H (P V) ;; rep_Hom_monad c V ) ->
@@ -32,7 +32,7 @@ Proof.
  
  unfold Reflexive.
  intro M. 
- assert (H': forall t, tcomp M t = tcomp M t) by 
+ assert (H': forall t, Sorts_map M t = Sorts_map M t) by 
        (intros; reflexivity).
 
  apply (eq_rep (H:=H')).
@@ -54,13 +54,13 @@ Proof.
  unfold Symmetric.
  intros M N H.
  destruct H.
-  assert (H': forall t, tcomp a t = tcomp c t) by auto.
+  assert (H': forall t, Sorts_map a t = Sorts_map c t) by auto.
  apply (eq_rep (H:=H')). 
  simpl; intros V t y.
  destruct a.
  destruct c.
  simpl in *.
- assert (H3 : tcomp = tcomp0).
+ assert (H3 : Sorts_map = Sorts_map0).
  apply (functional_extensionality).
  auto.
  
@@ -68,12 +68,12 @@ Proof.
  generalize dependent H'.
  generalize dependent rep_Hom_monad0.
  generalize dependent rep_Hom_monad.
- generalize dependent tcomp_nat.
- generalize dependent tcomp_nat0.
- generalize dependent tcomp_bool.
- generalize dependent tcomp_bool0.
+ generalize dependent HNat.
+ generalize dependent HNat0.
+ generalize dependent HBool.
+ generalize dependent HBool0.
  generalize dependent H.
- generalize dependent tcomp_arrow.
+ generalize dependent HArrow.
  rewrite  H3.
  intros; simpl in *.
  rewrite transp_id. 
@@ -91,8 +91,8 @@ Proof.
   intros a b c H H'.
   destruct H;
   destruct H'.
-  assert (Ht : forall t, tcomp c t = tcomp a t).
-    intro t. transitivity (tcomp a0 t); auto.
+  assert (Ht : forall t, Sorts_map c t = Sorts_map a t).
+    intro t. transitivity (Sorts_map a0 t); auto.
     
   apply (eq_rep (H:=Ht)).
   simpl; intros V t y.
@@ -100,10 +100,10 @@ Proof.
   destruct a0;
   destruct c.
   simpl in *.
-  assert (H5 : tcomp0 = tcomp1) by
+  assert (H5 : Sorts_map0 = Sorts_map1) by
     (apply functional_extensionality; intro; auto).
 
-  assert (H6 : tcomp1 = tcomp) by
+  assert (H6 : Sorts_map1 = Sorts_map) by
     (apply functional_extensionality; intro; auto).
   
   generalize dependent H2. 
@@ -111,24 +111,24 @@ Proof.
   generalize dependent rep_Hom_monad.
   generalize dependent rep_Hom_monad1.
   generalize dependent rep_Hom_monad0.
-  generalize dependent tcomp_bool.
-  generalize dependent tcomp_bool0.
-  generalize dependent tcomp_bool1.
-  generalize dependent tcomp_nat.
-  generalize dependent tcomp_nat0.
-  generalize dependent tcomp_nat1.
+  generalize dependent HBool.
+  generalize dependent HBool0.
+  generalize dependent HBool1.
+  generalize dependent HNat.
+  generalize dependent HNat0.
+  generalize dependent HNat1.
   
   generalize dependent H.
   generalize dependent Ht.
-  generalize dependent tcomp_arrow.
-  generalize dependent tcomp_arrow0.
-  generalize dependent tcomp_arrow1.
+  generalize dependent HArrow.
+  generalize dependent HArrow0.
+  generalize dependent HArrow1.
   rewrite  H5.
   rewrite  H6.
   
   clear H6 H5.
-  clear tcomp0.
-  clear tcomp1.
+  clear Sorts_map0.
+  clear Sorts_map1.
   
   intros.
   assert (H7:=H0 V t y).

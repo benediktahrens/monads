@@ -137,12 +137,12 @@ Qed.
 
 Definition id_cc c := Build_ipo_mor (id_ccs c).
 
-Program Instance NNNT1s : NT_struct
+Program Instance RT_NTs : NT_struct
     (F:=IDelta U O RETYPE f) 
     (G:=RETYPE_PO f O IDelta T) 
     (fun c => id_cc c).
 
-Definition NNNT1 := Build_NT NNNT1s.
+Definition RT_NT := Build_NT RT_NTs.
 
 Program Instance id_dds c :
 ipo_mor_struct 

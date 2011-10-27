@@ -413,10 +413,6 @@ Proof.
       auto.
 Qed.
 
-Check retype.
-Check (type_type R).
-Check PCF.types.
-Check (fun V => retype (fun t => type_mor R t)V).
 
 Lemma init_subst V t (y : PCF V t) W (f : V ---> PCF W):
 init (y >>= f) =
@@ -602,7 +598,7 @@ Qed.
 
 
 Program Instance init_mon_s : 
-     gen_Monad_Hom_struct (P:=PCFM) (Q:=R)
+     colax_Monad_Hom_struct (P:=PCFM) (Q:=R)
              (F0:=RETYPE (fun t => type_mor R t)) 
      (fun V t v => match v with ctype _ y => init y end).
 Next Obligation.
@@ -621,7 +617,7 @@ Proof.
   auto.
 Qed.
  
-Canonical Structure init_mon := Build_gen_Monad_Hom init_mon_s.
+Canonical Structure init_mon := Build_colax_Monad_Hom init_mon_s.
 
 Ltac eq_elim := match goal with
       | [ H : ?a = ?a |- _ ] => rewrite (UIP_refl _ _ H)
@@ -752,7 +748,7 @@ Proof.
 
   (*1*)
   assert (Hw:=gen_monad_hom_weta 
-     ((*gen_RMonad_Hom_struct := *)gen_Monad_Hom_struct := T)).
+     ((*gen_RMonad_Hom_struct := *)colax_Monad_Hom_struct := T)).
      simpl in Hw.
   assert (Hw' := Hw _ _ (ctype _ v)).
   simpl in Hw'.

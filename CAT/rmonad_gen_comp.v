@@ -45,11 +45,11 @@ Variable R : RMonad (IDelta U'').
 Variable M : colax_RMonad_Hom P Q 
 	(G1:=RETYPE (fun t => f t))
 	(G2:=RETYPE_PO (fun t => f t))    
-	(NNNT1 (fun t => f t)).
+	(RT_NT (fun t => f t)).
 Variable N : colax_RMonad_Hom Q R 
 	 (G1:=RETYPE (fun t => f' t))
          (G2:=RETYPE_PO (fun t => f' t)) 
-	 (NNNT1 (fun t => f' t)).
+	 (RT_NT (fun t => f' t)).
 
 Obligation Tactic := idtac.
 
@@ -99,7 +99,7 @@ Program Instance RMon_comp_s :
  colax_RMonad_Hom_struct 
  (P:=P) (Q:=R) (G1:=RETYPE (fun t => f' (f t)))
    (G2:=RETYPE_PO (fun t => f' (f t)))
-   (NNNT1 (fun t => f' (f t)))
+   (RT_NT (fun t => f' (f t)))
    RMon_car.
 Next Obligation.
 Proof.

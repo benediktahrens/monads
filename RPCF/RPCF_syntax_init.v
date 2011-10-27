@@ -1,4 +1,4 @@
-aRequire Import Coq.Logic.Eqdep.
+Require Import Coq.Logic.Eqdep.
 
 Require Export CatSem.RPCF.RPCF_syntax_rep.
 Require Export CatSem.RPCF.RPCF_rep_hom.
@@ -15,11 +15,11 @@ Variable R : PCFPO_rep.
 
 (** the initial type morphism T(STS) -> T(R) *)
 
-Fixpoint type_mor (t : PCF.types) : type_type R := 
+Fixpoint Init_Sorts_map (t : PCF.types) : Sorts R := 
     match t with
-    | PCF.Nat => type_nat R 
-    | PCF.Bool => type_bool R
-    | PCF.arrow u v => (type_mor u) ~~> (type_mor v)
+    | PCF.Nat => Nat R 
+    | PCF.Bool => Bool R
+    | PCF.arrow u v => (Init_Sorts_map u) ~~> (Init_Sorts_map v)
     end.
 
 Obligation Tactic := reflexivity.
@@ -27,28 +27,28 @@ Obligation Tactic := reflexivity.
 (** the initial morphism STS -> R *)
 
 Fixpoint init V t (v : PCF V t) : 
-    R (retype (fun t0 => type_mor t0) V) (type_mor t) :=
+    R (retype (fun t0 => Init_Sorts_map t0) V) (Init_Sorts_map t) :=
   match v in PCF _ t return 
-        R (retype (fun t0 => type_mor t0) V) (type_mor t) with
+        R (retype (fun t0 => Init_Sorts_map t0) V) (Init_Sorts_map t) with
   | Var t v => rweta (RMonad_struct := R) _ _ (ctype _ v)
   | App r s u v => app (PCFPO_rep_struct := R) _ _ _ (init u, init v)
   | Lam _ _ v => abs (PCFPO_rep_struct := R) _ _ _ 
                   (rlift R 
-                     (@der_comm TY (type_type R) (fun t => type_mor t) _ V ) 
+                     (@der_comm TY (Sorts R) (fun t => Init_Sorts_map t) _ V ) 
                       _ (init v))
   | Rec _ v => rec (PCFPO_rep_struct := R) _ _ (init v) 
   | Bottom _  => bottom (PCFPO_rep_struct := R) _ _ tt
   | Const _ y => match y in Consts t1 return 
-                       R (retype (fun t2 => type_mor t2) V) (type_mor t1) 
+                       R (retype (fun t2 => Init_Sorts_map t2) V) (Init_Sorts_map t1) 
                  with
                  | Nats m => nats (PCFPO_rep_struct := R) m (*retype _ V*) _ tt
-                 | succ => Succ (retype (fun t1 : TY => type_mor  t1) _) tt
-                 | condN => CondN (retype (fun t1 : TY => type_mor  t1) _) tt
-                 | condB => CondB (retype (fun t1 : TY => type_mor  t1) _) tt
-                 | zero => Zero (retype (fun t1 : TY => type_mor  t1) _) tt
+                 | succ => Succ (retype (fun t1 : TY => _  t1) _) tt
+                 | condN => CondN (retype (fun t1 : TY => _ t1) _) tt
+                 | condB => CondB (retype (fun t1 : TY => _ t1) _) tt
+                 | zero => Zero (retype (fun t1 : TY => _ t1) _) tt
                  | ttt => tttt (PCFPO_rep_struct := R) _ tt
                  | fff => ffff (PCFPO_rep_struct := R) _ tt
-                 | preds => Pred (retype (fun t1 : TY => type_mor  t1) _) tt
+                 | preds => Pred (retype (fun t1 : TY => _ t1) _) tt
                  end
   end.
 
@@ -143,7 +143,7 @@ Proof.
   
   unfold rlift.
   assert (H':=rmod_hom_rmkl 
-      (bottom (PCFPO_rep_struct := R) (type_mor t))).
+      (bottom (PCFPO_rep_struct := R) (Init_Sorts_map t))).
       simpl in H'; auto.
   
   destruct c.
@@ -197,7 +197,7 @@ Proof.
       rewrite IHy2.
       clear IHy1 IHy2.
       assert (H':= rmod_hom_rmkl 
-        (app (type_mor s) (type_mor t))).
+        (app (Init_Sorts_map s) (Init_Sorts_map t))).
         simpl in H'.
       unfold rlift.
       rewrite <- H'.
@@ -210,7 +210,7 @@ Proof.
       simpl.
       unfold rlift.
       assert (H':= rmod_hom_rmkl 
-        (abs (type_mor t) (type_mor s))).
+        (abs (Init_Sorts_map t) (Init_Sorts_map s))).
       simpl in *.
       rewrite <- H'.
       apply f_equal.
@@ -232,7 +232,7 @@ Proof.
       clear IHy.
       unfold rlift.
       assert (H':= rmod_hom_rmkl 
-        (rec (type_mor t))).
+        (rec (Init_Sorts_map t))).
       simpl in H'.
       rewrite <- H'.
       simpl.
@@ -244,8 +244,8 @@ Qed.
 Lemma init_subst V t (y : PCF V t) W (f : IDelta _ V ---> PCFE W):
       init (y >>= f) = 
         rkleisli (RMonad_struct := R) 
-           (SM_ind (V:= retype (fun t => type_mor t)  V) 
-                   (W:= R (retype (fun t => type_mor t)  W))
+           (SM_ind (V:= retype (fun t => _ t)  V) 
+                   (W:= R (retype (fun t => _ t)  W))
               (fun t v => match v with 
                           | ctype t p => init (f t p)
                           end)) _ (init y).
@@ -255,7 +255,7 @@ Proof.
   simpl; 
   intros.
   
-  rerew (rmhom_rmkl (bottom (type_mor t) 
+  rerew (rmhom_rmkl (bottom (Init_Sorts_map t) 
             (PCFPO_rep_struct := R))).
   
   destruct c.
@@ -296,7 +296,7 @@ Proof.
   rewrite IHy1.
   rewrite IHy2.
   clear IHy1 IHy2.
-  assert (H:=rmhom_rmkl (app (type_mor s) (type_mor t) 
+  assert (H:=rmhom_rmkl (app (Init_Sorts_map s) (Init_Sorts_map t) 
               (PCFPO_rep_struct := R))).
   simpl in H.
   rewrite <- H.
@@ -309,16 +309,16 @@ Proof.
   
   assert (H := IHy _ (sshift (P:=PCFEM) t f)).
   simpl in *.
-  rerew (rmhom_rmkl (abs (type_mor t) (type_mor s) 
+  rerew (rmhom_rmkl (abs (Init_Sorts_map t) (Init_Sorts_map s) 
          (PCFPO_rep_struct := R))).
   apply f_equal.
   assert (H1:=rlift_rkleisli (M:=R)).
   simpl in H1.
   rewrite H1.
   transitivity 
-( (rlift R (a:=retype (fun t0 : TY => type_mor t0) (opt t W))
-   (b:=opt (type_mor t) (retype (fun t0 : TY => type_mor t0) W)) 
-            (@der_comm _ _ _ _ _ )) (type_mor s) 
+( (rlift R (a:=retype (fun t0 : TY => _ t0) (opt t W))
+   (b:=opt (_ t) (retype (fun t0 : TY => _ t0) W)) 
+            (@der_comm _ _ _ _ _ )) (_ s) 
       (init (y >>= sshift_ (P:=PCFEM) (W:=W) f))).
   repeat apply f_equal.
   apply subst_eq.
@@ -357,7 +357,7 @@ Proof.
   simpl; intros.
   rewrite IHy.
   clear IHy.
-  rerew (rmhom_rmkl (rec (type_mor t) (PCFPO_rep_struct := R))).
+  rerew (rmhom_rmkl (rec (Init_Sorts_map t) (PCFPO_rep_struct := R))).
 Qed.
 
 Ltac eq_elim := match goal with
@@ -397,9 +397,9 @@ Proof.
   assert (H3:= beta_red (PCFPO_rep_struct := R)).
 
   assert (H2 := H3 _ _ _ (rlift R 
-      (a:=retype (fun t0 : TY => type_mor t0) (opt s V))
-         (b:=opt (type_mor s) (retype (fun t0 : TY => type_mor t0) V))
-         (@der_comm _ _ _ _ _) (type_mor t) (init M))).
+      (a:=retype (fun t0 : TY => _ t0) (opt s V))
+         (b:=opt (_ s) (retype (fun t0 : TY => _ t0) V))
+         (@der_comm _ _ _ _ _) (_ t) (init M))).
   assert (H4:=H2 (init N)).
   simpl in *.
   simpl.
@@ -470,7 +470,7 @@ Proof.
   
   simpl.
   assert (H:=Succ_red (PCFPO_rep_struct := R)
-           (retype (fun t => type_mor t) V) n).
+           (retype (fun t => Init_Sorts_map t) V) n).
   simpl in *.
   apply (IRel_trans_2 H).
   clear H.
@@ -479,7 +479,7 @@ Proof.
   auto.
     
   assert (H:=Zero_t (PCFPO_rep_struct := R)
-           (retype (fun t => type_mor t) V)).
+           (retype (fun t => Init_Sorts_map t) V)).
   simpl in *.
   apply (IRel_trans_2 H).
   clear H.
@@ -488,7 +488,7 @@ Proof.
   auto.
   
   assert (H:=Zero_f (PCFPO_rep_struct := R)
-           (retype (fun t => type_mor t) V) n).
+           (retype (fun t => Init_Sorts_map t) V) n).
   simpl in *.
   apply (IRel_trans_2 H).
   clear H.
@@ -497,7 +497,7 @@ Proof.
   auto.
 
   assert (H:=Pred_Succ (PCFPO_rep_struct := R)
-      (retype (fun t => type_mor t) V)n).
+      (retype (fun t => Init_Sorts_map t) V)n).
   simpl in *.
   apply (IRel_trans_2 H).
   clear H.
@@ -507,7 +507,7 @@ Proof.
 
     
   assert (H:=Pred_Z (PCFPO_rep_struct := R)
-       (retype (fun t => type_mor t) V)).
+       (retype (fun t => Init_Sorts_map t) V)).
   simpl in *.
   apply (IRel_trans_2 H).
   clear H.
@@ -517,7 +517,7 @@ Proof.
 
   simpl.
   assert (H:=Rec_A (PCFPO_rep_struct := R)
-       (V:=retype (fun t => type_mor t) V)).
+       (V:=retype (fun t => Init_Sorts_map t) V)).
   simpl in H.
   auto.
 Qed.
@@ -538,9 +538,9 @@ Proof.
   auto.
   simpl.
   apply (PO_mor_monotone 
-  (app (PCFPO_rep_struct := R) (type_mor s)  
-         (type_mor t) 
-         (retype (fun t => type_mor t) V))).
+  (app (PCFPO_rep_struct := R) (Init_Sorts_map s)  
+         (Init_Sorts_map t) 
+         (retype (fun t => Init_Sorts_map t) V))).
   simpl in *.
   constructor.
   apply IHpropag.
@@ -548,9 +548,9 @@ Proof.
   
   simpl.
   apply (PO_mor_monotone 
-  (app (PCFPO_rep_struct := R) (type_mor s)  
-         (type_mor t) 
-         (retype (fun t => type_mor t) V))).
+  (app (PCFPO_rep_struct := R) (Init_Sorts_map s)  
+         (Init_Sorts_map t) 
+         (retype (fun t => Init_Sorts_map t) V))).
   simpl in *.
   constructor.
   simpl. 
@@ -561,17 +561,17 @@ Proof.
   
   simpl.
   apply (PO_mor_monotone 
-  (abs (PCFPO_rep_struct := R) (type_mor s)  
-         (type_mor t) 
-         (retype (fun t => type_mor t) V))).
+  (abs (PCFPO_rep_struct := R) (Init_Sorts_map s)  
+         (Init_Sorts_map t) 
+         (retype (fun t => Init_Sorts_map t) V))).
   simpl.
-  apply (rlift R (@der_comm _ _ (fun t0 => type_mor t0) _ _ )).
+  apply (rlift R (@der_comm _ _ (fun t0 => _ t0) _ _ )).
   auto.
   
   simpl.
   apply (PO_mor_monotone 
-  (rec (PCFPO_rep_struct := R) (type_mor t)  
-         (retype (fun t => type_mor t) V))).
+  (rec (PCFPO_rep_struct := R) (Init_Sorts_map t)  
+         (retype (fun t => Init_Sorts_map t) V))).
   apply (IHpropag).
 Qed.
 
@@ -592,8 +592,8 @@ Obligation Tactic := idtac.
 Program Instance init_car_pos :
 forall c : TY -> Type,
 ipo_mor_struct 
-  (a:=retype_ipo (fun t : TY => type_mor t) (PCFE c))
-  (b:=R (retype (fun t : TY => type_mor t) c))
+  (a:=retype_ipo (fun t : TY => _ t) (PCFE c))
+  (b:=R (retype (fun t : TY => _ t) c))
   (fun t y => match y with
      | ctype _ p => init  p
      end).
@@ -612,17 +612,17 @@ Qed.
 
 Definition init_c:
 (forall c : ITYPE TY,
-  (RETYPE_PO (fun t : TY => type_mor t)) (PCFEM c) --->
-  R ((RETYPE (fun t : TY => type_mor t)) c)) :=
+  (RETYPE_PO (fun t : TY => _ t)) (PCFEM c) --->
+  R ((RETYPE (fun t : TY => _ t)) c)) :=
   fun c => Build_ipo_mor (init_car_pos c).
 
 Obligation Tactic := idtac.
 
 Program Instance init_rmon_s:
-  gen_RMonad_Hom_struct (P:=PCFEM) (Q:=R)
-    (G1:=RETYPE (fun t => type_mor t))
-    (G2:=RETYPE_PO (fun t => type_mor t))
-    (NNNT1 (fun t => type_mor t)) init_c.
+  colax_RMonad_Hom_struct (P:=PCFEM) (Q:=R)
+    (G1:=RETYPE (fun t => _ t))
+    (G2:=RETYPE_PO (fun t => _ t))
+    (RT_NT (fun t => _)) init_c.
 Next Obligation.
 Proof.
   simpl.
@@ -640,18 +640,18 @@ Proof.
   assert (H:=init_subst z f).
   simpl in *.
   transitivity
-  ((rkleisli (RMonad_struct := R)(a:=retype (fun t : TY => type_mor t) V)
-       (b:=retype (fun t : TY => type_mor t) W)
-       (SM_ind (V:=retype (fun t : TY => type_mor t) V)
-          (W:=R (retype (fun t : TY => type_mor t) W))
-          (fun (t : type_type R)
-             (v : retype (fun t0 : TY => type_mor t0) V t) =>
+  ((rkleisli (RMonad_struct := R)(a:=retype (fun t : TY => _ t) V)
+       (b:=retype (fun t : TY => _ t) W)
+       (SM_ind (V:=retype (fun t : TY => _ t) V)
+          (W:=R (retype (fun t : TY => _ t) W))
+          (fun (t : _ R)
+             (v : retype (fun t0 : TY => _ t0) V t) =>
            match
              v in (retype _ _ t0)
-             return ((R (retype (fun t1 : TY => type_mor t1) W)) t0)
+             return ((R (retype (fun t1 : TY => Init_Sorts_map t1) W)) t0)
            with
            | ctype t0 p => init (f t0 p)
-           end))) (type_mor t) (init z)).
+           end))) (_ t) (init z)).
            auto.
   apply (rkl_eq R).
   simpl.
@@ -663,11 +663,11 @@ Proof.
   auto.
 Qed.
 
-Definition initM : gen_RMonad_Hom PCFEM R
-    (G1:=RETYPE (fun t => type_mor t))
-    (G2:=RETYPE_PO (fun t => type_mor t))
-    (NNNT1 (fun t => type_mor t)) :=
-Build_gen_RMonad_Hom init_rmon_s.
+Definition initM : colax_RMonad_Hom PCFEM R
+    (G1:=RETYPE (fun t => _ t))
+    (G2:=RETYPE_PO (fun t => _ t))
+    (RT_NT (fun t => _ t)) :=
+  Build_colax_RMonad_Hom init_rmon_s.
 
 Hint Resolve double_eq_rect.
 
@@ -688,7 +688,7 @@ Obligation Tactic := unfold
 
 Program Instance initR_s : 
         PCFPO_rep_Hom_struct (P:=PCFE_rep)(R:=R) 
-        (f:=fun t => type_mor t) 
+        (Sorts_map:=fun t => _ t) 
         (fun _ _ => eq_refl) eq_refl eq_refl (initM).
 
 Definition initR : PCFPO_rep_Hom PCFE_rep R := 

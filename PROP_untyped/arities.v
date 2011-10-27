@@ -626,7 +626,7 @@ Variable RepP : modhom_from_arity P a.
 Variable RepQ : modhom_from_arity Q a.
 
 (** the left - lower side of the diagram *)
-Locate "*".
+
 Notation "f * M" := (# (PbRMOD f _ ) M) : d_scope.
 
 Open Scope d_scope.
@@ -652,11 +652,11 @@ Definition commute_right := RepP ;;  PbRMod_ind_Hom f .
 (** they are equal *)
 
 Definition commute := commute_left == commute_right.
-
+(*
 Notation "f^" := (PbRMod_ind_Hom f) : d_scope.
 
 Definition commute_2 :=  Prod_mor a ;; f * RepQ  == RepP ;; f^ .
-            
+*)          
 
 End arrows.
 

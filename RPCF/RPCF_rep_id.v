@@ -13,9 +13,9 @@ Section id_rep.
 Variable P : PCFPO_rep.
 
 Definition id_rep_car c:
-(forall t : type_type P,
-  (retype_ipo (fun u : type_type P => u) (P c)) t ->
-  (P (retype (fun u : type_type P => u) c)) t) :=
+(forall t : Sorts P,
+  (retype_ipo (fun u : Sorts P => u) (P c)) t ->
+  (P (retype (fun u : Sorts P => u) c)) t) :=
 fun  t y => 
    match y with ctype _ z => 
      rlift P (@id_retype _ c) _ z end.
@@ -23,8 +23,8 @@ fun  t y =>
 Obligation Tactic := idtac.
 
 Program Instance id_rep_pos c:
-ipo_mor_struct (a:=retype_ipo (fun u : type_type P => u) (P c))
-  (b:=P (retype (fun u : type_type P => u) c)) (@id_rep_car c).
+ipo_mor_struct (a:=retype_ipo (fun u : Sorts P => u) (P c))
+  (b:=P (retype (fun u : Sorts P => u) c)) (@id_rep_car c).
 Next Obligation.
 Proof.
   intros c t.
@@ -41,17 +41,17 @@ Qed.
 Definition id_rep_po c := Build_ipo_mor (id_rep_pos c).
 
 Definition id_rep_c :
-(forall c : ITYPE (type_type P),
-  (RETYPE_PO (fun u : type_type P => u)) (P c) --->
-  P ((RETYPE (fun u : type_type P => u)) c)) :=
+(forall c : ITYPE (Sorts P),
+  (RETYPE_PO (fun u : Sorts P => u)) (P c) --->
+  P ((RETYPE (fun u : Sorts P => u)) c)) :=
       id_rep_po.
 
 
 Program Instance RMon_id_s :
   colax_RMonad_Hom_struct (P:=P) (Q:=P) 
-   (G1:=RETYPE (fun u : type_type P => u))
-   (G2:=RETYPE_PO (fun u : type_type P => u))
-   (NNNT1 (fun u : type_type P => u)) id_rep_c.
+   (G1:=RETYPE (fun u : Sorts P => u))
+   (G2:=RETYPE_PO (fun u : Sorts P => u))
+   (RT_NT (fun u : Sorts P => u)) id_rep_c.
 Next Obligation.
 Proof.
   simpl.
@@ -76,19 +76,17 @@ Qed.
 Definition RMon_id := Build_colax_RMonad_Hom RMon_id_s.
 
 Lemma id_arrow_dist:
-forall u v : type_type P,
-  (fun u0 : type_type P => u0) (u ~~> v) =
-  (fun u0 : type_type P => u0) u ~~> (fun u0 : type_type P => u0) v.
+forall u v : Sorts P,
+  (fun u0 : Sorts P => u0) (u ~~> v) =
+  (fun u0 : Sorts P => u0) u ~~> (fun u0 : Sorts P => u0) v.
 Proof.
   simpl.
   reflexivity.
 Qed.
 
-
-
 Program Instance PCFPO_id_struct : PCFPO_rep_Hom_struct 
    (P:=P) (R:=P) 
-   (f:=fun u => u) (fun u v => eq_refl) (eq_refl) eq_refl RMon_id.
+   (Sorts_map:=fun u => u) (fun u v => eq_refl) (eq_refl) eq_refl RMon_id.
 Next Obligation.
 Proof.
   unfold CondB_hom'; 

@@ -123,7 +123,7 @@ Qed.
 *)
 
 Definition PCFE_rep : PCFPO_rep := 
-  Build_PCFPO_rep (type_type:=TY) (type_arrow:=PCF.arrow)
+  Build_PCFPO_rep (Sorts:=TY) (Arrow:=PCF.arrow)
    (pcf_rep_monad:=PCFEM)
    PCFE_rep_struct.
 

@@ -39,13 +39,13 @@ Notation "y [* := z ]":= (Rsubstar z _ y)(at level 55).
 
 Section PCF_rep.
 
-Variable U : Type.
-Variable P : RMonad (IDelta U).
+Variable Sorts : Type.
+Variable P : RMonad (IDelta Sorts).
  (*Variable f : TY -> U.*)
 
-Variable Arrow : U -> U -> U.
-Variable Bool : U.
-Variable Nat : U.
+Variable Arrow : Sorts -> Sorts -> Sorts.
+Variable Bool : Sorts.
+Variable Nat : Sorts.
 Notation "a ~~> b" := (Arrow a b) (at level 60, right associativity).
 
 (*  don't put it here, but we need it in the record,
@@ -133,21 +133,21 @@ Class PCFPO_rep_struct := {
 End PCF_rep.
 
 Record PCFPO_rep := {
-  type_type : Type;
-  type_arrow : type_type -> type_type -> type_type;
-  type_bool : type_type ;
-  type_nat : type_type ;
-  pcf_rep_monad :> RMonad (IDelta type_type);
+  Sorts : Type;
+  Arrow : Sorts -> Sorts -> Sorts;
+  Bool : Sorts ;
+  Nat : Sorts ;
+  pcf_rep_monad :> RMonad (IDelta Sorts);
 (*  type_mor : TY -> type_type; *)
 (*  type_arrow_dist : forall s t, type_mor (s ~> t) = 
                          type_arrow (type_mor s) (type_mor t);*)
-  pcf_rep_struct :> PCFPO_rep_struct pcf_rep_monad  type_arrow type_bool type_nat
+  pcf_rep_struct :> PCFPO_rep_struct pcf_rep_monad  Arrow Bool Nat
                
 }.
 
 
 Existing Instance pcf_rep_struct.
-Notation "a ~~> b" := (type_arrow a b) 
+Notation "a ~~> b" := (Arrow a b) 
          (at level 60, right associativity).
 
 

@@ -19,7 +19,7 @@ Variable g : PCFE_rep ---> R.
 Lemma initR_unique : g == initR R.
 Proof.
   simpl.
-  assert (H : forall t, tcomp (initR R) t = tcomp g t).
+  assert (H : forall t, Sorts_map (initR R) t = Sorts_map g t).
   simpl. 
   induction t; simpl;   
   destruct g; simpl in *;
@@ -31,7 +31,7 @@ Proof.
   destruct y as [t y];
   simpl in *. 
 (*  generalize (H t). *)
-  assert (H' : type_mor R = tcomp g).
+  assert (H' : Init_Sorts_map R = Sorts_map g).
    apply functional_extensionality; intros.
    destruct g.
    rew_all. auto.
@@ -145,7 +145,7 @@ Proof.
   simpl.
   rewrite <- IHy.
   clear IHy.
-  assert (Habs:=abs_hom2 (PCFPO_rep_Hom_struct := 
+  assert (Habs:=abs_hom (PCFPO_rep_Hom_struct := 
             gMs) (u:=t) (v:=s)  y ).
   simpl in *.
   rewrite Habs.

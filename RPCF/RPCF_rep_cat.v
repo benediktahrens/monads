@@ -30,8 +30,8 @@ Proof.
   induction H'.
   simpl in *.
   
-  assert (He : (forall t, tcomp (Rep_comp c0 c1) t = 
-                          tcomp (Rep_comp a0 a1) t)).
+  assert (He : (forall t, Sorts_map (Rep_comp c0 c1) t = 
+                          Sorts_map (Rep_comp a0 a1) t)).
     simpl.
     intro t.
     rewrite H;
@@ -45,9 +45,9 @@ Proof.
   
   simpl in *.
   intros V t y.
-  assert (K1 : tcomp = tcomp0).
+  assert (K1 : Sorts_map = Sorts_map0).
     apply functional_extensionality. auto.
-  assert (K2 : tcomp1 = tcomp2).
+  assert (K2 : Sorts_map1 = Sorts_map2).
     apply functional_extensionality. auto.
 
   generalize dependent He.
@@ -58,7 +58,7 @@ Proof.
   assert (Hl := rlift_transp_id).
   assert (Hl':= Hl _ _ _ c He). 
   assert (Hll := Hl' _ _ 
-  (RMon_car (f:=tcomp2) (f':=tcomp0) 
+  (RMon_car (f:=Sorts_map2) (f':=Sorts_map0) 
           rep_Hom_monad2 rep_Hom_monad0 V t y)). 
   
   simpl in *.
@@ -78,8 +78,8 @@ Proof.
   
   assert (H0spec := H0 _ _ (ctype _ y)).
   assert (H0r := rlift_transp_id (Q:=b) H
-               (rep_Hom_monad2 V (tcomp2 t)
-        (ctype (fun t : type_type a => tcomp2 t) 
+               (rep_Hom_monad2 V (Sorts_map2 t)
+        (ctype (fun t : Sorts a => Sorts_map2 t) 
                 (V:=a V) (t:=t) y))).
   simpl in *.
   
@@ -94,11 +94,11 @@ Proof.
   clear H0.
   
   assert (H2spec := H2 _ _ 
-  ((ctype (fun t0 : type_type b => tcomp0 t0)
-   (V:=b (retype (fun t0 : type_type a => tcomp2 t0) V)) 
-          (t:=tcomp2 t)
-     (rep_Hom_monad1 V (tcomp2 t)
-        (ctype (fun t0 : type_type a => tcomp2 t0) 
+  ((ctype (fun t0 : Sorts b => Sorts_map0 t0)
+   (V:=b (retype (fun t0 : Sorts a => Sorts_map2 t0) V)) 
+          (t:=Sorts_map2 t)
+     (rep_Hom_monad1 V (Sorts_map2 t)
+        (ctype (fun t0 : Sorts a => Sorts_map2 t0) 
    (V:=a V) (t:=t) y))))).
    simpl.
   
@@ -109,7 +109,7 @@ Proof.
   rewrite H2spec.
   
   apply f_equal.
-  rewrite (UIP_refl _ _ (H1 (tcomp2 t))).
+  rewrite (UIP_refl _ _ (H1 (Sorts_map2 t))).
   simpl.
   auto.
 Qed.
@@ -118,8 +118,8 @@ Next Obligation.
 Proof.
   simpl.
   intros a b f.
-  assert (H : forall t, tcomp f t = 
-    tcomp (Rep_comp f (PCFPO_id b)) t)
+  assert (H : forall t, Sorts_map f t = 
+    Sorts_map (Rep_comp f (PCFPO_id b)) t)
     by (simpl; auto).
   
   apply (eq_rep (H:=H)); simpl.
@@ -155,8 +155,8 @@ Qed.
 Next Obligation.
   simpl.
   intros a b f.
-  assert (H : forall t, tcomp f t = 
-    tcomp (Rep_comp (PCFPO_id a) f) t)
+  assert (H : forall t, Sorts_map f t = 
+    Sorts_map (Rep_comp (PCFPO_id a) f) t)
     by (simpl; auto).
   
   apply (eq_rep (H:=H)); simpl.
@@ -200,8 +200,8 @@ Next Obligation.
 Proof.
   intros a b c c' f g h.
   assert (H : forall t, 
-    tcomp (Rep_comp f (Rep_comp g h)) t =
-    tcomp (Rep_comp (Rep_comp f g) h) t) by
+    Sorts_map (Rep_comp f (Rep_comp g h)) t =
+    Sorts_map (Rep_comp (Rep_comp f g) h) t) by
           (simpl; auto).
   apply (eq_rep (H:=H)).
   simpl.
@@ -227,8 +227,8 @@ Proof.
   rewrite Hc'.
   
   assert (H3:=gen_rh_rlift rep_Hom_monad).
-  rewrite <- (H3 _ _ (double_retype_1 (f:=tcomp1) 
-                             (f':=tcomp0)(V:= V))).
+  rewrite <- (H3 _ _ (double_retype_1 (f:=Sorts_map1) 
+                             (f':=Sorts_map0)(V:= V))).
 
   rewrite Hc'.
 

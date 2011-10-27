@@ -29,7 +29,7 @@ Variable Q : RMonad (IDelta U).
 Variable M : colax_RMonad_Hom P Q
 	      (G1:=RETYPE (fun t => f t))
 	      (G2:=RETYPE_PO (fun t => f t)) 
-              (NNNT1 (fun t => f t)).
+              (RT_NT (fun t => f t)).
 
 
 Section lemmata.
@@ -106,7 +106,7 @@ Variable P : RMonad (IDelta T).
 Variable Q : RMonad (IDelta U).
 Variable h : colax_RMonad_Hom P Q 
               (G1:=RETYPE (fun t => f t))
-	      (G2:=RETYPE_PO (fun t => f t)) (NNNT1 (fun t => f t)).
+	      (G2:=RETYPE_PO (fun t => f t)) (RT_NT (fun t => f t)).
 
 Variable u : T.
 
@@ -211,7 +211,7 @@ Program Instance gen_pb_fib_s : RModule_Hom_struct
   (N:= colax_PbRMod h (FIB_RMOD _ t M))
   (fun c => id _ ).
 
-Definition gen_pb_fib : FIB_RMOD _ t (colax_PbRMod h M) ---> 
+Definition colax_Pb_Fib : FIB_RMOD _ t (colax_PbRMod h M) ---> 
           colax_PbRMod h (FIB_RMOD _ t M) := Build_RModule_Hom gen_pb_fib_s.
 
 
@@ -220,7 +220,7 @@ Program Instance gen_fib_pb_s : RModule_Hom_struct
   (N:= FIB_RMOD _ t (colax_PbRMod h M))
   (fun c => id _ ).
 
-Definition gen_fib_pb : colax_PbRMod h (FIB_RMOD _ t M) ---> 
+Definition colax_Fib_Pb : colax_PbRMod h (FIB_RMOD _ t M) ---> 
    FIB_RMOD _ t (colax_PbRMod h M) 
        := Build_RModule_Hom gen_fib_pb_s.
 
@@ -270,7 +270,7 @@ Variable Q : RMonad (IDelta U).
 Variable M : colax_RMonad_Hom P Q 
                  (G1:=RETYPE (fun t => f t))
 	      (G2:=RETYPE_PO (fun t => f t)) 
-                  (NNNT1 (fun t => f t) ).
+                  (RT_NT (fun t => f t) ).
 Variables s r : T.
 (*
 Definition der_fib_hom_noeq_d c:

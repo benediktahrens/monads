@@ -868,7 +868,7 @@ Variable f : T -> U.
 Variable P : RMonad (IDelta T).
 Variable Q : RMonad (IDelta U).
 
-Variable h : colax_RMonad_Hom P Q (NNNT1 f).
+Variable h : colax_RMonad_Hom P Q (RT_NT f).
 Variable s : T.
 
 Obligation Tactic := idtac.
