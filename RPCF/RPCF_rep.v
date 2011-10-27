@@ -22,9 +22,12 @@ Notation "a 'x' b" := (product a b) (at level 30).
 Notation "M [ z ]" := (FIB_RMOD _ z M) (at level 35).
 Notation "'d' M // s" := (DER_RMOD _ _ s M) (at level 25).
 Notation "'*'" := (Term (C:=RMOD _ Ord)).
-
+(*
+Check FIB_RMOD.
+Check FIB_RMOD_HOM.
+*)
+(*
 Notation "f 'X' g" := (product_mor _ f g)(at level 30).
-
 Notation "'FM'" := (#(FIB_RMOD _ _ )).
 Notation "'FPB'":= (FIB_RPB _ _ _ ).
 Notation "'PRPB'":= (PROD_RPB _ _ _ _ ).
@@ -32,7 +35,7 @@ Notation "'PRPB'":= (PROD_RPB _ _ _ _ ).
 Notation "'PBM'":= (#(PbRMOD _ _ )).
 Notation "'DM'":= (#(DER_RMOD _ _ _ )).
 Notation "'DPB'":= (DER_RPB _ _ _ ).
-
+*)
 Notation "y [* := z ]":= (Rsubstar z _ y)(at level 55).
 
 

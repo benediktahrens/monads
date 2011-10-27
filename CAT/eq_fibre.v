@@ -78,7 +78,7 @@ Proof.
 Qed.
 
 
-Definition FIB_RMOD_small_eq :
+Definition Fib_eq_RMod :
     FIB_RMOD _ u M ---> FIB_RMOD _ t M := 
  Build_RModule_Hom FIB_RMOD_small_eq_s.
 

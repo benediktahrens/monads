@@ -355,8 +355,8 @@ Proof.
   rew (rlift_rweta Q).
 Qed.
 
- 
-Definition der_fib_hom_noeq :
+
+Definition DerFib_RMod_Hom :
   FIB_RMOD _ s (DER_RMOD _ _ r P) ---> 
      FIB_RMOD _ (f s) (colax_PbRMod M (DER_RMOD _ _ (f r) Q)) :=
      Build_RModule_Hom der_fib_hom_noeq_s.
