@@ -220,7 +220,7 @@ Proof.
   auto.
 Qed.
 
-Definition Transp_PO : NT (RETYPE_PO (fun t => f t)) 
+Definition Transp_ord : NT (RETYPE_PO (fun t => f t)) 
          (RETYPE_PO (fun t => g t)) := Build_NT transp_po_NT.
 
 End Transp_po.
