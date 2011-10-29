@@ -15,7 +15,7 @@ Inductive eq_Rep (P R : PCFPO_rep) : relation (PCFPO_rep_Hom P R) :=
             forall H : (forall t, Sorts_map c t = Sorts_map a t),
             (forall V, (*rep_Hom_monad*) a V ;; rlift R (Transp H V)
                                     == 
-                       Transp_PO H (P V) ;; (*rep_Hom_monad*) c V ) ->
+                       Transp_ord H (P V) ;; (*rep_Hom_monad*) c V ) ->
              
              eq_Rep a c.
   
