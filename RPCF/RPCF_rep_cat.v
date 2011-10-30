@@ -16,7 +16,7 @@ Obligation Tactic := idtac.
 Program Instance REP_s : 
      Cat_struct (obj := PCFPO_rep) (PCFPO_rep_Hom) := {
   mor_oid P R := eq_Rep_oid P R ;
-  id R := PCFPO_id R ;
+  id R := Rep_id R ;
   comp a b c f g := Rep_comp f g
 }.
 Next Obligation.
@@ -119,7 +119,7 @@ Proof.
   simpl.
   intros a b f.
   assert (H : forall t, Sorts_map f t = 
-    Sorts_map (Rep_comp f (PCFPO_id b)) t)
+    Sorts_map (Rep_comp f (Rep_id b)) t)
     by (simpl; auto).
   
   apply (eq_rep (H:=H)); simpl.
@@ -156,7 +156,7 @@ Next Obligation.
   simpl.
   intros a b f.
   assert (H : forall t, Sorts_map f t = 
-    Sorts_map (Rep_comp (PCFPO_id a) f) t)
+    Sorts_map (Rep_comp (Rep_id a) f) t)
     by (simpl; auto).
   
   apply (eq_rep (H:=H)); simpl.

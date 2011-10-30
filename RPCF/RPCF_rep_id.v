@@ -221,7 +221,7 @@ Proof.
 Qed.
 
 
-Definition PCFPO_id := Build_PCFPO_rep_Hom PCFPO_id_struct.
+Definition Rep_id := Build_PCFPO_rep_Hom PCFPO_id_struct.
 
 End id_rep.
 
