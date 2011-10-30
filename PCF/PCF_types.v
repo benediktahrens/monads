@@ -6,9 +6,11 @@ Unset Automatic Introduction.
 
 Module PCF.
 
-Inductive types := 
-  | Nat : types
-  | Bool : types
-  | arrow : types -> types -> types.
+Inductive Sorts := 
+  | Nat : Sorts
+  | Bool : Sorts
+  | Arrow : Sorts -> Sorts -> Sorts.
+
+Notation "a '~>' b" := (Arrow a b) (at level 60, right associativity).
 
 End PCF.

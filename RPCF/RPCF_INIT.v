@@ -166,8 +166,6 @@ End unique.
 
 Hint Resolve initR_unique : fin.
 
-Obligation Tactic := fin.
-
 Program Instance PCF_initial : Initial REP := {
   Init := PCFE_rep ;
   InitMor R := initR R ;

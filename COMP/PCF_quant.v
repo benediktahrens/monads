@@ -95,7 +95,7 @@ Canonical Structure PCFBottom t := Build_Module_Hom (bottom_hom_s t).
 (** the initial representation over the identity morphism of types *)
 
 Program Instance PCF_init_s : 
- PCF_rep_struct PCFM (fun t => t) (PCF.arrow) := {
+ PCF_rep_struct PCFM (fun t => t) (PCF.Arrow) := {
   app r s := PCFapp r s ;
   abs r s := PCFabs r s ;
   rec t := PCFrec t ;
@@ -111,7 +111,7 @@ Program Instance PCF_init_s :
 }.
 
 Canonical Structure PCF_init : REP := 
-   Build_PCF_rep (type_type:=TY)(type_arrow:=PCF.arrow)
+   Build_PCF_rep (type_type:=TY)(type_arrow:=PCF.Arrow)
    (fun _ _ => eq_refl) PCF_init_s.
 
 (** now for any representation R a morphism PCF_init -> R *)
@@ -171,7 +171,7 @@ Fixpoint init V t (v : PCF V t) :
            (type_mor R
               (Bool ~> Nat ~> Nat ~> Nat))
            (eq_sym
-              (arrow_distrib4 (Uar:=PCF.arrow) (U'ar:=type_arrow (p:=R))
+              (arrow_distrib4 (Uar:=PCF.Arrow) (U'ar:=type_arrow (p:=R))
                  (g:=type_mor R) (type_arrow_dist R) Bool
                  Nat Nat Nat))
                  | condB => eq_rect
@@ -183,7 +183,7 @@ Fixpoint init V t (v : PCF V t) :
            (type_mor R
               (Bool ~> Bool ~> Bool ~> Bool))
            (eq_sym
-              (arrow_distrib4 (Uar:=PCF.arrow) (U'ar:=type_arrow (p:=R))
+              (arrow_distrib4 (Uar:=PCF.Arrow) (U'ar:=type_arrow (p:=R))
                  (g:=type_mor R) (type_arrow_dist R) Bool
                  Bool Bool Bool))
                  | zero => eq_rect
@@ -207,7 +207,7 @@ Fixpoint init V t (v : PCF V t) :
 
 
 Obligation Tactic := idtac.
-
+Notation "v //- f" := (@rename _ _ f _ v)(at level 43, left associativity).
 Lemma init_lift (V : IT) t (y : PCF V t) W (f : V ---> W) : 
    (init (y //- f)) = 
       lift (M:=R) (retype_map f) _ (init y).
@@ -303,7 +303,7 @@ Proof.
       destruct R as [TR Rar RM Rmor Rdist Rrep];
       simpl.
       generalize (eq_sym
-        (arrow_distrib4 (Uar:=PCF.arrow) (U'ar:=Rar) (g:=Rmor)
+        (arrow_distrib4 (Uar:=PCF.Arrow) (U'ar:=Rar) (g:=Rmor)
            Rdist Bool Nat Nat Nat)).
       destruct Rrep as
        [Rapp Rabs Rrec tttt
@@ -325,7 +325,7 @@ Proof.
       destruct R as [TR Rar RM Rmor Rdist Rrep];
       simpl.
       generalize (eq_sym
-        (arrow_distrib4 (Uar:=PCF.arrow) (U'ar:=Rar) (g:=Rmor)
+        (arrow_distrib4 (Uar:=PCF.Arrow) (U'ar:=Rar) (g:=Rmor)
            Rdist Bool Bool Bool Bool)).
       destruct Rrep as
        [Rapp Rabs Rrec tttt
@@ -413,7 +413,7 @@ Proof.
       auto.
 Qed.
 
-
+Notation "y >>= f" := (@subst _ _ f _ y) (at level 42).
 Lemma init_subst V t (y : PCF V t) W (f : V ---> PCF W):
 init (y >>= f) =
 kleisli (a:=retype (fun t0 : TY => type_mor R t0) V)
@@ -798,7 +798,7 @@ End initiality.
 
 Hint Resolve init_unique : fin.
 
-Obligation Tactic := fin.
+
 
 Program Instance PCF_initial : Initial REP := {
   Init := PCF_init ;

@@ -17,8 +17,10 @@ Notation "'IsoPF'" := (colax_Pb_Fib _ _ _).
 Notation "'IsoFP'" := (colax_Fib_Pb _ _ _).
 Notation "'IsoXP'" := (colax_PROD_PM _ _ _ _ ).
 
-Notation "f 'D' r [( s )] " := (DerFib_RMod_Hom f s r) (at level 33).
+(*Notation "f 'D' r [( s )] " := (DerFib_RMod_Hom f s r) (at level 33).*)
+
 Notation "*--->*" := (unit_rmod _ ).
+
 (** morphisms of representations *)
 
 (*

@@ -118,7 +118,7 @@ End arrow_lemmata.
 Section PCF_rep_Hom.
 
 Notation "'IT'" := (ITYPE TY).
-Notation "a '~>' b" := (PCF.arrow a b) 
+Notation "a '~>' b" := (PCF.Arrow a b) 
      (at level 69, right associativity).
 Notation "a 'x' b" := (product (*C:= MOD _ _*) a b) (at level 30).
 Notation "P [ z ]" := (ITFIB_MOD _ z P) (at level 35).

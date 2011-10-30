@@ -1,6 +1,6 @@
 Require Export CatSem.CAT.retype_functor_po.
 Require Export CatSem.CAT.rmonad_gen_type_po.
-Require Export CatSem.PCF.PCF_types.
+(*Require Export CatSem.PCF.PCF_types.*)
 
 Set Implicit Arguments.
 Unset Strict Implicit.

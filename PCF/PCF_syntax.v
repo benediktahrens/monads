@@ -1,6 +1,7 @@
 Require Export CatSem.PCF.PCF_types.
 Require Export CatSem.CAT.cat_INDEXED_TYPE.
 
+
 Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Transparent Obligations.
@@ -8,12 +9,20 @@ Unset Automatic Introduction.
 
 Notation "^ f" := (lift (M:= opt_monad _) f) (at level 5).
 
-Definition TY := PCF.types.
-Definition Bool := PCF.Bool.
-Definition Nat := PCF.Nat.
+(*
+Ltac fin := simpl in *; intros; 
+   autorewrite with fin; auto with fin; simpl;
+	try reflexivity.
+*)
 
-Notation "'IT'" := (ITYPE PCF.types).
-Notation "a '~>' b" := (PCF.arrow a b) 
+Section close_notation.
+
+Notation "'TY'" := PCF.Sorts.
+Notation "'Bool'" := PCF.Bool.
+Notation "'Nat'" := PCF.Nat.
+
+Notation "'IT'" := (ITYPE TY).
+Notation "a '~>' b" := (PCF.Arrow a b) 
    (at level 69, right associativity).
 
 
@@ -492,7 +501,8 @@ Qed.
 
 Hint Rewrite lift_rename : fin.
 
+End close_notation.
 
 Existing Instance subst_oid.
 
-Obligation Tactic := fin.
+

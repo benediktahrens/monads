@@ -15,7 +15,7 @@ Obligation Tactic := simpl; intros;
 	try constructor.
 
 Program Instance PCFE_rep_struct : 
-       PCFPO_rep_struct PCFEM  PCF.arrow PCF.Bool PCF.Nat := {
+       PCFPO_rep_struct PCFEM  PCF.Arrow PCF.Bool PCF.Nat := {
   app r s := PCFApp r s;
   abs r s := PCFAbs r s;
   rec t := PCFRec t ;
@@ -123,7 +123,7 @@ Qed.
 *)
 
 Definition PCFE_rep : PCFPO_rep := 
-  Build_PCFPO_rep (Sorts:=TY) (Arrow:=PCF.arrow)
+  Build_PCFPO_rep (Sorts:=PCF.Sorts) (Arrow:=PCF.Arrow)
    (pcf_rep_monad:=PCFEM)
    PCFE_rep_struct.
 

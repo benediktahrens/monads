@@ -8,6 +8,11 @@ Unset Strict Implicit.
 Unset Transparent Obligations.
 Unset Automatic Introduction.
 
+Notation "a '~>' b" := (PCF.Arrow a b) (at level 60, right associativity).
+Notation "'TY'" := PCF.Sorts.
+Notation "'IT'" := (ITYPE TY).
+Notation "v //- f" := (@rename _ _ f _ v)(at level 43, left associativity).
+Notation "y >>= f" := (@subst _ _ f _ y) (at level 42, left associativity).
 
 Section weak_init.
 
@@ -15,40 +20,44 @@ Variable R : PCFPO_rep.
 
 (** the initial type morphism T(STS) -> T(R) *)
 
-Fixpoint Init_Sorts_map (t : PCF.types) : Sorts R := 
+Fixpoint Init_Sorts_map (t : Sorts PCFE_rep) : Sorts R := 
     match t with
     | PCF.Nat => Nat R 
     | PCF.Bool => Bool R
-    | PCF.arrow u v => (Init_Sorts_map u) ~~> (Init_Sorts_map v)
+    | u ~> v => (Init_Sorts_map u) ~~> (Init_Sorts_map v)
     end.
 
-Obligation Tactic := reflexivity.
+(*Obligation Tactic := reflexivity.*)
+
+Print rweta.
+Implicit Arguments rweta [obC obD morC morD C D F T].
+Print rweta.
 
 (** the initial morphism STS -> R *)
 
 Fixpoint init V t (v : PCF V t) : 
-    R (retype (fun t0 => Init_Sorts_map t0) V) (Init_Sorts_map t) :=
-  match v in PCF _ t return 
-        R (retype (fun t0 => Init_Sorts_map t0) V) (Init_Sorts_map t) with
-  | Var t v => rweta (RMonad_struct := R) _ _ (ctype _ v)
-  | App r s u v => app (PCFPO_rep_struct := R) _ _ _ (init u, init v)
-  | Lam _ _ v => abs (PCFPO_rep_struct := R) _ _ _ 
+    R (retype (fun t0 => Init_Sorts_map t0) V) (Init_Sorts_map t)  :=
+  match v (*in PCF _ t return 
+        R (retype (fun t0 => Init_Sorts_map t0) V) (Init_Sorts_map t)*) with
+  | Var t v => rweta (*RMonad_struct := R*) R _ _ (ctype _ v)
+  | App r s u v => app (*PCFPO_rep_struct := R*) _ _ _ (init u, init v)
+  | Lam _ _ v => abs (*PCFPO_rep_struct := R*) _ _ _ 
                   (rlift R 
                      (@der_comm TY (Sorts R) (fun t => Init_Sorts_map t) _ V ) 
                       _ (init v))
-  | Rec _ v => rec (PCFPO_rep_struct := R) _ _ (init v) 
-  | Bottom _  => bottom (PCFPO_rep_struct := R) _ _ tt
+  | Rec _ v => rec (*PCFPO_rep_struct := R*) _ _ (init v) 
+  | Bottom _  => bottom (*PCFPO_rep_struct := R*) _ _ tt
   | Const _ y => match y in Consts t1 return 
                        R (retype (fun t2 => Init_Sorts_map t2) V) (Init_Sorts_map t1) 
                  with
-                 | Nats m => nats (PCFPO_rep_struct := R) m (*retype _ V*) _ tt
-                 | succ => Succ (retype (fun t1 : TY => _  t1) _) tt
-                 | condN => CondN (retype (fun t1 : TY => _ t1) _) tt
-                 | condB => CondB (retype (fun t1 : TY => _ t1) _) tt
-                 | zero => Zero (retype (fun t1 : TY => _ t1) _) tt
-                 | ttt => tttt (PCFPO_rep_struct := R) _ tt
-                 | fff => ffff (PCFPO_rep_struct := R) _ tt
-                 | preds => Pred (retype (fun t1 : TY => _ t1) _) tt
+                 | Nats m => nats (*PCFPO_rep_struct := R*) m (*retype _ V*) _ tt
+                 | succ => Succ (*retype (fun t1 : TY => _  t1) _*) _ tt
+                 | condN => CondN (*retype (fun t1 : TY => _ t1) _*) _ tt
+                 | condB => CondB (*retype (fun t1 : TY => _ t1) _*) _ tt
+                 | zero => Zero (*retype (fun t1 : TY => _ t1) _*) _ tt
+                 | ttt => tttt (*PCFPO_rep_struct := R*) _ tt
+                 | fff => ffff (*PCFPO_rep_struct := R*) _ tt
+                 | preds => Pred (*retype (fun t1 : TY => _ t1) _*) _ tt
                  end
   end.
 
@@ -130,6 +139,12 @@ Program Fixpoint init V t (v : PCF V t) :
            ( _ )
                  end
   end.
+*)
+
+(*
+Print rlift.
+Implicit Arguments rlift [[obC] [obD] morC morD C D F M [a] [b]].
+Print rlift.
 *)
 
 Lemma init_lift (V : IT) t (y : PCF V t) W (f : V ---> W) : 
@@ -239,6 +254,11 @@ Proof.
       apply f_equal.
       auto.
 Qed.
+
+Print nat.
+Check IPO.
+Check SM_ind.
+
 
 
 Lemma init_subst V t (y : PCF V t) W (f : IDelta _ V ---> PCFE W):

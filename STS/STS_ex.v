@@ -40,8 +40,8 @@ Definition TLC_sig t := Build_Signature_t t
 
 Notation "'Bool'" := PCF.Bool.
 Notation "'Nat'" := PCF.Nat.
-Notation "'T'" := PCF.types.
-Notation "a ~> b" := (PCF.arrow a b)(at level 40).
+Notation "'T'" := PCF.Sorts.
+Notation "a ~> b" := (PCF.Arrow a b)(at level 40).
 
 Inductive PCF_index_t : T -> Type :=
   | PCF_abs : forall s t : T, PCF_index_t (s ~> t)

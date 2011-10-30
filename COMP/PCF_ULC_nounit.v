@@ -132,21 +132,21 @@ Definition ULCNat m :
  
 Program Instance ULCSucc_s :
 Module_Hom_struct (S:=MOD_Term uULC TYPE_term)
-  (T:=ITFibre_Mod uULC (PCF_ULC_type_mor (PCF.arrow Nat Nat)))
+  (T:=ITFibre_Mod uULC (PCF_ULC_type_mor (PCF.Arrow Nat Nat)))
   (fun V _ => ULCsucc (sunit V)).
 
 Definition ULCSucc :
-Term ---> (ITFIB_MOD uULC (PCF_ULC_type_mor (PCF.arrow Nat Nat))) uULC :=
+Term ---> (ITFIB_MOD uULC (PCF_ULC_type_mor (PCF.Arrow Nat Nat))) uULC :=
  Build_Module_Hom ULCSucc_s.
 
 Program Instance ULCCondN_s :
 Module_Hom_struct (S:=MOD_Term uULC TYPE_term)
-  (T:=ITFibre_Mod uULC (PCF_ULC_type_mor (PCF.arrow Nat Bool)))
+  (T:=ITFibre_Mod uULC (PCF_ULC_type_mor (PCF.Arrow Nat Bool)))
   (fun V _ => ULC_cond (sunit V)).
 
 
 Definition ULCCondN :
-Term ---> (ITFIB_MOD uULC (PCF_ULC_type_mor (PCF.arrow Nat Bool))) uULC :=
+Term ---> (ITFIB_MOD uULC (PCF_ULC_type_mor (PCF.Arrow Nat Bool))) uULC :=
 Build_Module_Hom ULCCondN_s.
 
 Obligation Tactic := simpl; intros; repeat elim_unit; auto.

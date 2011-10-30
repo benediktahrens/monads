@@ -147,7 +147,7 @@ Fixpoint init V t (v : PCF V t) :
 
 
 Obligation Tactic := idtac.
-
+Notation "v //- f" := (@rename _ _ f _ v)(at level 43, left associativity).
 Lemma init_lift (V : IT) t (y : PCF V t) W (f : V ---> W) : 
    (init (y //- f)) = 
       lift (M:=R) (retype_map f) _ (init y).
@@ -543,9 +543,9 @@ Qed.
 End initiality.
 
 Hint Resolve init_unique : fin.
-
+(*
 Obligation Tactic := fin.
-
+*)
 Program Instance PCF_initial : Initial REP := {
   Init := PCF_init ;
   InitMor R := init_rep R ;

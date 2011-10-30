@@ -9,7 +9,7 @@ Unset Transparent Obligations.
 Unset Automatic Introduction.
 
 Notation "'IT'" := (ITYPE TY).
-Notation "a '~>' b" := (PCF.arrow a b) 
+Notation "a '~>' b" := (PCF.Arrow a b) 
      (at level 69, right associativity).
 Notation "a 'x' b" := (product a b) (at level 30).
 Notation "P [ z ]" := (ITFIB_MOD _ z P) (at level 35).

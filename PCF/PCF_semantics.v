@@ -9,6 +9,45 @@ Unset Strict Implicit.
 Unset Transparent Obligations.
 Unset Automatic Introduction.
 
+Section close_notation.
+Notation "'TY'" := PCF.Sorts.
+Notation "'Bool'" := PCF.Bool.
+Notation "'Nat'" := PCF.Nat.
+
+Notation "'IT'" := (ITYPE TY).
+Notation "a '~>' b" := (PCF.Arrow a b) 
+   (at level 69, right associativity).
+Notation "M [*:= N ]" := (substar N M) (at level 50).
+Notation "'$' f" := (@_shift _ _ _ f) (at level 30).
+Notation "y >>- f" := (_shift f y) (at level 44).
+Notation "y >>= f" := (@subst _ _ f _ y) (at level 42).
+
+Ltac opt := simpl; intros; elim_opt.
+
+Ltac fin := simpl in *; intros; 
+   autorewrite with fin; auto with fin; simpl;
+	try reflexivity.
+Hint Unfold lift : fin.
+Hint Extern 1 (_ = _) => f_equal : fin.
+Hint Resolve rename_eq : fin.
+Hint Rewrite rename_eq : fin.
+Hint Resolve  rename_id shift_eq : fin.
+Hint Rewrite  rename_id shift_eq : fin.
+Hint Resolve shift_var : fin.
+Hint Rewrite shift_var : fin.
+Hint Resolve var_lift_shift_eq : fin.
+Hint Resolve shift_lift : fin.
+Hint Rewrite shift_lift : fin.
+Hint Resolve subst_eq : fin.
+Hint Rewrite subst_eq : fin.
+Hint Rewrite subst_rename rename_subst : fin.
+Hint Unfold inj : fin.
+Hint Resolve subst_shift_shift subst_var subst_var_eta : fin.
+Hint Rewrite subst_shift_shift subst_var subst_var_eta : fin.
+Hint Resolve subst_var subst_subst : fin.
+Hint Rewrite subst_subst : fin.
+Hint Rewrite lift_rename : fin.
+
 Section Relations_on_PCF.
 
 Reserved Notation "x :> y" (at level 70).
@@ -247,3 +286,4 @@ Program Instance subst_s (V W : IT) (f : IDelta _ V ---> PCFE W) :
 
 Definition SUBST V W f := Build_ipo_mor (subst_s V W f).
 
+End close_notation.

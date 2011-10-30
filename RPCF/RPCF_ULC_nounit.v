@@ -13,12 +13,13 @@ Unset Automatic Introduction.
 Unset Printing Implicit Defensive.
 (* this will suppress printing
   of implicit arguments of Var *)
-
+(*
 Notation "a '~>' b" := (PCF.arrow a b) 
    (at level 69, right associativity).
-
+*)
+(*
 Definition PCF_ULC_type_mor : PCF.types -> unit := fun _ => tt.
-
+*)
 Definition ULCBETAM := unit_RMonad ULCBETA.
 
 Program Instance ULCApp_pos u v c:
@@ -171,12 +172,12 @@ Program Instance ULCttt_pos :
 
 Definition ULCttt_car V:
 Term (C:=RMOD ULCBETAM Ord) V ---> 
-       (ULCBETAM [PCF_ULC_type_mor PCF.Bool]) V :=
+       (ULCBETAM [tt]) V :=
 Build_PO_mor (ULCttt_pos V).
 
 Program Instance ulc_ttt_s : 
 RModule_Hom_struct 
-  (M:=Term) (N:=ULCBETAM [PCF_ULC_type_mor PCF.Bool])
+  (M:=Term) (N:=ULCBETAM [tt])
   ULCttt_car.
 
 Definition ulc_ttt := Build_RModule_Hom ulc_ttt_s.
@@ -184,24 +185,24 @@ Definition ulc_ttt := Build_RModule_Hom ulc_ttt_s.
 Program Instance ULCfff_pos : 
     forall V : unit -> Type,
  PO_mor_struct (a:=PO_TERM)  
-   (b:=ipo_proj (ULCBETAM V)(PCF_ULC_type_mor PCF.Bool))
+   (b:=ipo_proj (ULCBETAM V) tt)
    (fun _ => ULC_False (sunit V)).
 
 Definition ULCfff_car V:
 Term (C:=RMOD ULCBETAM Ord) V ---> 
-       (ULCBETAM [PCF_ULC_type_mor PCF.Bool]) V :=
+       (ULCBETAM [tt]) V :=
 Build_PO_mor (ULCfff_pos V).
 
 Program Instance ulc_fff_s : 
 RModule_Hom_struct 
-  (M:=Term) (N:=ULCBETAM [PCF_ULC_type_mor PCF.Bool])
+  (M:=Term) (N:=ULCBETAM [tt])
   ULCfff_car.
 
 Definition ulc_fff := Build_RModule_Hom ulc_fff_s.
 
 Program Instance ULCNats_pos m V:
 PO_mor_struct (a:=Term (C:=RMOD ULCBETAM _ )V)
-  (b:=ULCBETAM [PCF_ULC_type_mor PCF.Nat] V)
+  (b:=ULCBETAM [tt] V)
   (fun _ => ULC_Nat m (sunit V)).
 
 Definition ULCNats_car m V := Build_PO_mor (ULCNats_pos m V).
@@ -331,7 +332,7 @@ Definition ulc_nats_alt m := Build_RModule_Hom (ulc_nats_alt_s m).
 
 Program Instance ULC_N_pos m V:
 PO_mor_struct (a:=Term (C:=RMOD ULCBETAM _ )V)
-  (b:=ULCBETAM [PCF_ULC_type_mor PCF.Nat] V)
+  (b:=ULCBETAM [tt] V)
   (fun _ => ULC_N m (sunit V)).
 
 Definition ULC_N_car m V := Build_PO_mor (ULC_N_pos m V).
@@ -341,7 +342,7 @@ Obligation Tactic := intros; try unf_Proper; cat;
 
 Program Instance ulc_n_s m : RModule_Hom_struct
  (M:= Term (C:=RMOD ULCBETAM Ord))
- (N:= ULCBETAM [PCF_ULC_type_mor PCF.Nat])
+ (N:= ULCBETAM [tt])
  (ULC_N_car m).
  
 Definition ulc_N m := Build_RModule_Hom (ulc_n_s m).
@@ -349,18 +350,18 @@ Definition ulc_N m := Build_RModule_Hom (ulc_n_s m).
 Program Instance ULCSucc_pos :
 forall V : unit -> Type,
 PO_mor_struct (a:=PO_TERM) 
-  (b:=ipo_proj (ULCBETAM V) (PCF_ULC_type_mor (PCF.arrow PCF.Nat PCF.Nat)))
+  (b:=ipo_proj (ULCBETAM V) tt)
   (fun _ => ULCsucc (sunit V)).
 
 Definition ULCSucc_car V :
 Term (C:=RMOD ULCBETAM _ ) V ---> 
- (ULCBETAM [PCF_ULC_type_mor (PCF.Nat ~> PCF.Nat)]) V :=
+ (ULCBETAM [tt]) V :=
   Build_PO_mor (ULCSucc_pos V).
 
 
 Program Instance ulc_succ_s : RModule_Hom_struct
   (M:= Term (C:=RMOD ULCBETAM Ord))
-  (N:= ULCBETAM [PCF_ULC_type_mor (PCF.Nat ~> PCF.Nat)])
+  (N:= ULCBETAM [tt])
   ULCSucc_car.
 
 Definition ulc_succ := Build_RModule_Hom ulc_succ_s.
@@ -369,18 +370,17 @@ Definition ulc_succ := Build_RModule_Hom ulc_succ_s.
 Program Instance ULCCondN_pos :
 forall V : unit -> Type,
 PO_mor_struct (a:=PO_TERM) 
-  (b:=ipo_proj (ULCBETAM V) (PCF_ULC_type_mor 
-                         (PCF.Bool ~> PCF.Nat ~> PCF.Nat ~> PCF.Nat)))
+  (b:=ipo_proj (ULCBETAM V) tt)
   (fun _ => ULC_cond (sunit V)).
 
 Definition ULCCondN_car V :
 Term (C:=RMOD ULCBETAM _ ) V ---> 
- (ULCBETAM [PCF_ULC_type_mor (PCF.Nat ~> PCF.Nat)]) V :=
+ (ULCBETAM [tt]) V :=
   Build_PO_mor (ULCCondN_pos V).
 
 Program Instance ulc_condn_s : RModule_Hom_struct 
   (M := Term (C:=RMOD ULCBETAM Ord))
-  (N:= ULCBETAM [PCF_ULC_type_mor (PCF.Bool ~> PCF.Nat ~> PCF.Nat ~> PCF.Nat)])
+  (N:= ULCBETAM [tt])
   (ULCCondN_car).
 
 Definition ulc_condn := Build_RModule_Hom ulc_condn_s.
@@ -389,18 +389,17 @@ Definition ulc_condn := Build_RModule_Hom ulc_condn_s.
 Program Instance ULCCondB_pos :
 forall V : unit -> Type,
 PO_mor_struct (a:=PO_TERM) 
-  (b:=ipo_proj (ULCBETAM V) (PCF_ULC_type_mor 
-                         (PCF.Bool ~> PCF.Bool ~> PCF.Bool ~> PCF.Bool)))
+  (b:=ipo_proj (ULCBETAM V) tt)
   (fun _ => ULC_cond (sunit V)).
 
 Definition ULCCondB_car V :
 Term (C:=RMOD ULCBETAM _ ) V ---> 
- (ULCBETAM [PCF_ULC_type_mor (PCF.Nat ~> PCF.Nat)]) V :=
+ (ULCBETAM [tt]) V :=
   Build_PO_mor (ULCCondB_pos V).
 
 Program Instance ulc_condb_s : RModule_Hom_struct 
   (M := Term (C:=RMOD ULCBETAM Ord))
-  (N:= ULCBETAM [PCF_ULC_type_mor (PCF.Bool ~> PCF.Bool ~> PCF.Bool ~> PCF.Bool)])
+  (N:= ULCBETAM [tt])
   (ULCCondB_car).
 
 Definition ulc_condb := Build_RModule_Hom ulc_condb_s.
@@ -430,18 +429,17 @@ Definition ulc_bottom t := Build_RModule_Hom (ulc_bottom_s t).
 Program Instance ULCzero_pos :
 forall V : unit -> Type,
 PO_mor_struct (a:=PO_TERM) 
-  (b:=ipo_proj (ULCBETAM V) (PCF_ULC_type_mor 
-                         (PCF.Nat ~> PCF.Bool)))
+  (b:=ipo_proj (ULCBETAM V) tt)
   (fun _ => ULC_zero (sunit V)).
 
 Definition ULCzero_car V :
 Term (C:=RMOD ULCBETAM _ ) V ---> 
- (ULCBETAM [PCF_ULC_type_mor (PCF.Nat ~> PCF.Nat)]) V :=
+ (ULCBETAM [tt]) V :=
   Build_PO_mor (ULCzero_pos V).
 
 Program Instance ulc_zero_s : RModule_Hom_struct 
   (M:= Term (C := RMOD ULCBETAM Ord))
-  (N:= ULCBETAM [PCF_ULC_type_mor (PCF.Nat ~> PCF.Bool)])
+  (N:= ULCBETAM [tt])
   ULCzero_car.
 
 Definition ulc_zero := Build_RModule_Hom ulc_zero_s.
@@ -449,18 +447,17 @@ Definition ulc_zero := Build_RModule_Hom ulc_zero_s.
 Program Instance ULCpred_pos :
 forall V : unit -> Type,
 PO_mor_struct (a:=PO_TERM) 
-  (b:=ipo_proj (ULCBETAM V) (PCF_ULC_type_mor 
-                         (PCF.Nat ~> PCF.Nat)))
+  (b:=ipo_proj (ULCBETAM V) tt)
   (fun _ => ULC_pred_alt (sunit V)).
 
 Definition ULCpred_car V :
 Term (C:=RMOD ULCBETAM _ ) V ---> 
- (ULCBETAM [PCF_ULC_type_mor (PCF.Nat ~> PCF.Nat)]) V :=
+ (ULCBETAM [tt]) V :=
   Build_PO_mor (ULCpred_pos V).
 
 Program Instance ulc_pred_s : RModule_Hom_struct 
   (M:= Term (C := RMOD ULCBETAM Ord))
-  (N:= ULCBETAM [PCF_ULC_type_mor (PCF.Nat ~> PCF.Nat)])
+  (N:= ULCBETAM [tt])
   ULCpred_car.
 
 Definition ulc_pred := Build_RModule_Hom ulc_pred_s.
@@ -471,7 +468,7 @@ Ltac sim := unfold substar; simpl ;
 Obligation Tactic := idtac.
 
 Program Instance PCF_ULC_rep_s : 
- PCFPO_rep_struct (Sorts:=unit) ULCBETAM (fun _ _ => tt) tt  tt := {
+ PCFPO_rep_struct (Sorts:=unit) ULCBETAM (fun _ _ => tt) tt tt := {
 
   app r s := ulc_app r s;
   abs r s := ulc_abs r s;
