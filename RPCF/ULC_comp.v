@@ -12,28 +12,67 @@ Definition PCF_ULC_compilation :=
 
 Definition PCF_ULC_c := 
    rep_Hom_monad PCF_ULC_compilation.
-
+Locate "@".
 (** some examples *)
+
+Notation "a @ b" := (App a b) (at level 20, left associativity).
+Notation "a @@ b" := (PCF_syntax.App a b) (at level 20, left associativity).
+Notation "'1'" := (Var None) (at level 33).
+Notation "'2'" := (Var (Some None)) (at level 24).
+Notation "'3'" := (Var (Some (Some None))) (at level 23).
+Notation "'4'" := (Var (Some (Some (Some None)))) (at level 22).
+
+Notation "'y'" := (PCF_syntax.Var None) (at level 33).
 
 Eval compute in 
   (PCF_ULC_c (fun t => False) tt 
-               (ctype _ (Bottom (fun _ => False) Nat))).
+               (ctype _ (Bottom (fun _ => False) PCF.Nat))).
+Eval compute in 
+  (PCF_ULC_c (fun t => False) tt 
+               (ctype _ (succ ' ))).
+
 Eval compute in 
   (PCF_ULC_c (fun t => False) tt 
                (ctype _ (Const (fun _ => False) (succ )))).
 Eval compute in 
   (PCF_ULC_c (fun t => False) tt 
-               (ctype _ (Const (fun _ => False) (preds )))).
+               (ctype _ (preds '))).
 
 Eval compute in 
   (PCF_ULC_c (fun t => False) tt 
-               (ctype _ (Const (fun _ => False) (condB )))).
+               (ctype _ (condB '))).
+
+Eval compute in 
+  (PCF_ULC_c (fun t => False) tt (ctype _ 
+       (condB ' @@ ttt ' @@ fff ' @@ ttt '))).
+
+Eval compute in 
+  (PCF_ULC_c (opt PCF.Bool (fun t => False)) tt (ctype _ 
+       (condB ' @@ (PCF_syntax.Var (none PCF.Bool (fun t => False))) @@ fff ' @@ ttt '))).
+
+Notation "'x_bool'" := (PCF_syntax.Var (none PCF.Bool (fun t => False))).
+
+Eval compute in 
+  (PCF_ULC_c ((fun t => False)) tt (ctype _        
+   (Lam (condB ' @@ (PCF_syntax.Var (none PCF.Bool (fun t => False))) @@ fff ' @@ ttt ')))).
+
+Eval compute in 
+  (PCF_ULC_c ((fun t => False)) tt (ctype _        
+   (Lam (condB ' @@ x_bool @@ fff ' @@ ttt ')))).
 
 
+
+
+Check Lam.
+(*
+Eval compute in 
+  (PCF_ULC_c (fun t => False) tt (ctype _ 
+     (Lam (condB ' @@ PCF_syntax.Var None @@ fff ' @@ ttt ')))).
+*)
 Eval compute in 
   (PCF_ULC_c ( (fun t => False)) tt
                (ctype _ (
-                    Lam (PCF_syntax.Var (none Bool (fun t => False)))))).
+                    Lam (PCF_syntax.Var (none PCF.Bool (fun t => False)))))).
 
 Check ctype.
 Check (Const (fun _ => False) condB).

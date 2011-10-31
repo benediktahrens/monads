@@ -18,9 +18,9 @@ Notation "a '~>' b" := (PCF.Arrow a b)
 Notation "M [*:= N ]" := (substar N M) (at level 50).
 Notation "'$' f" := (@_shift _ _ _ f) (at level 30).
 Notation "y >>- f" := (_shift f y) (at level 44).
-Notation "y >>= f" := (@subst _ _ f _ y) (at level 42).
+Notation "y >>= f" := (@subst _ _ f _ y) (at level 42, left associativity).
 
-Notation "v //- f" := (@rename _ _ f _ v)(at level 43, left associativity).
+Notation "v //- f" := (@rename _ _ f _ v)(at level 42, left associativity).
 Ltac opt := simpl; intros; elim_opt.
 
 Ltac fin := simpl in *; intros; 

@@ -3,10 +3,10 @@ CONTENT OF THIS LIBRARY
 (1) DIRECTORIES
 (2) ./CAT
 (3) ./STS
-(4) ./COMP
-(5) ./ORDER
+(4) ./COMP (obsolete)
+(5) ./ORDER (obsolete)
 (6) ./PROP_untyped
-
+(7) ./RPCF
 
 (1) DIRECTORIES
 
@@ -29,8 +29,14 @@ CONTENT OF THIS LIBRARY
 	    initiality without change of object types
 	    proof for ULC
 	    proof for TLC
+
+  ./PROP_untyped : 
+	    initiality for untyped syntax with semantics
+		in form of reduction rules
+	      implementation of the contents of preprint
+		"Modules over relative monads ..."
 	
-  ./PCF_o_c : compilation of PCF+red to ULC+beta
+  ./RPCF : compilation of PCF+red to ULC+beta
 	  
 
 (2) ./CAT
@@ -389,7 +395,49 @@ CONTENT OF THIS LIBRARY
 	representation structure on UTSP, yielding rep UTSPROPREPR
 	  initiality of UTSPROPREPR in PROP_REP
 	 	
+(7) ./RPCF
 
+   ./RPCF/RPCF_rep.v
+	definition of representation of semantic PCF
+	
+   ./RPCF/RPCF_rep_hom.v
+	definition of morphism of representations of s. PCF
+
+   ./RPCF/RPCF_rep_eq.v
+	definition of equality of 2 parallel morpisms
+	  of representations of PCF
+	proof of setoidality of equality
+
+   ./RPCF/RPCF_rep_comp.v
+	definition of compostition of 2 morphisms of 
+	  reps of PCF
+
+   ./RPCF/RPCF_rep_id.v
+	definition of identity morphism of reps
+
+   ./RPCF/RPCF_rep_cat.v
+	definition of category of representations, in part.
+	  proof of assoc of composition and neutrality
+
+   ./RPCF/RPCF_syntax_rep.v
+	PCFE is the monad underlying a representation of PCF
+
+   ./RPCF/RPCF_syntax_init.v
+	definition of a morphism of representations from 
+	  PCFE to any R, i.e. weak initiality
+	
+   ./RPCF/RPCF_INIT.v
+	proof of unicity of above morphism
+	initiality
+	
+   ./RPCF/RPCF_ULC_nounit.v
+	representation of PCF in ULC, a monad obtained
+	  via a map from monads over Delta to monads 
+	  over * -> Delta
+   
+   ./RPCF/ULC_comp.v
+	some examples of translations from PCF to ULC
+	
 
 
 

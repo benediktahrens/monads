@@ -11,7 +11,7 @@ Unset Automatic Introduction.
 Notation "a '~>' b" := (PCF.Arrow a b) (at level 60, right associativity).
 Notation "'TY'" := PCF.Sorts.
 Notation "'IT'" := (ITYPE TY).
-Notation "v //- f" := (@rename _ _ f _ v)(at level 43, left associativity).
+Notation "v //- f" := (@rename _ _ f _ v)(at level 42, left associativity).
 Notation "y >>= f" := (@subst _ _ f _ y) (at level 42, left associativity).
 Notation "a @ b" := (App a b)(at level 20, left associativity).
 Notation "M '" := (Const _ M) (at level 15).
