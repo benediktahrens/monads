@@ -13,6 +13,8 @@ Notation "'TY'" := PCF.Sorts.
 Notation "'IT'" := (ITYPE TY).
 Notation "v //- f" := (@rename _ _ f _ v)(at level 43, left associativity).
 Notation "y >>= f" := (@subst _ _ f _ y) (at level 42, left associativity).
+Notation "a @ b" := (App a b)(at level 20, left associativity).
+Notation "M '" := (Const _ M) (at level 15).
 
 Section weak_init.
 
@@ -29,9 +31,7 @@ Fixpoint Init_Sorts_map (t : Sorts PCFE_rep) : Sorts R :=
 
 (*Obligation Tactic := reflexivity.*)
 
-Print rweta.
 Implicit Arguments rweta [obC obD morC morD C D F T].
-Print rweta.
 
 (** the initial morphism STS -> R *)
 
@@ -40,14 +40,14 @@ Fixpoint init V t (v : PCF V t) :
   match v (*in PCF _ t return 
         R (retype (fun t0 => Init_Sorts_map t0) V) (Init_Sorts_map t)*) with
   | Var t v => rweta (*RMonad_struct := R*) R _ _ (ctype _ v)
-  | App r s u v => app (*PCFPO_rep_struct := R*) _ _ _ (init u, init v)
+  | u @ v => app (*PCFPO_rep_struct := R*) _ _ _ (init u, init v)
   | Lam _ _ v => abs (*PCFPO_rep_struct := R*) _ _ _ 
                   (rlift R 
                      (@der_comm TY (Sorts R) (fun t => Init_Sorts_map t) _ V ) 
                       _ (init v))
   | Rec _ v => rec (*PCFPO_rep_struct := R*) _ _ (init v) 
   | Bottom _  => bottom (*PCFPO_rep_struct := R*) _ _ tt
-  | Const _ y => match y in Consts t1 return 
+  | y ' => match y in Consts t1 return 
                        R (retype (fun t2 => Init_Sorts_map t2) V) (Init_Sorts_map t1) 
                  with
                  | Nats m => nats (*PCFPO_rep_struct := R*) m (*retype _ V*) _ tt

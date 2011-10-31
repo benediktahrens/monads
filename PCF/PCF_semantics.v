@@ -22,6 +22,10 @@ Notation "'$' f" := (@_shift _ _ _ f) (at level 30).
 Notation "y >>- f" := (_shift f y) (at level 44).
 Notation "y >>= f" := (@subst _ _ f _ y) (at level 42).
 
+Notation "a @ b" := (App a b)(at level 20, left associativity).
+Notation "M '" := (Const _ M) (at level 15).
+Locate "'".
+
 Ltac opt := simpl; intros; elim_opt.
 
 Ltac fin := simpl in *; intros; 
@@ -60,7 +64,7 @@ Inductive propag (V: IT)
 | relApp1: forall (s t : TY)(M M' : PCF V (s ~> t)) N, 
        M :> M' -> App M N :> App M' N
 | relApp2: forall (s t:TY)(M:PCF V (s ~> t)) N N',
-      N :> N' -> App M N :> App M N'
+      N :> N' -> M @ N :> M @ N'
 | relLam: forall (s t:TY)(M M':PCF (opt s V) t),
       M :> M' -> Lam M :> Lam M'
 | relRec: forall (t : TY)(M M' : PCF V (t ~> t)), 
@@ -70,7 +74,7 @@ where "x :> y" := (@propag _ _ x y).
 
 Notation "x :>> y" := 
   (clos_refl_trans_1n _ (@propag _ _ ) x y) (at level 50).
-
+Print propag.
 
 Variable V: IT.
 Variables s t: TY.
@@ -78,7 +82,7 @@ Variables s t: TY.
 (** these are some trivial lemmata  which will be used later *)
 
 Lemma cp_App1 (M M': PCF V (s ~> t)) N :
-    M :>> M' -> App M N :>> App M' N.
+    M :>> M' -> M @ N :>> M' @ N.
 Proof. 
   induction 1;
   simpl; intros;
@@ -135,37 +139,27 @@ Qed.
 
 End Relations_on_PCF.
 
+
+
+
 (** Beta reduction *)
+
+Reserved Notation "a >> b" (at level 60).
 
 Inductive eval (V : IT): forall t, relation (PCF V t) :=
 | app_abs : forall (s t:TY) (M: PCF (opt s V) t) N, 
-               eval (App (Lam M) N) (M [*:= N])
+               eval (Lam M @ N) (M [*:= N])
+| condN_t: forall n m, eval (condN ' @ ttt ' @ n @ m) n 
+| condN_f: forall n m, eval (condN ' @ fff ' @ n @ m) m 
+| condB_t: forall u v, eval (condB ' @ ttt ' @ u @ v) u 
+| condB_f: forall u v, eval (condB ' @ fff ' @ u @ v) v
+| succ_red: forall n, eval (succ ' @ Nats n ') (Nats (S n) ')
+| zero_t: eval ( zero ' @ Nats 0 ') (ttt ')
+| zero_f: forall n, eval (zero ' @ Nats (S n)') (fff ')
+| pred_Succ: forall n, eval (preds ' @ (succ ' @ Nats n ')) (Nats n ')
+| pred_z: eval (preds ' @ Nats 0 ') (Nats 0 ')
+| rec_a : forall t g, eval (Rec g) (g @ (Rec (t:=t) g)).
 
-| condN_t: forall n m,
-    eval (App (App (App (Const _ condN) (Const _ ttt)) n) m)  n 
-
-| condN_f: forall n m,
-    eval (App (App (App (Const _ condN) (Const _ fff)) n) m)  m 
-
-| condB_t: forall u v,
-    eval (App (App (App (Const _ condB) (Const _ ttt)) u) v)  u 
-| condB_f: forall u v,
-    eval (App (App (App (Const _ condB) (Const _ fff)) u) v)  v
-| succ_red: forall n,
-     eval (App (Const _ succ) (Const _ (Nats n))) (Const _ (Nats (S n)))
-| zero_t: 
-     eval (App (Const _ zero) (Const _ (Nats 0))) (Const _ ttt)
-| zero_f: forall n,
-     eval (App (Const _ zero) (Const _ (Nats (S n)))) (Const _ fff)
-| pred_Succ: forall n,
-     eval (App (Const _ preds) 
-              (App (Const _ succ)
-                   (Const _ (Nats n))))
-        (Const _ (Nats n))
-| pred_z: 
-     eval (App (Const _ preds) (Const _ (Nats 0))) (Const _ (Nats 0))
-| rec_a : forall t g,
-     eval (Rec g) (App g (Rec (t:=t) g)).
 
 
 Definition eval_star := propag eval.

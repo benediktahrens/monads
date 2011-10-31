@@ -76,6 +76,25 @@ Inductive PCF (V: TY -> Type) : TY -> Type:=
  | Lam : forall t s, PCF (opt t V) s -> PCF V (t ~> s)
  | Rec : forall t, PCF V (t ~> t) -> PCF V t.
 
+Notation "a @ b" := (App a b)(at level 43, left associativity).
+Notation "M '" := (Const _ M) (at level 15).
+
+(*
+
+Check Const.
+
+Definition Consts' := fun (V : TY -> Type) (t : TY) => Consts t.
+
+Definition Id_Consts'_Consts :
+ forall (V : TY -> Type) (t : TY), Consts' V t -> Consts t:= 
+  fun V t (x : Consts' V t) => x. 
+Check Id_Consts'_Consts.
+Coercion Id_Consts'_Consts : Consts' >-> Consts.
+Definition Const' : forall V t, Consts' V t -> PCF V t :=
+          fun V t x => Const _ x.
+Coercion Const' : Consts' >-> PCF.
+
+ *)
 
 (** a nicer name for morphisms of families of preorders *)
 (*Notation "'varmap'" := ipo_mor.*)
@@ -88,13 +107,15 @@ Fixpoint rename (V W: TY -> Type) (f: V ---> W)
          (t:TY)(v:PCF V t): PCF W t :=
     match v with
     | Bottom t => Bottom W t
-    | Const t c => Const W c
+    | c ' => c '
     | Var t v => Var (f t v)
-    | App t s u v => App (u //- f) (v //- f)
+    | u @ v => u //- f @ v //- f
     | Lam t s u => Lam (u //- (^f))
     | Rec t u => Rec (u //- f)
     end
 where "v //- f" := (@rename _ _ f _ v).
+
+Print rename.
 
 (** injection of terms into terms with one variable more, of type u *)
 Definition inj (u:TY)(V : TY -> Type)(t:TY)(v:PCF V t): PCF (opt u V) t :=
@@ -121,9 +142,9 @@ Fixpoint subst (V W: TY -> Type)(f: forall t, V t -> PCF W t)
            (t:TY)(v:PCF V t) : PCF W t :=
     match v with
     | Bottom t => Bottom W t
-    | Const t c => Const W c
+    | c ' => c '
     | Var t v => f t v
-    | App t s u v => App (u >>= f) (v >>= f)
+    | u @ v => u >>= f @ v >>= f
     | Lam t s u => Lam (u >>= $ f)
     | Rec t u => Rec (u >>= f)
     end

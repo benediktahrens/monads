@@ -62,6 +62,9 @@ Hypothesis type_arrow : forall s t, f (s ~> t) = f s ~~> f t.
     - beta-reduction
 *)
 
+
+(*Reserved Notation "a $ b" (at level 50, left associativity).*)
+
 Class PCFPO_rep_struct := {
   app : forall u v, (P[u ~~> v]) x (P[u]) ---> P[v];
   abs : forall u v, (d P // u)[v] ---> P[u ~~> v];
@@ -129,8 +132,8 @@ Class PCFPO_rep_struct := {
  
   Rec_A: forall V t g,
      rec _ _ g << app t t V (g, rec _ _ g)
+ }.
 
-}.
 
 
 End PCF_rep.
@@ -152,9 +155,10 @@ Record PCFPO_rep := {
 Existing Instance pcf_rep_struct.
 Notation "a ~~> b" := (Arrow a b) 
          (at level 60, right associativity).
-
-
-
+(*
+Notation "a @ b" := (app _ _ _ (a , b))(at level 40).
+Check (fun (P : PCFPO_rep) (V : ITYPE (Sorts P)) a b => a @ b).
+*)
 
 
 
