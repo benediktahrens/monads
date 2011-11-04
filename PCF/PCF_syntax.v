@@ -69,7 +69,7 @@ Inductive Consts : TY -> Type :=
 
 (** PCF terms *)
 Inductive PCF (V: TY -> Type) : TY -> Type:=
- | Bottom: forall t, PCF V t
+ | Bottom : forall t, PCF V t
  | Const : forall t, Consts t -> PCF V t
  | Var : forall t, V t -> PCF V t
  | App : forall t s, PCF V (s ~> t) -> PCF V s -> PCF V t
@@ -79,12 +79,26 @@ Inductive PCF (V: TY -> Type) : TY -> Type:=
 Notation "a @ b" := (App a b)(at level 43, left associativity).
 Notation "M '" := (Const _ M) (at level 15).
 
-(*
 
 Check Const.
 
-Definition Consts' := fun (V : TY -> Type) (t : TY) => Consts t.
+SubClass Consts' (V : TY -> Type) (t : TY) := Consts t.
 
+Print Coercions.
+Definition Const' : forall V t, Consts' V t -> PCF V t :=
+          fun V t x => Const _ x.
+Coercion Const' : Consts' >-> PCF.
+(*
+Coercion Const : Consts >-> PCF.
+*)
+(*
+Definition Consts' := fun (V : TY -> Type) (t : TY) => Consts t.
+*)
+
+
+Identity Coercion _co : Consts' >-> Consts.
+
+(*
 Definition Id_Consts'_Consts :
  forall (V : TY -> Type) (t : TY), Consts' V t -> Consts t:= 
   fun V t (x : Consts' V t) => x. 
@@ -107,7 +121,7 @@ Fixpoint rename (V W: TY -> Type) (f: V ---> W)
          (t:TY)(v:PCF V t): PCF W t :=
     match v with
     | Bottom t => Bottom W t
-    | c ' => c '
+    | c '  => c '
     | Var t v => Var (f t v)
     | u @ v => u //- f @ v //- f
     | Lam t s u => Lam (u //- (^f))
