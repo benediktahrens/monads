@@ -43,7 +43,7 @@ Unset Automatic Introduction.
 
 
 (** afterwards we prove that an initial object exists in the category of representations
-  associated to a signature [Sig]. this result is actually the same (via an adjunction)
+  associated to a signature [S]. this result is actually the same (via an adjunction)
    as the one proved in ../STS (even for simply--typed syntax *)
 (** only in the next file  ./prop_arities.v will we talk about propositional arities.
     we still need initiality for the empty set of prop. arities, since the order 
@@ -54,13 +54,13 @@ Section initial_type.
 
 Ltac fin := simpl in *; intros; autorewrite with fin; auto with fin.
 
-Variable Sig : Signature.
+Variable S : Signature.
 Notation "V '" := (option V).
 Notation "V ** l" := (pow l V) (at level 10).
 Notation "f ^^ l" := (pow_map (l:=l) f) (at level 10).
 Notation "^ f" := (lift (M:= option_monad) f) (at level 5).
 Notation "[ T ]" := (list T) (at level 5).
-
+Notation "a -:- b" := (CONSTR a b) (at level 60).
 
 (** UTS will be the (carrier of the) initial monad, UTS_list represents the arguments of
      a constructor *)
@@ -73,16 +73,18 @@ Notation "[ T ]" := (list T) (at level 5).
       - the diagonal, yielding the initial representation without any inequations 
       - the preorder induced by a set of inequations A (cf. file ./prop_arities.v) *)
 
+Reserved Notation "a -::- b" (at level 65).
 
 Inductive UTS (V : TYPE) : TYPE :=
   | Var : V -> UTS V
-  | Build : forall (i : sig_index Sig),
+  | Build : forall (i : sig_index S),
              UTS_list V (sig i) -> UTS V
 with 
 UTS_list (V : TYPE) : [nat] -> Type :=
   | TT : UTS_list V nil
   | constr : forall b bs, 
       UTS (V ** b) -> UTS_list V bs -> UTS_list V (b::bs).
+Notation "a -::- b" := (constr a b).
 
 (** at first the diagonal preorder *)
 
@@ -99,9 +101,9 @@ Scheme UTSrect := Induction for UTS Sort Type with
        UTSlistrect := Induction for UTS_list Sort Type.
 
 Lemma constr_eq : forall (V : TYPE) (b : nat) 
-            (bs : [nat]) (x y : UTS _ )
+            (bs : [nat]) (x y : UTS (V**b) )
               (v w : UTS_list V bs),
-     x = y -> v = w -> constr (b:=b) x v = constr y w.
+     x = y -> v = w -> x -::- v = y -::- w.
 Proof.
   intros; subst; auto.
 Qed.
@@ -129,16 +131,33 @@ with
      match l in UTS_list _ t return UTS_list W t with
      | TT => TT W 
      | constr b bs elem elems => 
+           elem //-  f ^^ b -::- elems //-- f
+     end
+where "x //- f" := (rename f x) 
+and "x //-- f" := (list_rename x f).
+
+(*
+Fixpoint rename (V W: TYPE ) (f : V ---> W) (v : UTS V):=
+    match v in UTS _ return UTS W with
+    | Var v => Var (f v)
+    | Build i l => Build (*i:=i*) (l //-- f)
+    end
+with 
+  list_rename V t (l : UTS_list V t) W (f : V ---> W) : UTS_list W t :=
+     match l in UTS_list _ t return UTS_list W t with
+     | TT => TT W 
+     | constr b bs elem elems => 
              constr (elem //- ( f ^^ (b)))
                                (elems //-- f)
      end
 where "x //- f" := (rename f x) 
 and "x //-- f" := (list_rename x f).
+*)
 
 Definition rename_sm V W (f : V ---> W) : 
     UTS_sm V ---> UTS_sm W := #Delta (rename f).
 
-(** functoriality of renaming for STS *)
+(** functoriality of renaming for UTS *)
 
 Hint Extern 1 (_ = _) => apply f_equal.
 
@@ -231,13 +250,13 @@ Definition _shift (V W : TYPE ) (f : V ---> UTS W) :
    end.
 
 Notation "x >- f" := (_shift f x) (at level 40).
-
+Locate S.
 (** same for lshift, being given a list of object language types *)
 Fixpoint _lshift (l : nat) (V W : TYPE) (f : V ---> UTS W) : 
         V ** l ---> UTS (W ** l) :=
     match l return V ** l ---> UTS (W**l) with
     | 0 => f
-    | S n' => @_lshift n' _ _ (_shift f)
+    | Datatypes.S n' => @_lshift n' _ _ (_shift f)
     end.
 
 (*Implicit Arguments shift_l [V W t].*)
@@ -260,15 +279,17 @@ with
   list_subst V W t (l : UTS_list V t) (f : V ---> UTS W) : UTS_list W t :=
      match l in UTS_list _ t return UTS_list W t with
      | TT => TT W 
-     | constr b bs elem elems => 
-       constr (elem >== (_lshift f)) (elems >>== f)
+     | (*constr b bs*) elem -::- elems => 
+       elem >== _lshift f -::- elems >>== f
      end
 where "x >== f" := (subst f x) 
 and "x >>== f" := (list_subst x f).
 
+(*
 Definition subst_sm (V W : TYPE) (f : Delta V ---> UTS_sm W) :
     UTS_sm V ---> UTS_sm W := #Delta (subst f).
-  
+*)
+
 (** substitution of one variable only *)
 
 Definition substar (V : TYPE) (M : UTS V ) :
@@ -565,7 +586,7 @@ Obligation Tactic := unfold Proper, respectful; fin.
 
 Program Instance UTS_sm_rmonad : RMonad_struct Delta UTS_sm := {
   rweta c := #Delta (@Var c);
-  rkleisli := subst_sm
+  rkleisli a b f := #Delta (subst f)
 }.
 
 Canonical Structure UTSM := Build_RMonad UTS_sm_rmonad.
@@ -579,15 +600,15 @@ Fixpoint UTSl_f_pm l V (x : prod_mod_c (fun V => UTS V) V l)
          : UTS_list V l :=
     match x in prod_mod_c _ _ l return UTS_list V l with
     | TTT =>  TT V 
-    | CONSTR b bs e el => constr e (UTSl_f_pm el)
+    | (*CONSTR b bs*) e -:- el => e -::- UTSl_f_pm el
     end.
 
 Fixpoint pm_f_UTSl l V (v : UTS_list V l) :
        prod_mod_c (fun V => UTS V) V l :=
  match v in UTS_list _ l return prod_mod_c _ V l with
  | TT => TTT _ _ 
- | constr b bs elem elems => 
-        CONSTR elem (pm_f_UTSl elems)
+ | elem -::- elems => 
+        elem  -:- pm_f_UTSl elems
  end.
 
 Lemma one_way l V (v : UTS_list V l) : 
@@ -626,7 +647,7 @@ we establish some equalities *)
 
 Hint Rewrite subst_eq_rename : fin.
 
-(** shift = opt_inj STS *)
+(** shift = opt_inj UTS *)
 
 Notation "x >>- f" := (shift_not f x) (at level 50).
 Notation "x >-- f" := (lshift _ f x) (at level 50).
@@ -655,7 +676,7 @@ Proof.
   fin.
 Qed.
 
-(** STSl_f_pm ;; list_subst = mkleisli ;; STSl_f_pm *)
+(** UTSl_f_pm ;; list_subst = mkleisli ;; UTSl_f_pm *)
 
 Hint Resolve _lshift_lshift_eq : fin.
 
@@ -714,26 +735,26 @@ Qed.
 Obligation Tactic :=   unfold Proper, respectful; intros; simpl; 
         repeat (match goal with [H:_|-_]=>rewrite (diag_preorder_prod_imp_eq H) end); constructor.
 
-Program Instance UTS_arity_rep_po (i : sig_index Sig) V : PO_mor_struct
+Program Instance UTS_arity_rep_po (i : sig_index S) V : PO_mor_struct
   (a:= prod_mod UTSM (sig i) V)
   (b:= UTSM V)
   (fun (X : prod_mod_c _ V (sig i)) => Build (i:=i) (UTSl_f_pm (V:=V) X)).
 
 Obligation Tactic := t5.
 
-Program Instance UTS_arity_rep (i : sig_index Sig) : 
+Program Instance UTS_arity_rep (i : sig_index S) : 
   RModule_Hom_struct 
        (M := prod_mod UTSM (sig i))
        (N := UTSM) 
        (fun V => Build_PO_mor (UTS_arity_rep_po i V)).
  
 
-(**  STS has a structure as a representation of Sig *)
+(**  UTS has a structure as a representation of S *)
 
-Canonical Structure UTSrepr : Repr Sig UTSM :=
+Canonical Structure UTSrepr : Repr S UTSM :=
        fun i => Build_RModule_Hom (UTS_arity_rep i).
 
-Canonical Structure UTSRepr : REP Sig := 
+Canonical Structure UTSRepr : REP S := 
        Build_Representation (@UTSrepr).
 
 (** ** INITIALITY 
@@ -741,9 +762,10 @@ Canonical Structure UTSRepr : REP Sig :=
 
 Section initiality.
 
-Variable R : REP Sig.
+Variable R : REP S.
 
-(** the initial morphism STS -> R *)
+(** the initial morphism UTS -> R *)
+
 
 Fixpoint init V (v : UTS V) : R V :=
         match v in UTS _ return R V with
@@ -754,8 +776,7 @@ with
  init_list l (V : TYPE) (s : UTS_list V l) : prod_mod R l V :=
     match s in UTS_list _ l return prod_mod R l V with
     | TT => TTT _ _ 
-    | constr b bs elem elems => 
-         CONSTR (init elem) (init_list elems)
+    | elem -::- elems =>  init elem -:- init_list elems
     end.
 
 (** *** [init] commutes with renaming, substitution 
@@ -885,7 +906,7 @@ init is not only (the carrier of) a monad morphism, but even (of) a morphism of
 (** prod_ind_mod_mor INIT = init_list (up to bijection) *)
 
 
-Lemma prod_mor_eq_init_list (i : sig_index Sig) V 
+Lemma prod_mor_eq_init_list (i : sig_index S) V 
        (x : prod_mod_c UTS_sm V (sig i)) :
   Prod_mor_c init_mon  x = init_list (UTSl_f_pm x).
 Proof.
@@ -899,7 +920,7 @@ Program Instance init_representic : Representation_Hom_struct
 
 Definition init_rep := Build_Representation_Hom init_representic.
 
-(** ** INITIALITY of STSRepr with init *)
+(** ** INITIALITY of UTSRepr with init *)
 
 Section init.
 
@@ -958,7 +979,7 @@ Obligation Tactic := fin.
 
 (** ** Initiality *)
 
-Program Instance UTS_initial : Initial (REP Sig) := {
+Program Instance UTS_initial : Initial (REP S) := {
   Init := UTSRepr ;
   InitMor R := init_rep R }.
 

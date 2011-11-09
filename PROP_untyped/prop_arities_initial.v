@@ -15,11 +15,11 @@ Notation "[[ x ; .. ; y ]]" := (cons x .. (cons y nil) ..).
 Notation "[ T ]" := (list T) (at level 5).
 
 (** ** Propositional arities and their representations
-	given a signature [Sig], we define 
+	given a signature [S], we define 
 	- half-equations 
 	- algebraic half-equations
-	- (in)equations over [Sig] as pairs of half-equations
-	- representations of (in)equations as a predicate on representations of [Sig]
+	- (in)equations over [S] as pairs of half-equations
+	- representations of (in)equations as a predicate on representations of [S]
 *)
 
 (** ** Modules with codomain [wPO] *)
@@ -93,15 +93,15 @@ End monadic_subst_as_mod_hom.
 *)
 
 (** ** S-Modules and Equations
-   given signature [Sig], we define equations and the predicate [verifies_prop_sig]
-     on representations of [Sig]
+   given signature [S], we define equations and the predicate [verifies_prop_sig]
+     on representations of [S]
 *)
 
 Section S_Mods_and_Eqs.
 
 Variable S : Signature.
 
-(** an S_Module over [Sig] should be a functor from representations of [Sig]
+(** an S_Module over [S] should be a functor from representations of [S]
       to the category whose objects are pairs of a monad P and a module over P.
    we don't need the functor properties, and use dependent types instead of the cumbersome 
    category of pairs
@@ -334,7 +334,7 @@ Record ineq_classic := {
 
 
 (*
-Definition verifies_eq l l' (e : eq_alg l l') (P : REP Sig) : Prop.
+Definition verifies_eq l l' (e : eq_alg l l') (P : REP S) : Prop.
 intros.
 destruct e.
 simpl in *.
@@ -354,7 +354,7 @@ a representation [P] verifies an equation [e] iff for any element in the domain 
 *)
 
 (*
-Definition verifies_eq (e : eq_alg) (P : REP Sig) :=
+Definition verifies_eq (e : eq_alg) (P : REP S) :=
   forall c (x : s_mod_rep (domS e) P c), 
        (*half_eq*) (eq1 e) P _ x << (*half_eq*) (eq2 e)_ _ x.
 *)
@@ -373,7 +373,7 @@ Definition Inequations (A : Type) := A -> ineq_classic.
 Definition verifies_ineqs A (T : Inequations A) (R : REP S) :=
       forall a, verifies_ineq (T a) R.
 
-(** ** Subcategory of Rep(Sig) of representations verifying equations *)
+(** ** Subcategory of Rep(S) of representations verifying equations *)
 
 Section subcat.
 
@@ -392,7 +392,7 @@ Variable T : Inequations A.
 Program Instance Ineq_Rep : SubCat_compat (REP S)
      (fun P => verifies_ineqs T P) (fun a b f => True).
 
-(** hence we obtain a category, the category of representations of [(Sig, T)] *)
+(** hence we obtain a category, the category of representations of [(S, T)] *)
 
 Definition INEQ_REP : Cat := SubCat Ineq_Rep.
 
@@ -403,9 +403,9 @@ We proceed with the construction of its initial object *)
 (** ** Order induced by a set of equations
 first thing to do is to build the correct order on the set of terms:
      - two terms [x] and [y] are related if their images under any 
-        initial morphism towards a rep of [(Sig, T)] is
+        initial morphism towards a rep of [(S, T)] is
      - this initial morphism is actually in the category of representations of 
-     [Sig], hence we must inject [R] into the big category
+     [S], hence we must inject [R] into the big category
 *)
 
 Definition prop_rel_c X (x y : UTS S X) : Prop :=
@@ -529,7 +529,7 @@ Qed.
 
 
 (** ** Representation in the new monad 
-we now pass to representations of [Sig] in our new shiny monad. the carrier is 
+we now pass to representations of [S] in our new shiny monad. the carrier is 
     the same as for the diagonal monad. we have to prove that it is compatible with
     the new order on terms *)
 
@@ -562,7 +562,7 @@ Definition Build_prop_po i V := Build_PO_mor (Build_prop_pos i V).
 Lemma _lshift_lshift_eq2 (b : nat) (X W : TYPE) (f : PO_mor (sm_po X) (prop_rel W))
    (x : X ** b):
  lshift_c (P:=UTSP) (l:=b) (V:=X) (W:=W) f x =
-    _lshift (Sig:=S) (l:=b) (V:=X) (W:=W) f x .
+    _lshift (S:=S) (l:=b) (V:=X) (W:=W) f x .
 Proof.
   induction b;
   simpl; intros.
@@ -609,7 +609,7 @@ Qed.
 Definition Build_prop i := Build_RModule_Hom (Build_prop_s i).
 
 
-(**  UTSP has a structure as a representation of Sig *)
+(**  UTSP has a structure as a representation of S *)
 
 Canonical Structure UTSPrepr : Repr S UTSP := Build_prop.
 
@@ -628,8 +628,8 @@ Lemma lemma36_2 (l : [nat]) (V : Type)
     (x y : prod_mod_c (fun x : Type => UTS S x) V l)
     (H : forall R : INEQ_REP,
         Rel (PO_obj_struct := prod_mod_po (SC_inj_ob R) V l) 
-  (Prod_mor_c (init_mon (Sig:=S) (SC_inj_ob R)) x)
-  (Prod_mor_c (init_mon (Sig:=S) (SC_inj_ob R)) y) ) :
+  (Prod_mor_c (init_mon (S:=S) (SC_inj_ob R)) x)
+  (Prod_mor_c (init_mon (S:=S) (SC_inj_ob R)) y) ) :
 prod_mod_c_rel (M:=prop_rel) x y.
 
 (*

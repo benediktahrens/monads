@@ -319,16 +319,20 @@ Inductive prod_mod_c (V : TYPE) : [nat] -> Type :=
   | CONSTR : forall b bs, 
          M (V ** b)-> prod_mod_c V bs -> prod_mod_c V (b::bs) .
 
+Notation "a -:- b" := (CONSTR a b) (at level 60).
+
 Lemma CONSTR_eq (V : TYPE) (b : nat) (bs : [nat]) 
        (elem elem' : M (V ** b)) 
        (elems elems' : prod_mod_c V bs) :
         elem = elem' -> elems = elems' -> 
-    CONSTR elem elems = CONSTR elem' elems'.
+    elem -:- elems = elem' -:- elems'.
 Proof.
   intros; subst; auto.
 Qed.
 
 End prod_mod_built_from_scratch_carrier.
+
+Notation "a -:- b" := (CONSTR a b) (at level 60).
 
 (** if [T : TYPE -> PO] and [nl] a list of naturals, 
        then there is a natural order on [prod_mod_c T nl]:
@@ -345,7 +349,7 @@ Inductive prod_mod_c_rel (V : TYPE) : forall n, relation (prod_mod_c M V n) :=
   | CONSTR_rel : forall n l, forall x y : M (V ** n), 
           forall a b : prod_mod_c M V l,
           x << y -> prod_mod_c_rel a b -> 
-          prod_mod_c_rel (CONSTR x a) (CONSTR y b).
+          prod_mod_c_rel (x -:- a) (y -:- b).
 
 (** this product order is indeed a preorder. proof uses dependent induction/destruction,
       hence axioms *)
@@ -394,12 +398,9 @@ Fixpoint pm_mkl l V W (f : Delta V ---> P W)
       (X : prod_mod_c (fun V => M V) V l) : prod_mod_c _ W l :=
      match X in prod_mod_c _ _ l return prod_mod_c (fun V => M V) W l with
      | TTT => TTT _ W 
-     | CONSTR b bs elem elems => 
-            CONSTR  (V:=W)
-     (rmkleisli (RModule_struct := M) (lshift _ f)  elem)
-      (pm_mkl f elems)
+     | (*CONSTR b bs*) elem -:- elems => 
+      rmkleisli (RModule_struct := M) (lshift _ f)  elem -:- pm_mkl f elems
      end.
-
 
 
 Program Instance pm_mkl_struct l V W (f : Delta V ---> P W) :
@@ -499,6 +500,8 @@ End arity_rep.
 
 End pow_and_product.
 
+Notation "a -:- b" := (CONSTR a b) (at level 60).
+
 (** the type of representations associated to a signature *)
 
 Section signature_rep.
@@ -565,8 +568,8 @@ Fixpoint Prod_mor_c (l : [nat]) (V : TYPE) (X : prod_mod_c (fun V => P V) V l) :
   match X in prod_mod_c _ _ l 
   return f* (prod_mod Q l) V with
   | TTT => TTT _ _
-  | CONSTR b bs elem elems => 
-    CONSTR (f  _ elem) (Prod_mor_c elems)
+  | (*CONSTR b bs*) elem -:- elems => 
+     f  _ elem -:- Prod_mor_c elems
   end.
 
 (** this function is obviously monotone *)

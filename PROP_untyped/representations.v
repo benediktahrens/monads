@@ -20,7 +20,6 @@ Section cat_of_reps.
 
 Notation "[ T ]" := (list T) (at level 5).
 
-
 Variable S : Signature.
 
 (** ** Identity  
