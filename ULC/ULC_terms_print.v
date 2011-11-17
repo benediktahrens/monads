@@ -16,5 +16,5 @@ Eval compute in ULCsucc.
 Eval compute in ULC_cond.
 Eval compute in ULC_omega.
 Eval compute in ULC_zero.
-Eval compute in ULC_pred_alt.
+Eval compute in ULC_pred.
 Eval compute in ULC_Y.

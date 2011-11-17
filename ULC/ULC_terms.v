@@ -658,7 +658,7 @@ Qed.
 
 (*PRED := \nfx.n (\gh.h (g f)) (\u.x) (\u.u)*)
 
-Definition ULC_pred_alt (V : TT) : ULC V :=
+Definition ULC_pred (V : TT) : ULC V :=
   Abs (
    Abs (
     Abs (
@@ -673,7 +673,7 @@ Definition ULC_pred_alt (V : TT) : ULC V :=
 ))).
 
 
-Definition ULC_pred (V : TT) : ULC V :=
+Definition ULC_pred_alt (V : TT) : ULC V :=
   Abs (
    Abs (
     Abs (

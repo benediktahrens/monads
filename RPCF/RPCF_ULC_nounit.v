@@ -448,7 +448,7 @@ Program Instance ULCpred_pos :
 forall V : unit -> Type,
 PO_mor_struct (a:=PO_TERM) 
   (b:=ipo_proj (ULCBETAM V) tt)
-  (fun _ => ULC_pred_alt (sunit V)).
+  (fun _ => ULC_pred (sunit V)).
 
 Definition ULCpred_car V :
 Term (C:=RMOD ULCBETAM _ ) V ---> 
