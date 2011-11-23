@@ -1,5 +1,8 @@
-Require Import Coq.Logic.FunctionalExtensionality.
+
+(*Require Import Coq.Logic.FunctionalExtensionality.*)
 Require Import Coq.Logic.Eqdep.
+
+Require Import CatSem.AXIOMS.functional_extensionality.
 
 Require Export CatSem.RPCF.RPCF_rep_hom.
 Require Import CatSem.CAT.rmonad_gen_comp.

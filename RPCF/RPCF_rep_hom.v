@@ -1,5 +1,5 @@
-Require Import Coq.Logic.FunctionalExtensionality.
-Require Import Coq.Logic.Eqdep.
+(*Require Import Coq.Logic.FunctionalExtensionality.*)
+(*Require Import Coq.Logic.Eqdep.*)
 
 Require Export CatSem.RPCF.RPCF_rep.
 Require Export CatSem.CAT.eq_fibre.

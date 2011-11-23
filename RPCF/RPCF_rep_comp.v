@@ -1,4 +1,4 @@
-Require Import Coq.Logic.FunctionalExtensionality.
+(*Require Import Coq.Logic.FunctionalExtensionality.*)
 Require Import Coq.Logic.Eqdep.
 
 Require Export CatSem.RPCF.RPCF_rep_hom.

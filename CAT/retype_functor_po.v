@@ -1,5 +1,8 @@
-Require Import Coq.Logic.FunctionalExtensionality.
+
+(*Require Import Coq.Logic.FunctionalExtensionality.*)
 Require Import Coq.Logic.Eqdep.
+
+Require Import CatSem.AXIOMS.functional_extensionality.
 
 Require Export CatSem.CAT.retype_functor. 
 Require Export CatSem.CAT.ind_potype.

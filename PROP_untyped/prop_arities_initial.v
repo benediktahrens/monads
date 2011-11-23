@@ -1012,3 +1012,5 @@ Program Instance INITIAL_INEQ_REP : Initial INEQ_REP := {
 
 End subcat.
 End S_Mods_and_Eqs.
+
+Print Assumptions INITIAL_INEQ_REP.

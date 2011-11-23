@@ -1,10 +1,12 @@
 Require Import Coq.Logic.ProofIrrelevance.
+(*
 Require Import Coq.Logic.FunctionalExtensionality.
-
+*)
 Set Implicit Arguments.
 Unset Strict Implicit.
 
 Unset Automatic Introduction.
+
 
 Definition PI := proof_irrelevance.
 

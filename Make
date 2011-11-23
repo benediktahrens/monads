@@ -1,4 +1,8 @@
 -R . CatSem
+
+#### axiom files
+./AXIOMS/functional_extensionality.v
+
 #### category theory library
 ./CAT/SO.v
 ./CAT/het_rewrite.v
