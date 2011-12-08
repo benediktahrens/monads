@@ -328,8 +328,8 @@ Definition half_eq_classic (U : S_Module)(codl : [nat]) :=
 Record ineq_classic := {
   Dom : S_Module ;
   Cod : [nat] ;
-  eq1 : half_eq_classic Dom Cod ;
-  eq2 : half_eq_classic Dom Cod }.
+  half_eq_l : half_eq_classic Dom Cod ;
+  half_eq_r : half_eq_classic Dom Cod }.
 
 
 
@@ -361,7 +361,7 @@ Definition verifies_eq (e : eq_alg) (P : REP S) :=
 
 Definition verifies_ineq (e : ineq_classic) (P : REP S) :=
   forall c (x : Dom e P c), 
-        eq1 _ _ _ x <<  eq2 _ _ _ x.
+        half_eq_l _ _ _ x <<  half_eq_r _ _ _ x.
 
 (** a set of (in)equations, indexed by a set A *)
 
@@ -846,10 +846,10 @@ Proof.
   simpl; intros.
   apply lemma36_2a.
   intros. 
-  assert (H4:=comm_eq_s (half_equation_struct := eq1 (T a))).
+  assert (H4:=comm_eq_s (half_equation_struct := half_eq_l (T a))).
   assert (H5:=H4 _ _ (init_prop_re R)).
   
-  assert (H4':=comm_eq_s (half_equation_struct := eq2 (T a))).
+  assert (H4':=comm_eq_s (half_equation_struct := half_eq_r (T a))).
   assert (H5':=H4' _ _ (init_prop_re R)).
   
   clear H4 H4'.

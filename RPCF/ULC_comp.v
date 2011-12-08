@@ -61,7 +61,7 @@ Eval compute in
   (PCF_ULC_c ((fun t => False)) tt (ctype _        
    (Lam (condB ' @@ x_bool @@ fff ' @@ ttt ')))).
 
-
+Print Assumptions PCF_initial.
 
 
 Check Lam.

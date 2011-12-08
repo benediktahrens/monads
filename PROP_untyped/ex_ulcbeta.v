@@ -124,8 +124,8 @@ End App_Abs_half_eq.
 
 
 Definition beta_rule : ineq_classic Lambda := {|
-   eq1 := beta_half_eq ;
-   eq2 := subst_half_eq Lambda |}.
+   half_eq_l := beta_half_eq ;
+   half_eq_r := subst_half_eq Lambda |}.
 
 
 
