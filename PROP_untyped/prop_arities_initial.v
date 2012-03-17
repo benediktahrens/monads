@@ -93,7 +93,7 @@ End monadic_subst_as_mod_hom.
 *)
 
 (** ** S-Modules and Equations
-   given signature [S], we define equations and the predicate [verifies_prop_sig]
+   given signature [S], we define equations and the predicate [satisfies_prop_sig]
      on representations of [S]
 *)
 
@@ -334,7 +334,7 @@ Record ineq_classic := {
 
 
 (*
-Definition verifies_eq l l' (e : eq_alg l l') (P : REP S) : Prop.
+Definition satisfies_eq l l' (e : eq_alg l l') (P : REP S) : Prop.
 intros.
 destruct e.
 simpl in *.
@@ -344,22 +344,22 @@ Check S_Mod_alg. Print S_Module.
 apply (forall c : TYPE,
          forall x : s_mod_rep (S_Mod_alg l) P c, half_eq0 P _ x << half_eq1 _ _ x).
 Defined.
-Print verifies_eq.
+
 *)
 
 (** ** Representation of (a set of) (in)equations 
 
-a representation [P] verifies an equation [e] iff for any element in the domain [domS e P c],
+a representation [P] satisfies an equation [e] iff for any element in the domain [domS e P c],
  ([c] a set of variables) its two images under e1 and e2 are related
 *)
 
 (*
-Definition verifies_eq (e : eq_alg) (P : REP S) :=
+Definition satisfies_eq (e : eq_alg) (P : REP S) :=
   forall c (x : s_mod_rep (domS e) P c), 
        (*half_eq*) (eq1 e) P _ x << (*half_eq*) (eq2 e)_ _ x.
 *)
 
-Definition verifies_ineq (e : ineq_classic) (P : REP S) :=
+Definition satisfies_ineq (e : ineq_classic) (P : REP S) :=
   forall c (x : Dom e P c), 
         half_eq_l _ _ _ x <<  half_eq_r _ _ _ x.
 
@@ -368,19 +368,19 @@ Definition verifies_ineq (e : ineq_classic) (P : REP S) :=
 Definition Inequations (A : Type) := A -> ineq_classic.
 
 
-(** [R] verifies [T] iff it verifies any equation of [T] *)
+(** [R] satisfies [T] iff it satisfies any equation of [T] *)
 
-Definition verifies_ineqs A (T : Inequations A) (R : REP S) :=
-      forall a, verifies_ineq (T a) R.
+Definition satisfies_ineqs A (T : Inequations A) (R : REP S) :=
+      forall a, satisfies_ineq (T a) R.
 
-(** ** Subcategory of Rep(S) of representations verifying equations *)
+(** ** Subcategory of Rep(S) of representations satisfying equations *)
 
 Section subcat.
 
 (** given any set of (in)equations [T], we consider the following subcategory of 
     the category of representations:
-     - objects : representations which verify [T]
-     - morphisms : morphisms which verify [True], hence any 
+     - objects : representations that satisfy [T]
+     - morphisms : morphisms that satisfy [True], hence any 
 *)
 
 Variable A : Type.
@@ -390,7 +390,7 @@ Variable T : Inequations A.
     identity *)
 
 Program Instance Ineq_Rep : SubCat_compat (REP S)
-     (fun P => verifies_ineqs T P) (fun a b f => True).
+     (fun P => satisfies_ineqs T P) (fun a b f => True).
 
 (** hence we obtain a category, the category of representations of [(S, T)] *)
 
@@ -498,7 +498,7 @@ Rel (PO_obj_struct := prod_mod_po (SC_inj_ob R) V l)
 Lemma lemma36 (l : [nat]) (V : Type)
     (x y : prod_mod_c (fun x : Type => UTS Sig x) V l)
     (H : prod_mod_c_rel (M:=prop_rel) x y) 
-    (R : subob (fun P : Representation Sig => verifies_prop_sig (A:=A) T P)):
+    (R : subob (fun P : Representation Sig => satisfies_prop_sig (A:=A) T P)):
 Rel (PO_obj_struct := prod_mod_po (SC_inj_ob R) V l) 
   (Prod_mor_c (init_mon (SC_inj_ob R)) x)
   (Prod_mor_c (init_mon (SC_inj_ob R)) y).
@@ -635,7 +635,7 @@ prod_mod_c_rel (M:=prop_rel) x y.
 (*
 Lemma lemma36_2 (l : [nat]) (V : Type)
     (x y : prod_mod_c (fun x : Type => UTS Sig x) V l)
-    (H : forall R : subob (fun P : Representation Sig => verifies_prop_sig (A:=A) T P),
+    (H : forall R : subob (fun P : Representation Sig => satisfies_prop_sig (A:=A) T P),
         Rel (PO_obj_struct := prod_mod_po (SC_inj_ob R) V l) 
   (Prod_mor_c (init_mon (Sig:=Sig) (SC_inj_ob R)) x)
   (Prod_mor_c (init_mon (Sig:=Sig) (SC_inj_ob R)) y) ) :
@@ -735,13 +735,13 @@ Qed.
 *)
 
 
-(** [UTSPROPRepr] verifies (in)equations
-the new nice representation [UTSPROPRepr] verifies the equations of [T], contrary
+(** [UTSPROPRepr] satisfies (in)equations
+the new nice representation [UTSPROPRepr] satisfies the equations of [T], contrary
     to the old one, [UTSRepr] *)
 
 (** ** Weak Initiality
      we will use the weak initial morphism in the proof that
-     UTSPROPRepr verifies the equations
+     UTSPROPRepr satisfies the equations
 
 *)
 
@@ -833,16 +833,16 @@ Proof.
   apply H.
 Qed.
 
-(** ** [UTSPROPRepr verifies equations
+(** ** [UTSPROPRepr satisfies equations
       - we use  a1(x) < a2(x) in V(Sigma)(X) iff 
                   forall R, V(init_R) (a1(x)) < V(init_R) (a2(x))
       - we rewrite V(init_R)(a1(x)) = a1 (U (init_R) x) 
       - and for a2 as well
 *)
 
-Lemma UTSPRepr_sig_prop : verifies_ineqs T UTSProp.
+Lemma UTSPRepr_sig_prop : satisfies_ineqs T UTSProp.
 Proof.
-  unfold verifies_ineqs, verifies_ineq.
+  unfold satisfies_ineqs, satisfies_ineq.
   simpl; intros.
   apply lemma36_2a.
   intros. 
@@ -858,9 +858,9 @@ Proof.
   rewrite <- H5.
   rewrite <- H5'.
   
-  destruct R.
-  unfold verifies_ineqs in v.
-  unfold verifies_ineq in v.
+  destruct R as [R v].
+  unfold satisfies_ineqs in v.
+  unfold satisfies_ineq in v.
   simpl in *.
   apply v.
 Qed.
@@ -877,7 +877,7 @@ Qed.
                              (init_prop_mon
                                 (exist
                                    (fun a : Representation Sig =>
-                                    verifies_prop_sig (A:=A) T a) x0 v))
+                                    satisfies_prop_sig (A:=A) T a) x0 v))
                              (((eq1 (T a)) UTSPROPRepr) c x) = 
   Prod_mor_c1 (init_mon (Sig:=Sig) x0) (((eq1 (T a)) UTSPROPRepr) c x)).
   simpl. auto.
@@ -889,15 +889,15 @@ Qed.
   assert (H1: 
        Prod_mor_c1
       (init_prop_mon
-         (exist (fun a : Representation Sig => verifies_prop_sig (A:=A) T a)
+         (exist (fun a : Representation Sig => satisfies_prop_sig (A:=A) T a)
             x0 v)) (((eq2 (T a)) UTSPROPRepr) c x) = 
         Prod_mor_c1 (init_mon (Sig:=Sig) x0) (((eq2 (T a)) UTSPROPRepr) c x)).
   simpl; auto.
   rerew H1.
   rewrite <- H5'.
        
-  unfold verifies_prop_sig in v.
-  unfold verifies_eq in v.
+  unfold satisfies_prop_sig in v.
+  unfold satisfies_eq in v.
   simpl in v.
   apply v.
 Qed.
@@ -907,7 +907,7 @@ Qed.
 *)
 
 Definition UTSPROP : INEQ_REP := 
- exist (fun R : Representation S => verifies_ineqs (*A:=A*) T R) UTSProp
+ exist (fun R : Representation S => satisfies_ineqs (*A:=A*) T R) UTSProp
   UTSPRepr_sig_prop.
 
 (** ** Initiality in the subcategory *)
