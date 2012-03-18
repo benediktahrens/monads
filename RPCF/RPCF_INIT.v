@@ -174,4 +174,4 @@ Program Instance PCF_initial : Initial REP := {
   InitMorUnique R := @initR_unique R
 }.
 
-Print Assumptions PCF_initial.
+(* Print Assumptions PCF_initial. *)

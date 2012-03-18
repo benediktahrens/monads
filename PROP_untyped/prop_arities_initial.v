@@ -277,7 +277,6 @@ Proof.
   rew (retakl P).
 Qed.
 
-Print Assumptions sub_struct.
 
 Definition subst_module_mor (P : REP S) := Build_RModule_Hom (sub_struct P).
 
@@ -1013,4 +1012,4 @@ Program Instance INITIAL_INEQ_REP : Initial INEQ_REP := {
 End subcat.
 End S_Mods_and_Eqs.
 
-Print Assumptions INITIAL_INEQ_REP.
+(* Print Assumptions INITIAL_INEQ_REP. *)

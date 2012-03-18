@@ -255,11 +255,6 @@ Proof.
       auto.
 Qed.
 
-Print nat.
-Check IPO.
-Check SM_ind.
-
-
 
 Lemma init_subst V t (y : PCF V t) W (f : IDelta _ V ---> PCFE W):
       init (y >>= f) = 

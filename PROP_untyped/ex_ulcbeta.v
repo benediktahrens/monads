@@ -7,7 +7,7 @@ Unset Strict Implicit.
 Unset Automatic Introduction.
 Unset Transparent Obligations.
 
-Check INITIAL_INEQ_REP.
+(* Check INITIAL_INEQ_REP. *)
 
 Inductive Lambda_index := ABS | APP.
 
