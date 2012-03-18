@@ -80,11 +80,9 @@ Notation "a @ b" := (App a b)(at level 43, left associativity).
 Notation "M '" := (Const _ M) (at level 15).
 
 
-Check Const.
-
 SubClass Consts' (V : TY -> Type) (t : TY) := Consts t.
 
-Print Coercions.
+
 Definition Const' : forall V t, Consts' V t -> PCF V t :=
           fun V t x => Const _ x.
 Coercion Const' : Consts' >-> PCF.
@@ -129,7 +127,6 @@ Fixpoint rename (V W: TY -> Type) (f: V ---> W)
     end
 where "v //- f" := (@rename _ _ f _ v).
 
-Print rename.
 
 (** injection of terms into terms with one variable more, of type u *)
 Definition inj (u:TY)(V : TY -> Type)(t:TY)(v:PCF V t): PCF (opt u V) t :=

@@ -12,8 +12,6 @@ Variable P : Monad TYPE.
 Variable X : Type.
 Variable z : P (X*).
 Variable a : P (X).
-Check kleisli.
-Check weta.
 Implicit Arguments kleisli [C F a b].
 Implicit Arguments weta [C F c].
 
@@ -77,7 +75,7 @@ Definition freshsubst := kleisli P (a:=X*)(b:=X)
                | Some x => weta P x
                | None => a
                end).
-Check freshsubst.
+
 
 Lemma don2 : freshsubst z' = z.
 Proof.

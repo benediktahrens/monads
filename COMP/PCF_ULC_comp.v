@@ -4,7 +4,7 @@ Require Export CatSem.COMP.PCF_ULC_nounit.
 Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.
-Print Assumptions PCF_initial.
+
 Definition PCF_ULC_compilation := 
     InitMor PCF_ULC.
 

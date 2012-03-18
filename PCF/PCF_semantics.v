@@ -24,7 +24,6 @@ Notation "y >>= f" := (@subst _ _ f _ y) (at level 42).
 
 Notation "a @ b" := (App a b)(at level 20, left associativity).
 Notation "M '" := (Const _ M) (at level 15).
-Locate "'".
 
 Ltac opt := simpl; intros; elim_opt.
 
@@ -74,7 +73,6 @@ where "x :> y" := (@propag _ _ x y).
 
 Notation "x :>> y" := 
   (clos_refl_trans_1n _ (@propag _ _ ) x y) (at level 50).
-Print propag.
 
 Variable V: IT.
 Variables s t: TY.

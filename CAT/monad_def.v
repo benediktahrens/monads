@@ -9,9 +9,6 @@ Unset Automatic Introduction.
 
 Section monad_def.
 
-Check Cat.
-
-
 Variables obC obD: Type.
 Variable morC : obC -> obC -> Type.
 Variable C: Cat_struct morC.

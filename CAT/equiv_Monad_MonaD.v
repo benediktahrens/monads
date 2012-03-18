@@ -253,8 +253,6 @@ Program Instance lb_niso : NISO_struct (Build_NT lb_NT_s) := {
   NT_inv := fun c => tt c
 }.
 
-Print lb_niso.
-
 
 (** we omit the other nat isomorphism *)
 

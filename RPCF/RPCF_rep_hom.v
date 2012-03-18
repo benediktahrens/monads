@@ -343,7 +343,7 @@ Program Definition Succ_hom' :=
 (*           unit_rmod f  ;; *)
            f ** (Succ  (*PCFPO_rep_struct := R*)).
 
-Print Succ_hom'.
+
 
 Program Definition CondB_hom' := CondB (*PCFPO_rep_struct := P*) ;;
                 f [( _ )] ;;
@@ -423,9 +423,6 @@ Program Definition nats_hom' := forall m,
 (*           unit_rmod f  ;; *)
            f ** (nats m).
 
-Check colax_PbRMod_Hom.
-Locate "*".
-Locate "**".
 
 
 Program Definition app_hom' := forall u v, 
@@ -447,7 +444,7 @@ Program Definition app_hom' := forall u v,
              f [( _ )] ;; IsoPF.
 (*             colax_Pb_Fib _ _ _ .*)
 
-Print app_hom'.
+
 
  (* abs_hom : forall u v,
        abs u v ;;
@@ -486,7 +483,7 @@ Program Definition  abs_hom' := forall u v,
 (*	colax_Fib_Pb _ _ _  ;;*)
         IsoFP ;;
 	Fib_eq_RMod _ (eq_sym (HArrow _ _ )) .
-Print abs_hom'.
+
 
 Class PCFPO_rep_Hom_struct := {
 
