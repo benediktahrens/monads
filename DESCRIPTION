@@ -404,12 +404,12 @@ CONTENT OF THIS LIBRARY
 	definition of morphism of representations of s. PCF
 
    ./RPCF/RPCF_rep_eq.v
-	definition of equality of 2 parallel morpisms
+	definition of equality of 2 parallel morphisms
 	  of representations of PCF
 	proof of setoidality of equality
 
    ./RPCF/RPCF_rep_comp.v
-	definition of compostition of 2 morphisms of 
+	definition of composition of 2 morphisms of 
 	  reps of PCF
 
    ./RPCF/RPCF_rep_id.v
