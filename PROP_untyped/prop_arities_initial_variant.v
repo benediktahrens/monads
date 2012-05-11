@@ -112,7 +112,7 @@ Class S_Module_s (Tau : forall R : REP S, RMOD R wOrd) := {
    S_Mod_Hom : forall (R S : REP S) (f : R ---> S), 
       Tau R ---> PbRMod f (Tau S)  }.
 *)
-Check RMONAD.
+
 Record S_Module := {
   s_mod :> forall R : RMONAD Delta, RMOD R wOrd ;
   s_mod_hom :> forall (R T : RMONAD Delta)(f : R ---> T),
