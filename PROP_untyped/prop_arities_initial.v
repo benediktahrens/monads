@@ -476,6 +476,79 @@ Program Instance UTS_prop_rel_rmonad_s : RMonad_struct Delta prop_rel := {
 
 Definition UTSP := Build_RMonad (UTS_prop_rel_rmonad_s).
 
+(** ** an experiment *)
+Section higher_order_monotonicity.
+
+(*
+Variables X Y : TYPE.
+Variables f g : X -> UTSP Y.
+Hypothesis H : forall x, f x << g x.
+Check H.
+*)
+
+Lemma higher_order_mon X (t : UTSP X) Y (f g : X -> UTSP Y)
+           (H : forall x, f x << g x)
+         : subst_prop_rel f t << subst_prop_rel g t.
+Proof.
+  simpl in *.
+  Check (prod_mod_c_rel (M:= prop_rel)).
+ Check prop_rel.
+  Check prod_mod_c.
+  Check (@UTSind S
+           (fun X (t : UTSP  X) =>
+              forall Y (f g : X ---> UTS S Y),
+             (forall x : X, prop_rel_c (f x) (g x)) ->
+            prop_rel_c (subst f t) (subst g t))
+
+           (fun X l (v : UTS_list S X l) => 
+              forall Y (f g : X ---> UTS S Y),
+                 (forall x : X, prop_rel_c (f x) (g x)) ->
+
+           Rel 
+            prod_mod_c_rel (M:=prop_rel) (list_subst v f) (list_subst v g))).
+
+).
+
+
+
+       Rel (PO_obj_struct := prod_mod_po (SC_inj_ob R) V l) 
+  (Prod_mor_c (init_mon (S:=S) (SC_inj_ob R)) x)
+  (Prod_mor_c (init_mon (S:=S) (SC_inj_ob R)) y) ) :
+prod_mod_c_rel (M:=prop_rel) x y.
+          (forall x : X, forall R, init (proj1_sig R) (f x) << init _ (g x))
+            -> forall t : UTSP X, subst_prop_rel f t << subst_prop_rel g t)).
+
+
+ set (H:= (@UTSind S
+            (fun (X : Type) (T : UTS S X) =>
+             forall (Y : Type) (f g : X -> UTS S Y),
+         (forall x : X, forall R, init (proj1_sig R) (f x) << init _ (g x))
+            -> forall t : UTSP X, subst_prop_rel f t << subst_prop_rel g t))).
+
+
+app (@UTSlistind 
+      (fun V x => forall W (f g : V ---> UTS W)
+              (H:f == g), x >== f = x >== g)
+      (fun V l (v : UTS_list V l) => 
+               forall W (f g : V ---> UTS W)(H:f == g),
+           v >>== f = v >>== g) );
+
+app (@UTSind 
+       (fun (a : Type) (v : UTS a) => 
+            forall (b : Type)(f g : a ---> b),
+         (f == g) ->
+         rename (W:=b) f v = rename (W:=b) g v)
+       (fun V l (v : UTS_list V l) => 
+            forall (b : TYPE)(f g : V ---> b),
+         (f == g) ->
+         v //-- f =  v //-- g))
+
+
+  unfold po_obj_struct in H.
+  unfold prop_rel in H.
+
+End higher_order_monotonicity.
+
 (** ** Important Lemma
 This lemma corresponds to one direction of Lemma 36 *)
 (** it says : the relation defined by the set of equations

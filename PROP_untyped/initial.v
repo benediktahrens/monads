@@ -86,6 +86,31 @@ UTS_list (V : TYPE) : [nat] -> Type :=
       UTS (V ** b) -> UTS_list V bs -> UTS_list V (b::bs).
 Notation "a -::- b" := (constr a b).
 
+
+(** order on [UTS_list] induced by order on UTS *)
+Section order_on_UTS_list.
+Check PO_obj.
+Check @PreOrder.
+Variable M : forall V, relation (UTS V).
+
+Inductive UTS_list_relation (V : TYPE) : forall n,
+  relation (UTS_list V n) := 
+  | ttt_rel : forall x y : UTS_list V nil, UTS_list_relation x y
+  | constr_rel : forall n l, forall x y : UTS (V ** n),
+          forall a b : UTS_list V l,
+          M x y -> UTS_list_relation a b ->
+          UTS_list_relation (x -::- a) (y -::- b).
+
+Section preorders.
+
+Hypothesis H : forall V, @PreOrder _ (@M V).
+
+
+
+End preorders.
+
+End order_on_UTS_list.
+
 (** at first the diagonal preorder *)
 
 Definition UTS_sm V := Delta (UTS V).
@@ -691,6 +716,12 @@ Qed.
 
 Hint Resolve sts_list_subst : fin.
 Hint Rewrite sts_list_subst : fin.
+Locate ">>==".
+Check list_subst.
+Check pm_mkl.
+Lemma sts_list_subst2 l X (v : UTS_list X l) 
+       Y (f : X ---> UTS Y):
+   pm_f_UTSl (v >>== f) = pm_mkl f (pm_f_UTSl v).
 
 
 (** ** Representation structure on [UTS]
