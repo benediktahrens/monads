@@ -489,6 +489,28 @@ Hypothesis H : forall x, f x << g x.
 Check H.
 *)
 
+(*
+Lemma lshift_prop_rel :
+forall (b : nat) V (x : V ** b) Y (g f : PO_mor (sm_po V) (prop_rel Y)),
+ (forall x0 : V, prop_rel_c (f x0) (g x0)) ->
+prop_rel_c (lshift_c (P:=UTSP) (l:=b) (V:=V) (W:=Y) f x)
+  (lshift_c (P:=UTSP) (l:=b) (V:=V) (W:=Y) g x).
+Proof.
+  induction b; 
+  simpl; intros.
+  auto.
+  apply IHb.
+  simpl; intros.
+  destruct x0; simpl; intros.
+  assert (H2:= subst_var).
+  simpl H2.
+  Focus 2.
+  reflexivity.
+  
+  
+  
+*)
+
 Lemma higher_order_mon X (t : UTSP X) Y (f g : X -> UTSP Y)
            (H : forall x, f x << g x)
          : subst_prop_rel f t << subst_prop_rel g t.
@@ -497,7 +519,7 @@ Proof.
   Check (prod_mod_c_rel (M:= prop_rel)).
  Check prop_rel.
   Check prod_mod_c.
-
+(*
   app (@UTSind S
            (fun X (t : UTSP  X) =>
               forall Y (f g : X ---> UTS S Y),
@@ -507,7 +529,28 @@ Proof.
            (fun X l (v : UTS_list S X l) => 
               forall Y (f g : Delta X ---> UTSP Y),
                  (forall x : X, prop_rel_c (f x) (g x)) ->
-            prod_mod_c_rel (M:= prop_rel) (pm_mkl f (pm_f_UTSl v)) (pm_f_UTSl (list_subst v g)))).
+            prod_mod_c_rel (M:= prop_rel) 
+     (pm_mkl (M:=UTSP) f (pm_f_UTSl v)) (pm_mkl (M:=UTSP) g (pm_f_UTSl v)))).
+
+  intros; simpl.
+  unfold prop_rel_c.
+  simpl.
+  apply H.
+  
+  Focus 2.
+  constructor.
+
+
+  Focus 2.
+  simpl. intros. constructor;
+  simpl.
+  apply H. intros.
+  clear H H0.
+  clear u0 u.
+  generalize dependent f.
+  generalize dependent g.
+  generalize dependent b.
+*)
 
 
   app (@UTSind S
@@ -521,19 +564,42 @@ Proof.
                  (forall x : X, prop_rel_c (f x) (g x)) ->
             prod_mod_c_rel (M:= prop_rel) (pm_f_UTSl (list_subst v f)) (pm_f_UTSl (list_subst v g)))).
 
-
-
-
   intros; simpl.
-  unfold prop_rel_c.
-  simpl.
   apply H.
   
   Focus 2.
   constructor.
+  
+  Focus 2.
+  simpl; intros. constructor.
+  Check _lshift_lshift_eq.
+  assert (H':= H (Y ** b) (_lshift f) (_lshift g)).
+  apply H'.
 
   Focus 2.
-  simpl. intros.
+  apply H0.
+  auto.
+  Focus 1.
+  simpl.
+  intros.
+  assert (H'' := H (Y ** b)(_lshift f).
+  apply H''.
+  
+  
+  assert (H4:= _lshift_lshift_eq (Sm_ind f)).
+  unfold _lshift.
+  rewrite subst_lshift.
+  auto.
+  apply H.
+
+
+  
+  clear Y.
+  induction b; simpl.
+  unfold lshift_c.
+  simpl.
+  auto.
+  rerew (kleisli_lshift (P:=UTSP)).
 
   simpl; intros.
   assert (H':= H Y f g H0).

@@ -719,9 +719,14 @@ Hint Rewrite sts_list_subst : fin.
 Locate ">>==".
 Check list_subst.
 Check pm_mkl.
+Check pm_f_UTSl.
 Lemma sts_list_subst2 l X (v : UTS_list X l) 
-       Y (f : X ---> UTS Y):
-   pm_f_UTSl (v >>== f) = pm_mkl f (pm_f_UTSl v).
+       Y (f : Delta X ---> UTS_sm Y):
+   pm_f_UTSl (v >>== f) =  pm_mkl (M:=UTSM) f (pm_f_UTSl v).
+Proof.
+  induction v; t5.
+  rew _lshift_lshift_eq.
+Qed.
 
 
 (** ** Representation structure on [UTS]
