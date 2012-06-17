@@ -488,6 +488,13 @@ Variables f g : X -> UTSP Y.
 Hypothesis H : forall x, f x << g x.
 Check H.
 *)
+(*
+Lemma lshift_prop_rel : 
+forall (b : nat) V (x : V ** b) Y (g f : PO_mor (sm_po V) (prop_rel Y)),
+ (forall x0 : V, prop_rel_c (f x0) (g x0)) ->
+prop_rel_c (_lshift (S:=S) (l:=b) (V:=V) (W:=Y) f x)
+  (_lshift (S:=S) (l:=b) (V:=V) (W:=Y) g x).
+*)
 
 (*
 Lemma lshift_prop_rel :
@@ -503,13 +510,33 @@ Proof.
   simpl; intros.
   destruct x0; simpl; intros.
   assert (H2:= subst_var).
-  simpl H2.
+  simpl in *.
   Focus 2.
   reflexivity.
   
   
   
 *)
+
+
+Lemma lift_monotone X (t t' : UTSP X) Y (f : X ---> Y) :
+           prop_rel_c t t' -> 
+           prop_rel_c (rename f t) (rename f t').
+Proof.
+  intros X t t' Y f H.
+  unfold prop_rel_c in *.
+  simpl in *; intros.
+  repeat rew init_lift.
+  apply (rlift (proj1_sig R) f).
+  auto.
+Qed.
+Check rkleisli.
+
+Hypothesis HH: forall R : INEQ_REP,
+       forall X Y (f g: Delta X ---> (proj1_sig R) Y),
+       (forall x, f x << g x) -> 
+       (forall x, rkleisli (RMonad_struct:=proj1_sig R) f x << rkleisli g x).
+
 
 Lemma higher_order_mon X (t : UTSP X) Y (f g : X -> UTSP Y)
            (H : forall x, f x << g x)
@@ -575,6 +602,50 @@ Proof.
   Check _lshift_lshift_eq.
   assert (H':= H (Y ** b) (_lshift f) (_lshift g)).
   apply H'.
+  clear H.
+  generalize dependent g.
+  generalize dependent f.
+  clear H0.
+  clear u0.
+  generalize dependent Y.
+  clear bs.
+  generalize dependent V.
+  generalize dependent b.
+  induction b; simpl; intros.
+  
+    auto.
+    apply (IHb (V ') u); auto.
+    intro x0; destruct x0; simpl; auto; try reflexivity.
+    unfold inj; simpl. 
+    apply lift_monotone; auto.
+    
+    apply H0.
+    auto.
+
+  simpl; intros.
+  unfold prop_rel_c.
+  simpl; intros.
+  assert (H3:= init_kleisli ).
+  assert (H4:= H3 S (proj1_sig R) V (Build u) Y (Sm_ind f)). simpl in H4.
+  rewrite H4.
+  assert (H5:= H3 S (proj1_sig R) V (Build u) Y (Sm_ind g)). simpl in H5.
+  rewrite H5.
+  apply HH.
+  simpl; intros.
+  unfold prop_rel_c in H0.
+  simpl in H0.
+  apply H0.
+Qed.
+
+
+(*
+  apply H0.
+  apply init_monotone.
+  apply (rkleisli).
+  clear H.
+  unfold prod_mod_c_rel.
+    unfold rename; simpl.
+    unfold _shift.
 
   Focus 2.
   apply H0.
@@ -656,7 +727,7 @@ app (@UTSind
 
   unfold po_obj_struct in H.
   unfold prop_rel in H.
-
+*)
 End higher_order_monotonicity.
 
 

@@ -479,12 +479,14 @@ Definition UTSP := Build_RMonad (UTS_prop_rel_rmonad_s).
 (** ** an experiment *)
 Section higher_order_monotonicity.
 
+(** see the content of this section in _variant *)
+
 (*
 Variables X Y : TYPE.
 Variables f g : X -> UTSP Y.
 Hypothesis H : forall x, f x << g x.
 Check H.
-*)
+
 
 Lemma higher_order_mon X (t : UTSP X) Y (f g : X -> UTSP Y)
            (H : forall x, f x << g x)
@@ -546,7 +548,7 @@ app (@UTSind
 
   unfold po_obj_struct in H.
   unfold prop_rel in H.
-
+*)
 End higher_order_monotonicity.
 
 (** ** Important Lemma
