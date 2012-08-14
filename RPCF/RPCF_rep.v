@@ -64,9 +64,10 @@ Hypothesis type_arrow : forall s t, f (s ~> t) = f s ~~> f t.
 
 
 (*Reserved Notation "a $ b" (at level 50, left associativity).*)
-
+Reserved Notation "A @ B" (at level 15, B at next level, left associativity).
 Class PCFPO_rep_struct := {
-  app : forall u v, (P[u ~~> v]) x (P[u]) ---> P[v];
+  app : forall u v, (P[u ~~> v]) x (P[u]) ---> P[v]
+                       where "A @ B" := (app _ _ _ (A,B));
   abs : forall u v, (d P // u)[v] ---> P[u ~~> v];
   rec : forall t, P[t ~~> t] ---> P[t];
   tttt :  * ---> P[Bool];
@@ -80,7 +81,7 @@ Class PCFPO_rep_struct := {
   bottom: forall t, * ---> P[t];
 
   beta_red : forall r s V y z, 
-        app r s V (abs r s V y, z) << y[*:= z] ;
+        abs r s V y @ z << y[*:= z] ;
 (*  
   propag_app1: forall r s V y y' z,
         y << y' -> app r s V (y,z) << app _ _ _ (y',z) ;
@@ -94,45 +95,100 @@ Class PCFPO_rep_struct := {
   propag_rec: forall t V y y',
         y << y' -> rec t V y << rec _ _ y' ;
 *)  
+
+  CondN_t: forall V n m,
+          CondN V tt @ tttt _ tt @ n @ m << n ;
+
+(*
   CondN_t: forall V n m,
      app _ _ _ (app _ _ _ 
           (app _ _ _ (CondN V tt, tttt _ tt), 
                        n), m) << n ;
-  
+*)
+
+  CondN_f: forall V n m,
+          CondN V tt @ ffff _ tt @ n @ m << m ;
+
+(*
   CondN_f: forall V n m,
      app _ _ _ (app _ _ _ 
           (app _ _ _ (CondN V tt, ffff _ tt), 
                        n), m) << m ;
+*)
+
+  CondB_t: forall V n m,
+          CondB V tt @ tttt _ tt @ n @ m << n ;
  
+(*
   CondB_t: forall V u v,
      app _ _ _ (app _ _ _ 
           (app _ _ _ (CondB V tt, tttt _ tt), 
                         u), v) << u ;
-  
+*)
+
+  CondB_f: forall V n m,
+          CondB V tt @ ffff _ tt @ n @ m << m ;
+
+(*
   CondB_f: forall V u v,
      app _ _ _ (app _ _ _ 
           (app _ _ _ (CondB V tt, ffff _ tt), 
                        u), v) << v ;
+*)
+
+  Succ_red: forall V n,
+     Succ V tt @ nats n _ tt << nats (S n) _ tt ;
   
+(*
   Succ_red: forall V n,
      app _ _ _ (Succ V tt, nats n _ tt) << nats (S n) _ tt ;
+*)
 
   Zero_t: forall V,
+     Zero V tt @ nats 0 _ tt << tttt _ tt ;
+
+(*
+  Zero_t: forall V,
      app _ _ _ (Zero V tt, nats 0 _ tt) << tttt _ tt ;
+*)
 
   Zero_f: forall V n,
-     app _ _ _ (Zero V tt, nats (S n) _ tt) << ffff _ tt ;
+     Zero V tt @ nats (S n) _ tt << ffff _ tt ;
 
+(*
+  Zero_f: forall V n,
+     app _ _ _ (Zero V tt, nats (S n) _ tt) << ffff _ tt ;
+*)
+
+  Pred_Succ: forall V n,
+     Pred V tt @ (Succ V tt @ nats n _ tt) << nats n _ tt;
+
+(*
   Pred_Succ: forall V n,
      app _ _ _ (Pred V tt, app _ _ _ (Succ V tt, nats n _ tt)) <<
              nats n _ tt;
-   
+*)
+
+  Pred_Z: forall V,
+     Pred V tt @ nats 0 _ tt << nats 0 _ tt ;
+
+(*
   Pred_Z: forall V,
      app _ _ _ (Pred V tt, nats 0 _ tt) << nats 0 _ tt ;
+*)
+
+  Rec_A: forall V t g,
+     rec t V g << g @ rec _ _ g 
  
+(*
   Rec_A: forall V t g,
      rec _ _ g << app t t V (g, rec _ _ g)
+*)
  }.
+
+Notation "A @ B" := (((app (PCFPO_rep_struct := _ ) _ _ ) _ ) (A, B)).
+
+Print PCFPO_rep_struct.
 
 
 

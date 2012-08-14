@@ -45,7 +45,8 @@ Variable f : TY -> U.
 *)
 
 Class PCFPO_rep_struct := {
-  app : forall r s, (P[f (r~>s)]) x (P[f r]) ---> P[f s];
+  app : forall r s, (P[f (r~>s)]) x (P[f r]) ---> P[f s] 
+       where "A @ B" := (app _ _ _ (A,B));
   abs : forall r s, (d P //(f r))[f s] ---> P[f (r ~> s)];
   rec : forall t, P[f (t ~> t)] ---> P[f t];
   tttt :  * ---> P[f Bool];
