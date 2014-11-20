@@ -81,7 +81,6 @@ Ltac t := mauto ; repeat (unfold Rsubstar_not ||
 
 (*
 Obligation Tactic := t.
-Check Der_RMod_not.
 Program Instance Rsubstar_mod_hom_struct : RModule_Hom_struct
    (M := product (C:=RMOD P wPO) ((DER_RMOD_not _ _ (wPO_RMod P))) (wPO_RMod P)) 
    (N := wPO_RMod P) 
@@ -340,7 +339,7 @@ destruct e.
 simpl in *.
 destruct eq3.
 destruct eq4.
-Check S_Mod_alg. Print S_Module.
+
 apply (forall c : TYPE,
          forall x : s_mod_rep (S_Mod_alg l) P c, half_eq0 P _ x << half_eq1 _ _ x).
 Defined.
@@ -486,7 +485,7 @@ Section higher_order_monotonicity.
 Variables X Y : TYPE.
 Variables f g : X -> UTSP Y.
 Hypothesis H : forall x, f x << g x.
-Check H.
+
 *)
 (*
 Lemma lshift_prop_rel : 
@@ -530,7 +529,7 @@ Proof.
   apply (rlift (proj1_sig R) f).
   auto.
 Qed.
-Check rkleisli.
+
 
 Hypothesis HH: forall R : INEQ_REP,
        forall X Y (f g: Delta X ---> (proj1_sig R) Y),
@@ -543,9 +542,7 @@ Lemma higher_order_mon X (t : UTSP X) Y (f g : X -> UTSP Y)
          : subst_prop_rel f t << subst_prop_rel g t.
 Proof.
   simpl in *.
-  Check (prod_mod_c_rel (M:= prop_rel)).
- Check prop_rel.
-  Check prod_mod_c.
+
 (*
   app (@UTSind S
            (fun X (t : UTSP  X) =>
@@ -599,7 +596,6 @@ Proof.
   
   Focus 2.
   simpl; intros. constructor.
-  Check _lshift_lshift_eq.
   assert (H':= H (Y ** b) (_lshift f) (_lshift g)).
   apply H'.
   clear H.
@@ -1126,8 +1122,6 @@ Qed.
   assert (H6:=H5 c x).
   simpl in *.
   rewrite <- bbb.
-  Check Prod_mor_c.
-  Check ((eq1 (T a) UTSPROPRepr) c x).
   assert (H: 
        Prod_mor_c1
                              (init_prop_mon

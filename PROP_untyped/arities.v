@@ -640,7 +640,7 @@ Definition commute_left :=
 
 (** the right - upper side *)
 (*Coercion PbRMod_ind_Hom : RMonad_Hom >-> mor.*)
-(*Check PbRMod_ind_Hom.*)
+
 (*Notation "'f'":= (PbMod_ind_Hom f).*)
 (*
 Notation "y [( s )]" := (#(ITFIB_MOD _ s) y) (at level 40).
@@ -649,7 +649,7 @@ Notation "y [( s )]" := (#(ITFIB_MOD _ s) y) (at level 40).
 (*Definition commute_right : prod_mod P a ---> PbRMod f Q := RepP ;; f .*)
 
 Definition commute_right := RepP ;;  PbRMod_ind_Hom f .
-(*Check commute_right.*)
+
 
 
 (** they are equal *)

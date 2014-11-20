@@ -88,7 +88,6 @@ Ltac t := mauto ; repeat (unfold Rsubstar_not ||
 
 (*
 Obligation Tactic := t.
-Check Der_RMod_not.
 Program Instance Rsubstar_mod_hom_struct : RModule_Hom_struct
    (M := product (C:=RMOD P wPO) ((DER_RMOD_not _ _ (wPO_RMod P))) (wPO_RMod P)) 
    (N := wPO_RMod P) 
@@ -302,7 +301,6 @@ destruct e.
 simpl in *.
 destruct eq3.
 destruct eq4.
-Check S_Mod_alg. Print S_Module.
 apply (forall c : TYPE,
          forall x : s_mod_rep (S_Mod_alg l) P c, half_eq0 P _ x << half_eq1 _ _ x).
 Defined.

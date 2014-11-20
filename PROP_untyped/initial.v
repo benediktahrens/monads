@@ -89,8 +89,7 @@ Notation "a -::- b" := (constr a b).
 
 (** order on [UTS_list] induced by order on UTS *)
 Section order_on_UTS_list.
-Check PO_obj.
-Check @PreOrder.
+
 Variable M : forall V, relation (UTS V).
 
 Inductive UTS_list_relation (V : TYPE) : forall n,
@@ -275,7 +274,7 @@ Definition _shift (V W : TYPE ) (f : V ---> UTS W) :
    end.
 
 Notation "x >- f" := (_shift f x) (at level 40).
-Locate S.
+
 (** same for lshift, being given a list of object language types *)
 Fixpoint _lshift (l : nat) (V W : TYPE) (f : V ---> UTS W) : 
         V ** l ---> UTS (W ** l) :=
@@ -716,10 +715,7 @@ Qed.
 
 Hint Resolve sts_list_subst : fin.
 Hint Rewrite sts_list_subst : fin.
-Locate ">>==".
-Check list_subst.
-Check pm_mkl.
-Check pm_f_UTSl.
+
 Lemma sts_list_subst2 l X (v : UTS_list X l) 
        Y (f : Delta X ---> UTS_sm Y):
    pm_f_UTSl (v >>== f) =  pm_mkl (M:=UTSM) f (pm_f_UTSl v).
