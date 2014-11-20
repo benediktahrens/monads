@@ -174,17 +174,6 @@
 #./PCF_o_c/ULC_syntax1.v
 #./PCF_o_c/RPCF_syntax.v #should be obsolete
 
-#### RPCF #########################
-./RPCF/RPCF_rep.v
-./RPCF/RPCF_rep_hom.v
-./RPCF/RPCF_rep_eq.v
-./RPCF/RPCF_rep_id.v
-./RPCF/RPCF_rep_comp.v
-./RPCF/RPCF_rep_cat.v
-./RPCF/RPCF_syntax_rep.v
-./RPCF/RPCF_syntax_init.v
-./RPCF/RPCF_INIT.v
-./RPCF/RPCF_ULC_nounit.v
 
 
 #### PROP_untyped #################
