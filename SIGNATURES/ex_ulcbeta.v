@@ -1,4 +1,4 @@
-Require Export CatSem.SIGNATURES.prop_arities_initial.
+Require Export CatSem.SIGNATURES.inequations_initial.
 
 Require Import Coq.Program.Equality.
 

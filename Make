@@ -87,7 +87,7 @@
 #### SIGNATURES #################
 ./SIGNATURES/arities.v
 ./SIGNATURES/representations.v
-./SIGNATURES/initial.v
+./SIGNATURES/pure_syntax_initial.v
 ./SIGNATURES/inequations_initial.v
 ./SIGNATURES/inequations_initial_variant.v
 ./SIGNATURES/ex_ulcbeta.v
