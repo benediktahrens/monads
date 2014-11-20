@@ -332,30 +332,12 @@ Record ineq_classic := {
 
 
 
-(*
-Definition satisfies_eq l l' (e : eq_alg l l') (P : REP S) : Prop.
-intros.
-destruct e.
-simpl in *.
-destruct eq3.
-destruct eq4.
-apply (forall c : TYPE,
-         forall x : s_mod_rep (S_Mod_alg l) P c, half_eq0 P _ x << half_eq1 _ _ x).
-Defined.
-
-*)
-
 (** ** Representation of (a set of) (in)equations 
 
 a representation [P] satisfies an equation [e] iff for any element in the domain [domS e P c],
  ([c] a set of variables) its two images under e1 and e2 are related
 *)
 
-(*
-Definition satisfies_eq (e : eq_alg) (P : REP S) :=
-  forall c (x : s_mod_rep (domS e) P c), 
-       (*half_eq*) (eq1 e) P _ x << (*half_eq*) (eq2 e)_ _ x.
-*)
 
 Definition satisfies_ineq (e : ineq_classic) (P : REP S) :=
   forall c (x : Dom e P c), 
@@ -491,17 +473,6 @@ Lemma lemma36 (l : [nat]) (V : Type)
 Rel (PO_obj_struct := prod_mod_po (SC_inj_ob R) V l) 
   (Prod_mor_c (init_mon (SC_inj_ob R)) x)
   (Prod_mor_c (init_mon (SC_inj_ob R)) y).
-
-(*
-Lemma lemma36 (l : [nat]) (V : Type)
-    (x y : prod_mod_c (fun x : Type => UTS Sig x) V l)
-    (H : prod_mod_c_rel (M:=prop_rel) x y) 
-    (R : subob (fun P : Representation Sig => satisfies_prop_sig (A:=A) T P)):
-Rel (PO_obj_struct := prod_mod_po (SC_inj_ob R) V l) 
-  (Prod_mor_c (init_mon (SC_inj_ob R)) x)
-  (Prod_mor_c (init_mon (SC_inj_ob R)) y).
-*)
-
 Proof.
   simpl.
   induction l; simpl;
@@ -629,17 +600,6 @@ Lemma lemma36_2 (l : [nat]) (V : Type)
   (Prod_mor_c (init_mon (S:=S) (SC_inj_ob R)) x)
   (Prod_mor_c (init_mon (S:=S) (SC_inj_ob R)) y) ) :
 prod_mod_c_rel (M:=prop_rel) x y.
-
-(*
-Lemma lemma36_2 (l : [nat]) (V : Type)
-    (x y : prod_mod_c (fun x : Type => UTS Sig x) V l)
-    (H : forall R : subob (fun P : Representation Sig => satisfies_prop_sig (A:=A) T P),
-        Rel (PO_obj_struct := prod_mod_po (SC_inj_ob R) V l) 
-  (Prod_mor_c (init_mon (Sig:=Sig) (SC_inj_ob R)) x)
-  (Prod_mor_c (init_mon (Sig:=Sig) (SC_inj_ob R)) y) ) :
-prod_mod_c_rel (M:=prop_rel) x y.
-*)
-
 Proof.
   simpl.
   induction l; simpl;
@@ -706,31 +666,6 @@ Proof.
   auto.
 Qed.
 
-
-(*
-
-(** this lemma states that half-equations are constant on 
-    representations whose underlying sets of terms are the same and the 
-     order gets bigger *)
-(** when passing from [UTSM_sm] to [UTSP], the equations remain the same *)
-
-Lemma debi3s a c x:
-forall h : half_eq_alg (domS (T a)) (codl (T a)),
-    (h (UTSRepr Sig)) c x = (h UTSPROPRepr) c x.
-Proof.
-  simpl.
-  intros.
-  destruct h.
-  simpl in *.
-  destruct half_eq_s0.
-  simpl in *.
-  assert (H:= comm_eq_s0 _ _ (debi2) c x).
-  rewrite debi25 in H.
-  rewrite debi25 in H.
-  auto.
-Qed.
-
-*)
 
 
 (** [UTSPROPRepr] satisfies (in)equations
@@ -863,43 +798,6 @@ Proof.
   apply v.
 Qed.
 
-(*
-  simpl in *.
-  assert (H6:=H5 c x).
-  simpl in *.
-  rewrite <- bbb.
-  Check Prod_mor_c.
-  Check ((eq1 (T a) UTSPROPRepr) c x).
-  assert (H: 
-       Prod_mor_c1
-                             (init_prop_mon
-                                (exist
-                                   (fun a : Representation Sig =>
-                                    satisfies_prop_sig (A:=A) T a) x0 v))
-                             (((eq1 (T a)) UTSPROPRepr) c x) = 
-  Prod_mor_c1 (init_mon (Sig:=Sig) x0) (((eq1 (T a)) UTSPROPRepr) c x)).
-  simpl. auto.
-  rerew  H.
-  clear H.
-  rewrite <- H6.
-  clear H5 H6.
-  
-  assert (H1: 
-       Prod_mor_c1
-      (init_prop_mon
-         (exist (fun a : Representation Sig => satisfies_prop_sig (A:=A) T a)
-            x0 v)) (((eq2 (T a)) UTSPROPRepr) c x) = 
-        Prod_mor_c1 (init_mon (Sig:=Sig) x0) (((eq2 (T a)) UTSPROPRepr) c x)).
-  simpl; auto.
-  rerew H1.
-  rewrite <- H5'.
-       
-  unfold satisfies_prop_sig in v.
-  unfold satisfies_eq in v.
-  simpl in v.
-  apply v.
-Qed.
-*)
 
 (** ** yielding an object of the subcategory 
 *)
@@ -962,39 +860,6 @@ Proof.
 Qed.  
 
 
-(*
-Lemma init_prop_unique : f == init_prop.
-Proof.
-  simpl. intros.
-  destruct f.
-  simpl in *.
-  clear t.
-  clear f.
-  unfold SC_inj_ob in x1.
-  simpl in x1.
-  destruct R.
-  simpl in *.
-  clear R.
-  
-  apply (@UTSind Sig
-     (fun V v => x1 V v = init x2 v)
-     (fun V l v => Prod_mor x1 l V (pm_f_STSl v) = init_list _ v));
-  simpl; intros;
-  auto.
-  rew (rmon_hom_rweta x1).
-  rewrite <- (one_way u).
-  assert (H':=@repr_hom_s _ _ _ x1 x1).
-  unfold commute in H'.
-  simpl in H'.
-  rewrite <- H'.
-  
-  rewrite one_way.
-  rewrite H. auto.
-  rewrite H0. simpl.
-  rewrite H.
-  auto.
-Qed.
-*)
 
 End unique.
 
