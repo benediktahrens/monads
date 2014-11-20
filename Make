@@ -93,32 +93,8 @@
 ./ULC/subst_experiment.v
 
 
-#####  compilation, syntax only
-#./COMP/ULC_PCF_rep.v
-./COMP/TLC.v
-./COMP/PCF.v
-./COMP/PCF_eq.v
-./COMP/TLC_rep.v
-./COMP/PCF_rep.v
-./COMP/PCF_rep_comp.v
-./COMP/TLC_rep_comp.v
-./COMP/PCF_rep_cat.v
-#./COMP/f_induced_monad.v
-./COMP/TLC_rep_cat.v
-
-./COMP/PCF_rep_quant.v
-./COMP/PCF_rep_hom_quant.v
-./COMP/PCF_rep_eq_quant.v
-./COMP/PCF_rep_comp_quant.v
-./COMP/PCF_rep_cat_quant.v
-./COMP/PCF_quant.v
-./COMP/PCF_ULC_nounit.v
-./COMP/PCF_ULC_comp.v
-
-./COMP/type_arities.v
 
 
-#./COMP/gen_T/TLC.v
 
 #### ULC+BETA initial representation
 #./ORDER/ulc_order_rep.v
@@ -135,24 +111,6 @@
 #./ORDER/tlc_properties.v
 #./ORDER/tlc_order_rep.v
 
-####  compilation PCF+RED, direct image
-#./PCF_order_comp/RTLC_rep.v
-#./PCF_order_comp/RPCF_ULC_alt2.v
-#./PCF_order_comp/ULC_comp.v
-#./PCF_order_comp/ULC_syntax.v
-#./PCF_order_comp/RPCF_rep_comp.v
-#./PCF_order_comp/RPCF_ULC_alt.v
-#./PCF_order_comp/RPCF_syntax_rep.v
-#./PCF_order_comp/RPCF_ULC.v
-#./PCF_order_comp/RPCF_syntax_init.v
-#./PCF_order_comp/RPCF_INIT.v
-#./PCF_order_comp/RPCF_ULC_sandbox.v
-#./PCF_order_comp/RPCF_rep_cat.v
-#./PCF_order_comp/RPCF_rep_eq.v
-#./PCF_order_comp/RPCF_rep_id.v
-#./PCF_order_comp/RPCF_rep.v
-#./PCF_order_comp/RPCF_rep_hom.v
-#./PCF_order_comp/RPCF_syntax.v
 
 
 
