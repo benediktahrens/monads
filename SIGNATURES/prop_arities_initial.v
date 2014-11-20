@@ -1,5 +1,5 @@
 
-Require Export CatSem.PROP_untyped.initial.
+Require Export CatSem.SIGNATURES.initial.
 Require Export CatSem.CAT.SO.
 
 Require Import Coq.Program.Equality.

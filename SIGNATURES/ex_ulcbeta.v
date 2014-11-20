@@ -1,4 +1,4 @@
-Require Export CatSem.PROP_untyped.prop_arities_initial.
+Require Export CatSem.SIGNATURES.prop_arities_initial.
 
 Require Import Coq.Program.Equality.
 

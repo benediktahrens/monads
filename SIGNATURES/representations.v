@@ -1,4 +1,4 @@
-Require Export CatSem.PROP_untyped.arities.
+Require Export CatSem.SIGNATURES.arities.
 
 Set Implicit Arguments.
 Unset Strict Implicit.

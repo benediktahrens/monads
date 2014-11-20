@@ -1,5 +1,5 @@
 Require Export CatSem.CAT.Misc.
-Require Export CatSem.PROP_untyped.representations.
+Require Export CatSem.SIGNATURES.representations.
 
 Require Import Coq.Program.Equality.
 
