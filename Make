@@ -83,11 +83,6 @@
 ./PCF/PCF_RMonad.v
 ./PCF/PCF_Monad.v
 
-./TLC/TLC_types.v
-./TLC/TLC_syntax.v
-./TLC/TLC_semantics.v
-./TLC/TLC_RMonad.v
-./TLC/TLC_Monad.v
 
 ./ULC/ULC_syntax.v
 ./ULC/ULC_semantics.v
