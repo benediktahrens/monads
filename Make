@@ -22,7 +22,6 @@
 ./CAT/cat_INDEXED_TYPE.v
 ./CAT/monad_morphism.v
 ./CAT/my_lib.v
-#./CAT/parallel_monads.v
 ./CAT/orders_bis.v
 ./CAT/initial_terminal.v
 ./CAT/enriched_cat.v
@@ -37,7 +36,6 @@
 ./CAT/unit_type_monad.v
 ./CAT/retype_functor_po.v
 ./CAT/preorder_top.v
-#./CAT/delta.v
 ./CAT/rmodule_TYPE.v
 ./CAT/category_hom_transport.v
 ./CAT/free_cats.v
@@ -83,30 +81,7 @@
 ./ULC/ULC_RMonad.v
 ./ULC/ULC_Monad.v
 ./ULC/ULC_terms.v
-
 ./ULC/subst_experiment.v
-
-
-
-
-
-#### ULC+BETA initial representation
-#./ORDER/ulc_order_rep.v
-#./ORDER/ulc_order_rep_eq.v
-#./ORDER/ulc.v
-#./ORDER/ulc_init.v
-
-#### TLC+BETA initial representation
-#./ORDER/tlc_order_rep_eq.v
-#./ORDER/pcf_order_rep.v
-#./ORDER/tlc_init.v
-#./ORDER/pcf_order_rep_eq.v
-#./ORDER/tlc.v
-#./ORDER/tlc_properties.v
-#./ORDER/tlc_order_rep.v
-
-
-
 
 
 #### PROP_untyped #################
