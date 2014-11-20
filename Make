@@ -88,8 +88,8 @@
 ./SIGNATURES/arities.v
 ./SIGNATURES/representations.v
 ./SIGNATURES/initial.v
-./SIGNATURES/prop_arities_initial.v
-./SIGNATURES/prop_arities_initial_variant.v
+./SIGNATURES/inequations_initial.v
+./SIGNATURES/inequations_initial_variant.v
 ./SIGNATURES/ex_ulcbeta.v
 
 
