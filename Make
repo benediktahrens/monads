@@ -73,17 +73,6 @@
 ./CAT/equiv_Monad_MonaD.v
 
 
-
-####  various example syntaxes
-
-./ULC/ULC_syntax.v
-./ULC/ULC_semantics.v
-./ULC/ULC_RMonad.v
-./ULC/ULC_Monad.v
-./ULC/ULC_terms.v
-./ULC/subst_experiment.v
-
-
 #### SIGNATURES #################
 ./SIGNATURES/arities.v
 ./SIGNATURES/representations.v
