@@ -7,7 +7,6 @@
 ./CAT/cat_TYPE_option.v
 ./CAT/limits.v
 ./CAT/IO.v
-./CAT/rich_monads.v
 ./CAT/functor_leibniz_eq.v
 ./CAT/small_cat.v
 ./CAT/ind_potype.v
@@ -51,7 +50,6 @@
 ./CAT/product.v
 ./CAT/category.v
 ./CAT/functor_properties.v
-./CAT/pts.v
 ./CAT/monad_haskell.v
 ./CAT/cat_SET.v
 ./CAT/rmonad_hom.v
