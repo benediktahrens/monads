@@ -1,6 +1,5 @@
 Require Export CatSem.CAT.rmonad_gen.
 Require Export CatSem.CAT.cat_INDEXED_TYPE.
-Require Export CatSem.CAT.retype_functor_po.
 Require Export CatSem.CAT.ind_potype.
 Require Export CatSem.CAT.rmonad_hom.
 Require Export CatSem.CAT.rmodule_pb_rmonad_hom.
@@ -853,70 +852,6 @@ End Rsubstar.
 
 End fixatype.
 
-
-Section FFib_Mod_Hom.
-(*
-FFib_Mod_Hom
-     : forall (U U' : Type) (T : U -> U') (P : Monad (ITYPE U))
-         (Q : Monad (ITYPE U')) (M : gen_Monad_Hom P Q (RETYPE T)) (s : U),
-       Module_Hom ((ITFIB_MOD P s) P)
-         ((ITFIB_MOD P (T s)) (PModule M (E:=ITYPE U') Q))
-*)
-Variables T U : Type.
-Variable f : T -> U.
-
-Variable P : RMonad (IDelta T).
-Variable Q : RMonad (IDelta U).
-
-Variable h : colax_RMonad_Hom P Q (RT_NT f).
-Variable s : T.
-
-Obligation Tactic := idtac.
-
-Program Instance fib_rmod_hom_car_po c : 
-   PO_mor_struct (a:=((FIB_RMOD P s) P) c)
-                  (b:=((FIB_RMOD P (f s)) (colax_PbRMod h Q)) c)
-    (fun z => h c (f s) (ctype f z)).
-Next Obligation.
-Proof.
-  simpl; intros.
-  unfold Proper;
-  red.
-  intros x y H.
-  destruct h.
-  simpl in *.
-  apply gen_rmonad_hom.
-  simpl.
-  constructor.
-  auto.
-Qed.
-
-(*Definition fib_rmod_hom_c c := Build_PO_mor (fib_rmod_hom_car_po c).*)
-
-Definition FIB_RMOD_HOM_car (c : ITYPE T):
-  ((FIB_RMOD P s) P) c ---> ((FIB_RMOD P (f s)) (colax_PbRMod h Q)) c :=
-   Build_PO_mor (fib_rmod_hom_car_po c).
-
-Obligation Tactic := idtac.
-
-Program Instance FIB_RMOD_HOM_s : RModule_Hom_struct
-   (M:=FIB_RMOD _ s P) (N:=FIB_RMOD _ (f s) (colax_PbRMod h Q))
-   FIB_RMOD_HOM_car.
-Next Obligation.
-Proof.
-  simpl.
-  intros c d f0 x.
-  assert (H:=gen_rmonad_hom_rkl h).
-  simpl in H.
-  assert (H':= H _ _ f0 _ (ctype f x)).
-  simpl in H'.
-  auto.
-Qed.
-  
-Definition FIB_RMOD_HOM := Build_RModule_Hom FIB_RMOD_HOM_s.
-
-
-End FFib_Mod_Hom.
 
 
 

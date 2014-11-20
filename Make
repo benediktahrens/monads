@@ -1,7 +1,5 @@
 -R . CatSem
 
-#### axiom files
-./AXIOMS/functional_extensionality.v
 
 #### category theory library
 ./CAT/SO.v
@@ -18,7 +16,6 @@
 ./CAT/nat_iso.v
 ./CAT/simplicial_cat.v
 ./CAT/monad_h_morphism_gen.v
-./CAT/eq_fibre.v
 ./CAT/cat_INDEXED_TYPE.v
 ./CAT/monad_morphism.v
 ./CAT/my_lib.v
@@ -34,7 +31,6 @@
 ./CAT/horcomp.v
 ./CAT/unit_type_rmonad.v
 ./CAT/unit_type_monad.v
-./CAT/retype_functor_po.v
 ./CAT/preorder_top.v
 ./CAT/rmodule_TYPE.v
 ./CAT/category_hom_transport.v
@@ -42,9 +38,7 @@
 ./CAT/orders.v
 ./CAT/orders_lemmas.v
 ./CAT/subcategories.v
-./CAT/rmonad_gen_type_po.v
 ./CAT/rmonad_gen.v
-./CAT/rmonad_gen_comp.v
 ./CAT/monad_def.v
 ./CAT/cat_DISCRETE.v
 ./CAT/functor.v
