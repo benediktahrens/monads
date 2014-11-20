@@ -97,8 +97,6 @@
 
 ./ULC/subst_experiment.v
 
-##### System F 
-./SYS_F/F_types.v
 
 #####  compilation, syntax only
 #./COMP/ULC_PCF_rep.v
