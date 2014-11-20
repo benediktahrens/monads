@@ -11,7 +11,6 @@
 ./CAT/functor_leibniz_eq.v
 ./CAT/small_cat.v
 ./CAT/ind_potype.v
-./CAT/mon_cats.v
 ./CAT/CatFunct.v
 ./CAT/nat_iso.v
 ./CAT/simplicial_cat.v
@@ -21,12 +20,10 @@
 ./CAT/my_lib.v
 ./CAT/orders_bis.v
 ./CAT/initial_terminal.v
-./CAT/enriched_cat.v
 ./CAT/cat_TYPE.v
 ./CAT/order_classes.v
 ./CAT/Misc.v
 ./CAT/prods.v
-./CAT/smon_cats.v
 ./CAT/coproduct.v
 ./CAT/horcomp.v
 ./CAT/unit_type_rmonad.v
