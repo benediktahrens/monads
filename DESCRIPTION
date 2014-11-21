@@ -3,10 +3,6 @@ CONTENT OF THIS LIBRARY
 (1) DIRECTORIES
 (2) ./CAT
 (3) ./STS (thesis chapter 7)
-(4) ./COMP (obsolete)
-(5) ./ORDER (obsolete)
-(6) ./PROP_untyped (thesis chapter 8)
-(7) ./RPCF (thesis chapter 9)
 
 (1) DIRECTORIES
 
@@ -15,28 +11,8 @@ CONTENT OF THIS LIBRARY
   ./STS : category of representations of simply typed signature
           has an initial object
 
-  ./{ULC,TLC,PCF} : syntax of untyped lambda calculus, simply-typed lc
-	  and PCF, respectively.
-	  the syntaxes are endomonads over Set resp. [T,Set]
-	  they are also relative monads to preorders
-	  in *_terms some constants are defined
+  ./{TLC,PCF} : type syntax of simply-typed LC and PCF, respectively.
  
-  ./COMP : 
-	   syntactic compilation, i. e. with change of object types
-	   see further down for which files to view 
-
-  ./ORDER : 
-	    initiality without change of object types
-	    proof for ULC
-	    proof for TLC
-
-  ./PROP_untyped : 
-	    initiality for untyped syntax with semantics
-		in form of reduction rules
-	      implementation of the contents of preprint
-		"Modules over relative monads ..."
-	
-  ./RPCF : compilation of PCF+red to ULC+beta
 	  
 
 (2) ./CAT
@@ -263,181 +239,6 @@ CONTENT OF THIS LIBRARY
 	init is unique 
 	REPRESENTATION S has an initial object
   
-	
-(4) ./COMP
-   
-   ./COMP/PCF_rep_quant.v
-	representation of PCF consists of f : T -> U etc.
-   
-   ./COMP/PCF_rep_hom_quant.v
-	lemmas about distributivity of arrows
-	morphism of representations of PCF, starting with g : U->U'
-   
-   ./COMP/PCF_rep_eq_quant.v
-	inductive predicate for equality of morphisms of PCF-reps
-	proof of equivalence properties
-	definition of identity representation morphism
-
-   ./COMP/PCF_rep_comp_quant.v
-	composition of representation monad morphisms gives
-	representation
-	
-   ./COMP/PCF_rep_cat_quant.v
-	category of representations of PCF
-	
-   ./COMP/PCF_quant.v
-	monad of PCF + its constructors give a representation of PCF
-	carrier of initial morphism
-	init commutes with lift and substitution
-	init is a morphism of reps
-	init is unique
-	PCF is initial
-
-   ./COMP/PCF_ULC_nounit.v
-	equipping uULC with a rep of PCF, yielding rep PCF_ULC
-	
-   ./COMP/PCF_ULC_comp.v
-	some examples of PCF terms compiled to ULC via initial morph
-
-(5) ./ORDER
-
-   ./ORDER/ulc_order_rep.v
-	representation of ULC+beta
-	morphisms of ULC+beta
-	
-   ./ORDER/ulc_order_rep_eq.v
-	equality on morphisms of ULC+beta
-	identity morphisms
-	composition of morphisms
-	category of representations of ULC+beta
-
-   ./ORDER/ulc.v
-	relative monad of ULC with constructors 
-	  yield rep of ULC+beta
-	
-   ./ORDER/ulc_init.v
-	carrier of initial morphism
-	compatibility with renaming and substitution
-	compatibility with beta relations (several steps)
-	init is a morph of reps
-	init is unique
-	ULCbeta is initial rep
-
-(6) ./PROP_untyped
-	
-	the 3 files arities.v, representations.v, 
-	 initial.v are actually similar to their 
-	 friends in ./STS
-	 difference : only untyped arities, 
-	   representations in *relative* monads
-
-   ./PROP_untyped/arities.v
-	definition of untyped signature
-	multiple addition of variables
-	functoriality of addition of vars
-	lshift, the capture avoiding thing for lists of vars
-	derived module wrt a list of variables
-	the module "of arguments" of a constructor 
- 	  (prod of derived mods)
-	source and target modules of an arity
-	representation of an arity
-	representation of a signature
-	the product derived module morphism 
-	  (left vertical of comm diag of morphism of reps)
-	commutative diagram for morphism of representations
-	def of morphism of representations
-
-   ./PROP_untyped/representations.v
-	identity representation of a signature
-	composition of representations
-	category of representations REPRESENTATION S
-
-   ./PROP_untyped/initial.v
-	** the initial object in the category of representations 
-	   without any equations is given by the type UTS, 
-	   equipped with the diagonal order, i.e. the smallest 
-	   possible preorder.
-	   
-	carrier UTS of initial monad of REP(S)
-	rename, the functoriality
-	inj, the renaming into terms with one more variable
-	_shift, for avoiding capture
-	subst, simultaneous substitution
-	substar, single value substitution
-	fusion laws for these functions
-	monadicity of UTS
-	isomorphism UTS_list <-> prod_mod_c UTS
-	representation structure of UTSM
-	init, the (carrier of) the initial morphism
-	init commutes with renaming
-	init commutes with shifting
-	init commutes with substitution
-	init is a morphism of representations
-	init is unique 
-	REPRESENTATION S has an initial object	
-   
-   ./PROP_untyped/prop_arities.v (* superseded by next file *)
-	definition of half-equation, propositional arity,
-	  algebraic equation
-	subcategory PROP_REP of representations verifying a set of 
-	  inequations, 
-	definition of the order on terms of UTS, giving UTSP
-	representation structure on UTSP -> UTSPREPR
-	initiality of UTSPREPR in PROP_REP
-	
-   ./PROP_untyped/prop_arities_initial.v
-	definition of half-equation, propositional arity,
-	  algebraic equation
-	subcategory PROP_REP of representations verifying a set of 
-	  inequations
-	definition of the order associated to a set of equations
-	  on terms of UTS, giving UTSP
-	representation structure on UTSP, yielding rep UTSPROPREPR
-	  initiality of UTSPROPREPR in PROP_REP
-	 	
-(7) ./RPCF
-
-   ./RPCF/RPCF_rep.v
-	definition of representation of semantic PCF
-	
-   ./RPCF/RPCF_rep_hom.v
-	definition of morphism of representations of s. PCF
-
-   ./RPCF/RPCF_rep_eq.v
-	definition of equality of 2 parallel morphisms
-	  of representations of PCF
-	proof of setoidality of equality
-
-   ./RPCF/RPCF_rep_comp.v
-	definition of composition of 2 morphisms of 
-	  reps of PCF
-
-   ./RPCF/RPCF_rep_id.v
-	definition of identity morphism of reps
-
-   ./RPCF/RPCF_rep_cat.v
-	definition of category of representations, in part.
-	  proof of assoc of composition and neutrality
-
-   ./RPCF/RPCF_syntax_rep.v
-	PCFE is the monad underlying a representation of PCF
-
-   ./RPCF/RPCF_syntax_init.v
-	definition of a morphism of representations from 
-	  PCFE to any R, i.e. weak initiality
-	
-   ./RPCF/RPCF_INIT.v
-	proof of unicity of above morphism
-	initiality
-	
-   ./RPCF/RPCF_ULC_nounit.v
-	representation of PCF in ULC, a monad obtained
-	  via a map from monads over Delta to monads 
-	  over * -> Delta
-   
-   ./RPCF/ULC_comp.v
-	some examples of translations from PCF to ULC
-	
 
 
 
