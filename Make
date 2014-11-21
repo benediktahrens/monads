@@ -82,26 +82,8 @@
 ./STS/STS_representations.v
 ./STS/STS_initial.v
 
-####  various example syntaxes
-./PCF/PCF_types.v
-./PCF/PCF_syntax.v
-./PCF/PCF_semantics.v
-./PCF/PCF_RMonad.v
-./PCF/PCF_Monad.v
-
 ./TLC/TLC_types.v
-./TLC/TLC_syntax.v
-./TLC/TLC_semantics.v
-./TLC/TLC_RMonad.v
-./TLC/TLC_Monad.v
-
-./ULC/ULC_syntax.v
-./ULC/ULC_semantics.v
-./ULC/ULC_RMonad.v
-./ULC/ULC_Monad.v
-./ULC/ULC_terms.v
-
-./ULC/subst_experiment.v
+./PCF/PCF_types.v
 
 
 
