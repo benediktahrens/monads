@@ -16,13 +16,11 @@
 ./CAT/mon_cats.v
 ./CAT/CatFunct.v
 ./CAT/nat_iso.v
-./CAT/simplicial_cat.v
 ./CAT/monad_h_morphism_gen.v
 ./CAT/eq_fibre.v
 ./CAT/cat_INDEXED_TYPE.v
 ./CAT/monad_morphism.v
 ./CAT/my_lib.v
-#./CAT/parallel_monads.v
 ./CAT/orders_bis.v
 ./CAT/initial_terminal.v
 ./CAT/enriched_cat.v
@@ -37,7 +35,6 @@
 ./CAT/unit_type_monad.v
 ./CAT/retype_functor_po.v
 ./CAT/preorder_top.v
-#./CAT/delta.v
 ./CAT/rmodule_TYPE.v
 ./CAT/category_hom_transport.v
 ./CAT/free_cats.v
@@ -62,7 +59,6 @@
 ./CAT/product.v
 ./CAT/category.v
 ./CAT/functor_properties.v
-./CAT/pts.v
 ./CAT/monad_haskell.v
 ./CAT/cat_SET.v
 ./CAT/rmonad_hom.v
