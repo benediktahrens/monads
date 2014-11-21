@@ -6,7 +6,7 @@
 
 (1) COMPILATION
 
-THIS COQ THEORY COMPILES UNDER COQ 8.3pl2 .
+THIS COQ THEORY COMPILES UNDER COQ 8.3pl5 .
 
   - create a Makefile by calling
      
