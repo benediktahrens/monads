@@ -2,44 +2,28 @@
 
 
 #### category theory library
-./CAT/SO.v
 ./CAT/het_rewrite.v
 ./CAT/cat_TYPE_option.v
 ./CAT/limits.v
-./CAT/IO.v
-./CAT/rich_monads.v
 ./CAT/functor_leibniz_eq.v
 ./CAT/small_cat.v
-./CAT/ind_potype.v
 ./CAT/mon_cats.v
 ./CAT/CatFunct.v
 ./CAT/nat_iso.v
-./CAT/simplicial_cat.v
 ./CAT/monad_h_morphism_gen.v
 ./CAT/cat_INDEXED_TYPE.v
 ./CAT/monad_morphism.v
 ./CAT/my_lib.v
-./CAT/orders_bis.v
 ./CAT/initial_terminal.v
-./CAT/enriched_cat.v
 ./CAT/cat_TYPE.v
-./CAT/order_classes.v
 ./CAT/Misc.v
 ./CAT/prods.v
 ./CAT/smon_cats.v
 ./CAT/coproduct.v
 ./CAT/horcomp.v
-./CAT/unit_type_rmonad.v
-./CAT/unit_type_monad.v
-./CAT/retype_functor_po.v
-./CAT/preorder_top.v
-./CAT/rmodule_TYPE.v
 ./CAT/category_hom_transport.v
 ./CAT/free_cats.v
-./CAT/orders.v
-./CAT/orders_lemmas.v
 ./CAT/subcategories.v
-./CAT/rmonad_gen_type_po.v
 ./CAT/rmonad_gen.v
 ./CAT/monad_def.v
 ./CAT/cat_DISCRETE.v
@@ -50,7 +34,6 @@
 ./CAT/bifunctor.v
 ./CAT/NT.v
 ./CAT/retype_functor.v
-./CAT/type_unit.v
 ./CAT/monad_h_morphism.v
 ./CAT/monad_monad_h.v
 ./CAT/product.v
@@ -61,7 +44,6 @@
 ./CAT/cat_SET.v
 ./CAT/rmonad_hom.v
 ./CAT/rmodule_pb_rmonad_hom.v
-./CAT/ipo_modules.v
 ./CAT/het_rewrite.v
 ./CAT/module_postcomp_functor.v
 ./CAT/unit_mod.v
