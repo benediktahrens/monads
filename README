@@ -1,33 +1,42 @@
 
-(1) COMPILATION
-(2) HOW TO BROWSE THE FILES
-(3) CONTENT
+COMPILATION
+===========
+
+This Coq theory compiles under Coq 8.3pl5, available from https://coq.inria.fr/distrib/V8.3pl5/files/ .
+Earlier patch levels should also work; I have tested with 8.3pl2.
+
+Create a Makefile by calling
+```bash    
+$ coq_makefile -f Make > Makefile
+```  
+and compile by calling
+```bash    
+$ make
+```
+
+WARNING : The compilation of some of the files consumes up to 2GB of memory. Make sure you dispose of sufficient reserves of ram before compiling the code.
 
 
-(1) COMPILATION
+WORK WITH THE CODE
+==================
 
-THIS COQ THEORY COMPILES UNDER COQ 8.3pl2 .
+Call coqide as follows from the root of the library:
+```bash
+$ coqide -R . CatSem
+```
 
-  - create a Makefile by calling
-     
-      $ coq_makefile -f Make > Makefile
-  
-  - compile
-    
-      $ make
+CONTENT
+=======
 
-WARNING : the compilation of some of the files consumes up to
-	  2GB of memory. make sure you dispose of sufficient 
-	  reserves of ram before compiling the code.
+Read the file "./DESCRIPTION" for a description of the content of each file.
 
+BRANCHES
+========
 
-(2) WORK WITH THE CODE
+* **JFR**: [Initial Semantics for higher-order typed syntax in Coq](http://jfr.cib.unibo.it/article/view/2066)
+* **MSCS**: [Modules over relative monads for syntax and semantics](http://dx.doi.org/10.1017/S0960129514000103)
+* **REDUCTION_RULES**: [Initial Semantics for Reduction Rules](http://arxiv.org/abs/1212.5668)
 
-  - call COQIDE as follows from the root of the library 
-
-      $ coqide -R . CatSem
+All the articles are also available from my webpage.
 
 
-(3) CONTENT
-
-READ "./DESCRIPTION" FOR A DESCRIPTION OF THE CONTENT OF EACH FILE.
