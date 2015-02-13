@@ -530,7 +530,7 @@ Proof.
   apply (rlift (proj1_sig R) f).
   auto.
 Qed.
-Check rkleisli.
+
 
 Hypothesis HH: forall R : INEQ_REP,
        forall X Y (f g: Delta X ---> (proj1_sig R) Y),
@@ -543,43 +543,6 @@ Lemma higher_order_mon X (t : UTSP X) Y (f g : X -> UTSP Y)
          : subst_prop_rel f t << subst_prop_rel g t.
 Proof.
   simpl in *.
-  Check (prod_mod_c_rel (M:= prop_rel)).
- Check prop_rel.
-  Check prod_mod_c.
-(*
-  app (@UTSind S
-           (fun X (t : UTSP  X) =>
-              forall Y (f g : X ---> UTS S Y),
-             (forall x : X, prop_rel_c (f x) (g x)) ->
-            prop_rel_c (subst f t) (subst g t))
-
-           (fun X l (v : UTS_list S X l) => 
-              forall Y (f g : Delta X ---> UTSP Y),
-                 (forall x : X, prop_rel_c (f x) (g x)) ->
-            prod_mod_c_rel (M:= prop_rel) 
-     (pm_mkl (M:=UTSP) f (pm_f_UTSl v)) (pm_mkl (M:=UTSP) g (pm_f_UTSl v)))).
-
-  intros; simpl.
-  unfold prop_rel_c.
-  simpl.
-  apply H.
-  
-  Focus 2.
-  constructor.
-
-
-  Focus 2.
-  simpl. intros. constructor;
-  simpl.
-  apply H. intros.
-  clear H H0.
-  clear u0 u.
-  generalize dependent f.
-  generalize dependent g.
-  generalize dependent b.
-*)
-
-
   app (@UTSind S
            (fun X (t : UTSP  X) =>
               forall Y (f g : X ---> UTS S Y),
@@ -599,7 +562,6 @@ Proof.
   
   Focus 2.
   simpl; intros. constructor.
-  Check _lshift_lshift_eq.
   assert (H':= H (Y ** b) (_lshift f) (_lshift g)).
   apply H'.
   clear H.
