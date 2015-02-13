@@ -188,7 +188,6 @@ Class PCFPO_rep_struct := {
 
 Notation "A @ B" := (((app (PCFPO_rep_struct := _ ) _ _ ) _ ) (A, B)).
 
-Print PCFPO_rep_struct.
 
 
 
