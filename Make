@@ -120,7 +120,6 @@
 ./COMP/type_arities.v
 
 
-#./COMP/gen_T/TLC.v
 
 
 #### RPCF #########################
@@ -140,7 +139,6 @@
 ./PROP_untyped/arities.v
 ./PROP_untyped/representations.v
 ./PROP_untyped/initial.v
-#./PROP_untyped/prop_arities.v
 ./PROP_untyped/prop_arities_initial.v
 ./PROP_untyped/prop_arities_initial_variant.v
 ./PROP_untyped/ex_ulcbeta.v
