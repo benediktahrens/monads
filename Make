@@ -20,7 +20,6 @@
 ./CAT/cat_INDEXED_TYPE.v
 ./CAT/monad_morphism.v
 ./CAT/my_lib.v
-#./CAT/parallel_monads.v
 ./CAT/orders_bis.v
 ./CAT/initial_terminal.v
 ./CAT/enriched_cat.v
@@ -35,7 +34,6 @@
 ./CAT/unit_type_monad.v
 ./CAT/retype_functor_po.v
 ./CAT/preorder_top.v
-#./CAT/delta.v
 ./CAT/rmodule_TYPE.v
 ./CAT/category_hom_transport.v
 ./CAT/free_cats.v
