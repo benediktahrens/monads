@@ -98,7 +98,6 @@
 
 
 #####  compilation, syntax only
-#./COMP/ULC_PCF_rep.v
 ./COMP/TLC.v
 ./COMP/PCF.v
 ./COMP/PCF_eq.v
@@ -107,7 +106,6 @@
 ./COMP/PCF_rep_comp.v
 ./COMP/TLC_rep_comp.v
 ./COMP/PCF_rep_cat.v
-#./COMP/f_induced_monad.v
 ./COMP/TLC_rep_cat.v
 
 ./COMP/PCF_rep_quant.v
