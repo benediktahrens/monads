@@ -148,25 +148,6 @@
 #./ORDER/tlc_properties.v
 #./ORDER/tlc_order_rep.v
 
-####  compilation PCF+RED, direct image
-#./PCF_order_comp/RTLC_rep.v
-#./PCF_order_comp/RPCF_ULC_alt2.v
-#./PCF_order_comp/ULC_comp.v
-#./PCF_order_comp/ULC_syntax.v
-#./PCF_order_comp/RPCF_rep_comp.v
-#./PCF_order_comp/RPCF_ULC_alt.v
-#./PCF_order_comp/RPCF_syntax_rep.v
-#./PCF_order_comp/RPCF_ULC.v
-#./PCF_order_comp/RPCF_syntax_init.v
-#./PCF_order_comp/RPCF_INIT.v
-#./PCF_order_comp/RPCF_ULC_sandbox.v
-#./PCF_order_comp/RPCF_rep_cat.v
-#./PCF_order_comp/RPCF_rep_eq.v
-#./PCF_order_comp/RPCF_rep_id.v
-#./PCF_order_comp/RPCF_rep.v
-#./PCF_order_comp/RPCF_rep_hom.v
-#./PCF_order_comp/RPCF_syntax.v
-
 
 #### RPCF #########################
 ./RPCF/RPCF_rep.v
