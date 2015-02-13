@@ -27,14 +27,4 @@ $ coqide -R . CatSem
 
 Read the file "./DESCRIPTION" for a description of the content of each file.
 
-## BRANCHES
-
-Each branch below, printed in **boldface**, corresponds to an article, printed in _italic_.
-
-* [**JFR**](https://github.com/benediktahrens/monads/tree/JFR): [_Initial Semantics for higher-order typed syntax in Coq_](http://jfr.cib.unibo.it/article/view/2066)
-* [**MSCS**](https://github.com/benediktahrens/monads/tree/MSCS): [_Modules over relative monads for syntax and semantics_](http://dx.doi.org/10.1017/S0960129514000103)
-* [**REDUCTION_RULES**](https://github.com/benediktahrens/monads/tree/REDUCTION_RULES): [_Initial Semantics for Reduction Rules_](http://arxiv.org/abs/1212.5668)
-
-All the articles are also available from my [webpage](http://benedikt-ahrens.org/publications).
-
 
