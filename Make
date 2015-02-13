@@ -9,14 +9,12 @@
 ./CAT/cat_TYPE_option.v
 ./CAT/limits.v
 ./CAT/IO.v
-./CAT/rich_monads.v
 ./CAT/functor_leibniz_eq.v
 ./CAT/small_cat.v
 ./CAT/ind_potype.v
 ./CAT/mon_cats.v
 ./CAT/CatFunct.v
 ./CAT/nat_iso.v
-./CAT/simplicial_cat.v
 ./CAT/monad_h_morphism_gen.v
 ./CAT/eq_fibre.v
 ./CAT/cat_INDEXED_TYPE.v
