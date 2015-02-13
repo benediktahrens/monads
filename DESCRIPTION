@@ -3,8 +3,6 @@ CONTENT OF THIS LIBRARY
 (1) DIRECTORIES
 (2) ./CAT
 (3) ./STS (thesis chapter 7)
-(4) ./COMP (obsolete)
-(5) ./ORDER (obsolete)
 (6) ./PROP_untyped (thesis chapter 8)
 (7) ./RPCF (thesis chapter 9)
 
@@ -21,14 +19,6 @@ CONTENT OF THIS LIBRARY
 	  they are also relative monads to preorders
 	  in *_terms some constants are defined
  
-  ./COMP : 
-	   syntactic compilation, i. e. with change of object types
-	   see further down for which files to view 
-
-  ./ORDER : 
-	    initiality without change of object types
-	    proof for ULC
-	    proof for TLC
 
   ./PROP_untyped : 
 	    initiality for untyped syntax with semantics
@@ -264,64 +254,6 @@ CONTENT OF THIS LIBRARY
 	REPRESENTATION S has an initial object
   
 	
-(4) ./COMP
-   
-   ./COMP/PCF_rep_quant.v
-	representation of PCF consists of f : T -> U etc.
-   
-   ./COMP/PCF_rep_hom_quant.v
-	lemmas about distributivity of arrows
-	morphism of representations of PCF, starting with g : U->U'
-   
-   ./COMP/PCF_rep_eq_quant.v
-	inductive predicate for equality of morphisms of PCF-reps
-	proof of equivalence properties
-	definition of identity representation morphism
-
-   ./COMP/PCF_rep_comp_quant.v
-	composition of representation monad morphisms gives
-	representation
-	
-   ./COMP/PCF_rep_cat_quant.v
-	category of representations of PCF
-	
-   ./COMP/PCF_quant.v
-	monad of PCF + its constructors give a representation of PCF
-	carrier of initial morphism
-	init commutes with lift and substitution
-	init is a morphism of reps
-	init is unique
-	PCF is initial
-
-   ./COMP/PCF_ULC_nounit.v
-	equipping uULC with a rep of PCF, yielding rep PCF_ULC
-	
-   ./COMP/PCF_ULC_comp.v
-	some examples of PCF terms compiled to ULC via initial morph
-
-(5) ./ORDER
-
-   ./ORDER/ulc_order_rep.v
-	representation of ULC+beta
-	morphisms of ULC+beta
-	
-   ./ORDER/ulc_order_rep_eq.v
-	equality on morphisms of ULC+beta
-	identity morphisms
-	composition of morphisms
-	category of representations of ULC+beta
-
-   ./ORDER/ulc.v
-	relative monad of ULC with constructors 
-	  yield rep of ULC+beta
-	
-   ./ORDER/ulc_init.v
-	carrier of initial morphism
-	compatibility with renaming and substitution
-	compatibility with beta relations (several steps)
-	init is a morph of reps
-	init is unique
-	ULCbeta is initial rep
 
 (6) ./PROP_untyped
 	
@@ -376,14 +308,7 @@ CONTENT OF THIS LIBRARY
 	init is unique 
 	REPRESENTATION S has an initial object	
    
-   ./PROP_untyped/prop_arities.v (* superseded by next file *)
-	definition of half-equation, propositional arity,
-	  algebraic equation
-	subcategory PROP_REP of representations verifying a set of 
-	  inequations, 
-	definition of the order on terms of UTS, giving UTSP
-	representation structure on UTSP -> UTSPREPR
-	initiality of UTSPREPR in PROP_REP
+
 	
    ./PROP_untyped/prop_arities_initial.v
 	definition of half-equation, propositional arity,

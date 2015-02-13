@@ -73,16 +73,9 @@
 
 #### STS, no semantics, no type change
 ./STS/STS_arities.v
-./STS/STS_ex.v
 ./STS/STS_representations.v
 ./STS/STS_initial.v
 
-####  various example syntaxes
-./PCF/PCF_types.v
-./PCF/PCF_syntax.v
-./PCF/PCF_semantics.v
-./PCF/PCF_RMonad.v
-./PCF/PCF_Monad.v
 
 ./TLC/TLC_types.v
 ./TLC/TLC_syntax.v
@@ -95,30 +88,6 @@
 ./ULC/ULC_RMonad.v
 ./ULC/ULC_Monad.v
 ./ULC/ULC_terms.v
-
-
-#####  compilation, syntax only
-./COMP/TLC.v
-./COMP/PCF.v
-./COMP/PCF_eq.v
-./COMP/TLC_rep.v
-./COMP/PCF_rep.v
-./COMP/PCF_rep_comp.v
-./COMP/TLC_rep_comp.v
-./COMP/PCF_rep_cat.v
-./COMP/TLC_rep_cat.v
-
-./COMP/PCF_rep_quant.v
-./COMP/PCF_rep_hom_quant.v
-./COMP/PCF_rep_eq_quant.v
-./COMP/PCF_rep_comp_quant.v
-./COMP/PCF_rep_cat_quant.v
-./COMP/PCF_quant.v
-./COMP/PCF_ULC_nounit.v
-./COMP/PCF_ULC_comp.v
-
-./COMP/type_arities.v
-
 
 
 
