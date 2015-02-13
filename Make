@@ -73,7 +73,6 @@
 
 #### STS, no semantics, no type change
 ./STS/STS_arities.v
-#./STS/STS_initial_nested.v
 ./STS/STS_ex.v
 ./STS/STS_representations.v
 ./STS/STS_initial.v
