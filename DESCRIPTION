@@ -3,8 +3,8 @@ CONTENT OF THIS LIBRARY
 (1) DIRECTORIES
 (2) ./CAT
 (3) ./STS (thesis chapter 7)
-(6) ./PROP_untyped (thesis chapter 8)
-(7) ./RPCF (thesis chapter 9)
+(4) ./PROP_untyped (thesis chapter 8)
+(5) ./RPCF (thesis chapter 9)
 
 (1) DIRECTORIES
 
@@ -255,7 +255,7 @@ CONTENT OF THIS LIBRARY
   
 	
 
-(6) ./PROP_untyped
+(4) ./PROP_untyped
 	
 	the 3 files arities.v, representations.v, 
 	 initial.v are actually similar to their 
@@ -320,7 +320,7 @@ CONTENT OF THIS LIBRARY
 	representation structure on UTSP, yielding rep UTSPROPREPR
 	  initiality of UTSPROPREPR in PROP_REP
 	 	
-(7) ./RPCF
+(5) ./RPCF
 
    ./RPCF/RPCF_rep.v
 	definition of representation of semantic PCF
