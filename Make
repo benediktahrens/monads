@@ -133,21 +133,6 @@
 
 #./COMP/gen_T/TLC.v
 
-#### ULC+BETA initial representation
-#./ORDER/ulc_order_rep.v
-#./ORDER/ulc_order_rep_eq.v
-#./ORDER/ulc.v
-#./ORDER/ulc_init.v
-
-#### TLC+BETA initial representation
-#./ORDER/tlc_order_rep_eq.v
-#./ORDER/pcf_order_rep.v
-#./ORDER/tlc_init.v
-#./ORDER/pcf_order_rep_eq.v
-#./ORDER/tlc.v
-#./ORDER/tlc_properties.v
-#./ORDER/tlc_order_rep.v
-
 
 #### RPCF #########################
 ./RPCF/RPCF_rep.v
