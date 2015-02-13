@@ -113,6 +113,21 @@
 ./PROP_untyped/ex_ulcbeta.v
 
 
+#### previous tries, should be deleted
+#./PCF/pcf_rich_monad.v
+#./PCF/pcfpo_rep.v
+#./PCF/pcf_rep.v
+#./PCF/pcf_sub_rep.v
+#./PCF/pcfpo_mod.v
+#./PCF/pcf_subpo.v
+#./PCF/pcfpo_exp.v
+#./PCF/pcf_mod.v
+#./PCF/pcfpo_rep_init.v
+#./PCF/pcf_sub_rep_init.v
+#./PCF/pcfpo.v
+#./PCF/pcf_rep_init.v
+#./PCF/pcf.v
+
 
 
 
