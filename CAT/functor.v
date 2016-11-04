@@ -186,10 +186,12 @@ Obligation Tactic := cat.
 Program Instance CompFs : Functor_struct
   (Fobj := fun x => G  (F  x))
   (fun a b => fun x: morC a b => #G (#F x)).
+(* NO OBLIGATION
 Next Obligation.
 Proof.
   apply Comp_functor_map_morphism.
 Qed.
+*)
 
 Definition CompF := Build_Functor CompFs.
 

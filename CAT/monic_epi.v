@@ -189,6 +189,25 @@ Proof.
   cat.
 Qed.
 
+Next Obligation.
+  apply hom_sym.
+  
+  
+  rewrite <- assoc.
+  set (z := f ;; g ;; -- g).
+  
+  assert (eqz :z == f).
+  unfold z.
+  rewrite  assoc .
+  rewrite inv_post.
+  cat.
+  rewrite eqz.
+  rewrite inv_post.
+
+  cat.
+Qed.
+
+
 End still_more_lemmata.
 
 End defs.

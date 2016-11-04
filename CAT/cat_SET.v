@@ -73,9 +73,17 @@ End SET_INIT_TERM.
 
 Section SET_COPROD.
 
+  Set Implicit Arguments.
+  Set Contextual Implicit.
+
+
+  
 Inductive SET_COPROD_ob (A B: Set): Set := 
   | INL : A -> SET_COPROD_ob A B
   | INR : B -> SET_COPROD_ob A B.
+
+(* Global Arguments INL [_ _] _. *)
+(* Global Arguments INR [_ _] _. *)
 
 Obligation Tactic := simpl; intros;
   repeat unf_Proper;
@@ -87,8 +95,8 @@ Obligation Tactic := simpl; intros;
 
 Program Instance SET_COPROD : Cat_Coprod SET := {
   coprod a b := SET_COPROD_ob a b;
-  inl a b x := INL (A:=a) b x;
-  inr a b x := INR a x;
+  inl a b x := INL (A:=a) (B:=b) x;
+  inr a b x := INR  (A:=a) (B:=b) x;
   coprod_mor a b d f g := 
          fun x => match x with INL a => f a | 
                                INR b => g b end

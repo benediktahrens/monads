@@ -124,7 +124,7 @@ Coercion ind_po_obj_car : ind_po_obj >-> Funclass.
 Existing Instance ipo_obj_s.
 
 Class ipo_mor_struct (a b: OB) (f: forall t, a t -> b t) := {
-  ind_po_struct :> forall t, Proper (IRel (t:=t) ==> IRel (t:=t)) (f t)
+  ind_po_struct :> forall t, Proper (IRel (A:=a) (t:=t) ==> IRel (A:=b) (t:=t)) (f t)
 }.
 
 Record ipo_mor (a b: OB) := {
@@ -215,13 +215,15 @@ Canonical Structure sm_ipo (V : ITYPE T) : IPO :=
 
 Ltac elim_sm := match goal with
    | [ H : @IRel (ipo_obj_carrier (sm_ipo _)) 
-            (ipo_obj_s (sm_ipo _)) _ _ _  |- _ ] => destruct H end.
+                 (ipo_obj_s (sm_ipo _)) _ _ _  |- _ ] => destruct H
+| [ H : _ <<< _  |- _ ] => destruct H
+                end.
 
 Lemma sm_irel_eq (V : ITYPE T) t (x y : sm_ipo V t) :
      x <<< y -> x = y.
 Proof.
-  intros;
-  elim_sm;
+ intros;
+   elim_sm;
   auto.
 Qed.
 
@@ -387,11 +389,11 @@ End IND_PO_init_term.
 
 (** Adding a distinct element of type (T u) 
       to a family of preorders A *)
-
+Global Arguments some [ _] _ [_ _] _.
 Inductive optrelT (u:T) (V: IP) : 
   forall t,relation (opt u V t):=
   | optrelTP_none :  optrelT (none u V) (none u V)
-  | optrelTP_some : forall t (y z:V t), y <<< z -> 
+  | optrelTP_some : forall t (y z:V t), IRel (A:=V) (ipo_obj_struct := ipo_obj_s V) y  z -> 
           optrelT (some u y) (some u z).
 
 
@@ -428,11 +430,9 @@ Notation "V *" := (opt_TP _ V) (at level 5).
 
 (** injection Some_TP is a morphism of preorders *)
 Obligation Tactic := unfold Proper; red; 
-                  constructor; auto.
+                       constructor; auto.
 
-Program Instance Some_TP_POs (u:T) (A:IP) : 
-  ipo_mor_struct (a:=A)(b:=A*)
-  (@some _ u _ ).
+Program Instance Some_TP_POs (u:T) (A:IP) :  ipo_mor_struct (a:=A)(b:=opt_TP _ A)  (@some _ u _ ).
 
 Canonical Structure Some_TP_PO (u:T) (A:IP): A ---> A* := 
   Build_ipo_mor (Some_TP_POs u A).

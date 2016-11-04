@@ -86,7 +86,7 @@ Proof. pts. Qed.
 Fixpoint rename (V W: Type)(f: V -> W)(x: term V): term W :=
           match x with
           | var z => var (f z)
-          | srt s => srt W s
+          | srt _ s => srt W s
           | app x u => app (rename f x) (rename f u)
           | pi s t => pi (rename f s) (rename (lift f) t)
           | lda s t => lda (rename f s) (rename (lift f) t)
@@ -107,11 +107,9 @@ Proof. intros V W f g H x.
        rewrite (IHx1 _ f g). auto.
        auto.
        simpl.
-       apply lift_eq_. auto.
        rewrite (IHx2 _ (lift f) (lift g)); auto.
        rewrite (IHx1 _ f g); auto.
-       simpl; 
-       apply lift_eq_; auto.
+       apply lift_eq. auto.
 Qed.
 
 Hint Resolve rename_eq: pts.
@@ -212,7 +210,7 @@ Proof. induction x; simpl; intros; auto. Qed.
 Fixpoint subst (V W: Type)(x: term V)(f:V -> term W) : term W :=
       match x with
       | var v => f v
-      | srt s => srt W s
+      | srt _ s => srt W s
       | app u v => app (subst u f) (subst v f)
       | pi u v => pi (subst u f) (subst v (shift f))
       | lda u v => lda (subst u f) (subst v (shift f))

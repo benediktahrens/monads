@@ -268,7 +268,9 @@ Qed.
 Next Obligation.
 Proof.
   intros;
-  repeat rewrite mkl_weta;
+    cat.
+    repeat rewrite mkl_weta; 
+  
   apply product_mor_id;
   cat.
 Qed.
@@ -442,7 +444,12 @@ Obligation Tactic := mod; try unf_Proper; cat;
 
 Program Instance PbMod_struct : Module_struct P (D:=D) M := {
   mkleisli c d f:= mkleisli (f ;; h d) 
-}.
+                                                           }.
+Next Obligation.
+  (* why ? *)
+  mod; try unf_Proper; cat; 
+    repeat rew_set; cat; try apply h.
+Qed.
 
 Canonical Structure PbMod : MOD P D := Build_Module PbMod_struct.
 
@@ -483,16 +490,24 @@ Notation "'h*' M" := (PB_MOD M) (at level 20).
 
 Obligation Tactic := mod.
 
+(* Goal (forall e, (h* (M x N)) e = (h* M x h* N) e). *)
+(*   intro e. *)
+(*   reflexivity. *)
+
+(* don't know why it does not work *)
+Definition distrib : forall e:C, ((h* (M x N)) e) ---> ((h* M x h* N) e) := (fun e => id (Cat_struct:= D)  ((h* (M x N)) e)) .
+
 Program Instance PB_PROD_struct : 
-     Module_Hom_struct (S:= h* (M x N)) (T:= h* M x h* N) 
-        (fun e => id (Cat_struct:= D) _) .
+  Module_Hom_struct (S:= h* (M x N)) (T:= h* M x h* N) distrib.
+
 
 Definition PB_PROD : h* (M x N) ---> (h* M x h* N) :=
            Build_Module_Hom PB_PROD_struct.
 
+Definition facto : forall e:C, (h* M x h* N) e ---> ((h* (M x N)) e)  := (fun e => id (Cat_struct:= D)  ((h* (M x N)) e)) .
 Program Instance PROD_PB_struct : 
-       Module_Hom_struct (S:= h* M x h* N) (T:= h* (M x N))
-         (fun e => id (Cat_struct:=D) _).
+       Module_Hom_struct (S:= h* M x h* N) (T:= h* (M x N)) facto.
+
 
 Definition PROD_PB : (h* M x h* N) ---> h* (M x N) :=
      Build_Module_Hom PROD_PB_struct.

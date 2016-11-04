@@ -55,6 +55,7 @@ Qed.
 Next Obligation.
 Proof.
   intros.
+  simpl.
   rew mklweta.
   cat.
 Qed.

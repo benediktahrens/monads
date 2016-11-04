@@ -27,7 +27,7 @@ Class IMor {A}{B}(Ra : IRel A) (Rb : IRel B) (f : A ---> B) : Prop :=
 Inductive optrelT (u:T) (V: T -> Type) (R : IRel V) : IRel (opt u V) :=
   | optrelTP_none :  optrelT _ (none u V) (none u V)
   | optrelTP_some : forall t (y z:V t), R _ y z -> 
-          optrelT _ (some u y) (some u z).
+          optrelT _ (some _  y) (some _ z).
 
 
 End Classes.

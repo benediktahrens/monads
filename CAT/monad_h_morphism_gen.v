@@ -168,10 +168,14 @@ Variable eprod : Cat_Prod E.
 
 Obligation Tactic := cat.
 
+Definition prod_mod : (forall x : C,
+        (product (PModule N) (PModule N')) x ---> (PModule (product N N')) x) := (fun x => id (Cat_struct := E) (product (N (F x)) (N' (F x)))).
+
+
 Program Instance PROD_PM_s : Module_Hom_struct 
        (S := product (PModule N) (PModule N'))
        (T := PModule (product N N')) 
-       (fun x => id (Cat_struct := E) (product (N (F x)) (N' (F x)))).
+       prod_mod.
 
 Definition PROD_PM := Build_Module_Hom PROD_PM_s.
 

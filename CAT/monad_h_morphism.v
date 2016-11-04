@@ -141,10 +141,11 @@ Section Monad_Hom_id.
 
 Variable P: Monad C.
 
-Obligation Tactic := monad.
+Obligation Tactic :=  monad; (try constructor); monad.
 
 Program Instance Monad_Hom_id_struct : 
-         Monad_Hom_struct (fun c => id (P c)).
+  Monad_Hom_struct (fun c => id (P c)).
+
 
 Canonical Structure Monad_Hom_id :=
       Build_Monad_Hom Monad_Hom_id_struct.

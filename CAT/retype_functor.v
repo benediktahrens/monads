@@ -16,6 +16,7 @@ Variable T : U -> U'.
 
 (** for T : U -> U' define a functor RETYPE : Set/U -> Set/U' *)
 
+
 Inductive retype (V : ITYPE U) : ITYPE U' :=
   | ctype : forall t, V t -> retype V (T t).
 
@@ -24,9 +25,10 @@ Inductive backtype (V : ITYPE U') : ITYPE U :=
 
 Notation "' V" := (retype V) (at level 20).
 
+
 Definition retype_map V W (f : V ---> W) : 'V ---> 'W :=
     fun t x => match x with
-    | ctype t v => ctype (f _ v)
+    | ctype  v => ctype (f _ v)
     end.
 
 Instance retype_eq V W : Proper (equiv ==> equiv) (@retype_map V W).
@@ -66,10 +68,10 @@ Definition RETYPE := Build_Functor retype_func.
 Definition der_comm t (V : ITYPE U) : ' (opt t V) ---> opt (T t) (' V) :=
    fun (t0 : U') (X : (' opt t V) t0) =>
    match X in ((' _) u) return (opt (T t) (' V) u) with
-   | ctype _ o =>
+   | ctype  o =>
      match o in (opt _ _ y) return (opt (T t) (' V) (T y)) with
-       | some t2 v => some (T t)(A:=' V)(t:=T t2)(ctype (V:=V) (t:=t2) v)
-       | none => none (T t) (' V)
+       | some t2 v => some (u:=(T t))(A:=' V)(T t2)(ctype (V:=V) (t:=t2) v)
+       | none _ _ => none (T t) (' V)
     end
 end.
 
@@ -534,7 +536,7 @@ Definition transp : forall V : ITYPE U,
       (Y : retype (fun t0 : U => f t0) V t) =>
     match Y in (retype _ _ y) return 
          (retype (fun t0 : U => g t0) V y) with
-    | ctype t0 v =>
+    | @ctype _ _ _ _ t0 v =>
            eq_rect (g t0) 
             (fun u : U' => retype (fun t1 : U => g t1) V u)
             (ctype (fun t1 : U => g t1) (V:=V) (t:=t0) v) (f t0) (H t0)
@@ -634,7 +636,7 @@ Definition double_retype_1 (V : ITYPE U) :
    with | ctype _ r => 
        match r in (retype _ _ y0) return 
                (retype (fun t1 : U => f' (f t1)) V (f' y0))
-       with | ctype t1 v => 
+       with | @ctype _ _ _ _ t1 v => 
          ctype (fun t2 : U => f' (f t2)) (V:=V) (t:=t1) v
     end
 end.
@@ -646,7 +648,7 @@ Definition double_retype_2 (V : ITYPE U) :
   match y in (retype _ _ y0) return 
       (retype (fun t0 : U' => f' t0) 
          (retype (fun t0 : U => f t0) V) y0)
-  with | ctype t0 v =>
+  with | @ctype _ _ _ _ t0 v =>
          ctype (fun t1 : U' => f' t1) 
         (V:=retype (fun t1 : U => f t1) V) (t:= f t0) 
             (ctype (fun t1 : U => f t1) (V:=V) (t:=t0) v)
