@@ -84,6 +84,9 @@ Inductive opt (u : T) (A : ITYPE) : (ITYPE) :=
 | some : forall (t : T), (A t) -> opt u A t
 | none : opt u A u.
 
+Arguments none [_ _] .
+ Global Arguments some [_ _] _ _. 
+
 Notation "A ' u" := (opt u A) (at level 40).
 
 Ltac elim_opt := match goal with
@@ -95,8 +98,8 @@ Ltac elim_opt := match goal with
 Definition opt_kl (u:T) V W (f : V ---> W ' u): V ' u ---> W ' u  := 
      fun t v => 
  match v with
- | none => none u _
- | some t' v' => f t' v'
+ | none   => @none u _
+ | some     t' v' => f t' v'
  end.
 
 Obligation Tactic := unfold Proper; try red; 
@@ -104,9 +107,10 @@ Obligation Tactic := unfold Proper; try red;
 
 Program Instance opt_monad_struct (u:T) : 
    Monad_struct  (fun V => opt u V) := {
-  weta := some u;
+  weta :=  @some u    ;
   kleisli := opt_kl (u:=u) 
-}.
+                                      }.
+
 
 Canonical Structure opt_monad u := Build_Monad (opt_monad_struct u).
 
@@ -561,6 +565,7 @@ Ltac elim_opt := match goal with
                        destruct H; simpl; intros; auto
                  | _ => simpl; intros; auto
 	         end.
+
 
 
 

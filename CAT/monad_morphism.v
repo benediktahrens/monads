@@ -60,7 +60,14 @@ Proof. apply Tau. Qed.
 
 Lemma mu_tau2: forall c: obC,
          Mu c ;; Tau c == #F (Tau c) ;; Tau (G c) ;; Mu c.
-Proof. intro c. rewrite <- tau_tau. apply mu_tau. Qed.
+Proof. intro c.
+       set (test := #F (Tau c) ;; Tau (G c) ).
+       assert (h:  Tau (F c);; (#) G (a:=F c) (b:=G c) (Tau c)==test).
+       unfold test.
+       apply tau_tau.
+       unfold test in h.
+       rewrite <- h.
+        apply mu_tau. Qed.
 
 End Monad_Morphism_lemmata.
 
@@ -375,7 +382,9 @@ Proof.
   repeat rewrite <- FComp.
   assert (H': f c ;; #B a == #A a ;; f d).
   apply (NTcomm f). 
-  rewrite H'. apply hom_refl.
+  rewrite <- H'.
+  rewrite FComp.
+  apply hom_refl.
 Qed.
 
 Obligation Tactic := simpl; intros.
@@ -408,9 +417,11 @@ Proof.
   
   destruct f as [m1 [m2 m3 m4]].
   unfold mu_tau_def in m4.
-  
+
+  simpl.
   repeat rewrite <- FComp.
   rewrite (m4 c).
+
   apply hom_refl.
 Qed.
   

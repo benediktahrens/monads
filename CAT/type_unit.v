@@ -72,7 +72,7 @@ Program Instance wunit_mor_s (V W : Ord)(f : V ---> W) :
   (fun t => f).
 
 Definition wunit_mor V W (f:V--->W) := 
-   Build_ipo_mor (wunit_mor_s _ _ f).
+   Build_ipo_mor (wunit_mor_s   f).
 
 Obligation Tactic := mauto.
 

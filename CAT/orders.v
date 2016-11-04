@@ -306,7 +306,7 @@ Definition PO_term_rel : relation unit :=
 Lemma PO_term_preorder : PreOrder PO_term_rel.
 Proof. 
   unfold PO_term_rel; 
-  constructor
+  constructor;
   auto.
 Qed.
 

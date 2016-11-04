@@ -232,7 +232,7 @@ Fixpoint rename (V W: Order) (f: Order_morphism V W)
             (t: Fsub V) : Fsub W :=
   match t with
   | TVar v => TVar (f v)
-  | TTop => TTop W
+  | TTop _ => TTop W
   | Arr u v => Arr (rename f u) (rename f v)
   | Uni u v => Uni (rename f u) (rename (OptOrder_map f) v)
   end.

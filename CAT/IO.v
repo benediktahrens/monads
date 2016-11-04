@@ -108,7 +108,10 @@ Definition IO_MAP := SubCat IO_MAP_SubCat.
 Inductive opt_T (u : T) (A : ITYPE) : (ITYPE) :=
 | Some_T : forall (t : T), (A t) -> opt_T u A t
 | None_T : opt_T u A u.
-*)
+ *)
+ 
+Global Arguments some [ _] _ [_ _] _.
+Global Arguments none [ _]  _ _.
 Inductive optrelT (u:T) (V: IO) : 
   forall t,relation (opt u V t):=
   | optrelTP_none :  optrelT (none u V) (none u V)
@@ -255,8 +258,8 @@ Qed.
 Definition opt_TP_kl (u:T)(V W : IO)(f : V ---> W* ) 
       t (v: V* t) : W* t :=
  match v with
- | none => none u _
- | some t' v' => f t' v'
+ | none _ _ => none u _
+ | @some _ _ _  t' v' => f t' v'
  end.
 
 Instance opt_TP_kl_monotone (u:T) (V W : IO)

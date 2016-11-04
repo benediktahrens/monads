@@ -148,7 +148,8 @@ Obligation Tactic := simpl; intros; autorewrite with rmonad;
 Program Instance Der_RMod_not_struct : 
   RModule_struct P E (fun x => M (option x)) := {
   rmkleisli a b f := rmkleisli (RModule_struct := M) (shift_not f)
-}.
+                                               }.
+(*
 Next Obligation.
   unfold Proper;
   red.
@@ -158,7 +159,7 @@ Next Obligation.
   simpl.
   apply H.
 Qed.
-  
+  *)
 
 Definition Der_RMod_not : RMOD P E := Build_RModule Der_RMod_not_struct.
 
@@ -270,23 +271,26 @@ Definition Rsubstar_not : P (option V) ---> P V :=
 
 End carrier.
 
-Lemma rsubstar_m_not_monotone V (w w' : P V) : w << w' ->
-        forall y, 
-        Rsubstar_m_not w y << Rsubstar_m_not w' y.
+Lemma rsubstar_m_not_monotone V (w w' : P V) :
+  Rel (PO_obj_struct:= po_obj_struct (P V)) w  w' ->
+  forall y,    
+    Rel (PO_obj_struct:= po_obj_struct (P V)) (Rsubstar_m_not w y)  (Rsubstar_m_not w' y).
 Proof.
   intros.
   simpl in *.
   destruct y; 
-  simpl.
+    simpl.
   reflexivity.
+
   auto.
 Qed.
 
 Hypothesis rkleisli_not_monotone : forall c d 
      (f g : SM_po c ---> P d) ,
-   (forall  y, f y << g y) ->
+   (forall  y, Rel (PO_obj_struct := po_obj_struct (P d)) (f y) ( g y)) ->
         forall  y, 
-    (rkleisli (RMonad_struct:=P) f) y << rkleisli g y.
+          Rel (PO_obj_struct := po_obj_struct (P d)) ((rkleisli (RMonad_struct:=P) f) y) (rkleisli g y).
+
 
 Obligation Tactic := idtac.
 
@@ -297,6 +301,9 @@ PO_mor_struct
   (fun y => Rsubstar_not (snd y) (fst y)).
 Next Obligation.
 Proof.
+
+
+  
   intros  c.
   unfold Proper;
   red.
@@ -305,11 +312,12 @@ Proof.
   simpl in *.
   transitivity (
     Rsubstar_not (V:=c) w v').
-  apply (Rsubstar_not w).
-  auto.
+  -apply (Rsubstar_not w).
+   auto.
+  - 
   clear dependent v.
+  
   unfold Rsubstar_not.
-  simpl.
   apply rkleisli_not_monotone.
   simpl; intros.
   assert (H':= rsubstar_m_not_monotone).
@@ -508,7 +516,9 @@ Obligation Tactic := rmonad; try apply rmkl_sshift_oid.
 Program Instance Der_RMod_struct : 
   RModule_struct P E (fun x => M (opt u x)) := {
   rmkleisli a b f := rmkleisli (RModule_struct := M) (sshift u f)
-}.
+                                              }.
+
+(*
 Next Obligation.
   unfold Proper;
   red.
@@ -518,7 +528,7 @@ Next Obligation.
   simpl.
   apply H.
 Qed.
-  
+  *)
 
 Definition Der_RMod : RMOD P E := Build_RModule Der_RMod_struct.
 
@@ -725,7 +735,7 @@ Variable W : P V r.
 Definition Rsubst_star_map : 
   forall t, IDelta T (opt r V) t -> P V t :=
     fun t z => match z in opt _ _  s return P V s with
-               | none => W
+               | none _ _  => W
                | some _ v => rweta (RMonad_struct := P) _ _ v
                end.
 

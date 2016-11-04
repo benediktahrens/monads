@@ -134,8 +134,8 @@ Qed.
 
 Lemma f_PI2 : forall m n (f: [[m]] -> [[n]]), 
              forall k pk pl r,
-          r = proj1_sig (f (existT _ k pk)) -> 
-          r = proj1_sig (f (existT _ k pl)).
+          r = proj1_sig (f (exist _ k pk)) -> 
+          r = proj1_sig (f (exist _ k pl)).
 Proof. intros. simpl.  rewrite <- (PI _ pk pl). auto.
 Qed.
 

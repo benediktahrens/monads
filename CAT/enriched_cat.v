@@ -58,14 +58,16 @@ Program Instance Enriched_cat_Cat : Cat_struct morC := {
   mor_oid A B := default_setoid (morC A B);
   id a := idM (Enriched_Cat:=C) a tt ;
   comp a b c H H0 := compM (Enriched_Cat:=C) a b c (H,H0) 
-}.
+                                                      }.
+(*
 Next Obligation.
 Proof.
-  unfold Proper; do 2 red.
+  unfold Proper.
   intros x y H x' y' H'.
   rewrite H,H'.
   auto.
 Qed.
+*)
 Next Obligation.
 Proof.
   set (H:= idMr (Enriched_Cat := C)).

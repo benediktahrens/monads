@@ -49,7 +49,9 @@ Proof.
   apply (rkleisli_oid H).
 Qed.
 
-Lemma retakl a b (f:morD (F a) (FF b)) : rweta a ;; rkleisli f == f.
+
+
+Lemma retakl a b (f:morD (F a) (FF b)) : rweta (T:=FF) a ;; rkleisli f == f.
 Proof.
   intros;
   apply FM.

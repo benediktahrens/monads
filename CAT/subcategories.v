@@ -116,9 +116,10 @@ Proof.
 Qed.
 
 
+
 Program Definition subcomp (a b c: subob)(f: submor a b) (g: submor b c):
                 submor a c :=
-        exist _ (f ;; g) _ .
+        exist _ (proj1_sig f ;; proj1_sig g) _ .
 Next Obligation.
 Proof. 
   destruct f; 
@@ -193,6 +194,10 @@ Qed.
 
 Program Instance FINJ_Faithful : Faithful FINJ.
 
+Next Obligation.
+Proof.
+  cat.
+Qed.
 End Injection_Functor.
 
 (*

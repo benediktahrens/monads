@@ -106,6 +106,7 @@ Proof.
   rewrite H.
   reflexivity.
 Qed.
+(*
 Next Obligation.
   apply (eta_bind f).
 Qed.
@@ -113,7 +114,7 @@ Next Obligation.
 Proof.
   apply (bind_eta _ a).
 Qed.
-
+*)
 
 Canonical Structure MON_to_mon := Build_Monad MON_to_mon_struct.
 
@@ -159,6 +160,8 @@ Qed.
 Canonical Structure MON_to_mon_f := Build_Monad_Hom MON_to_mon_f_s.
 
 End MON_to_mon_mor.
+
+ Instance MONAD_struct' : Cat_struct (Monad_Hom (C:=C)) := (MONAD_struct C).
 
 Program Instance MON_to_mon_func : Functor_struct (Fobj:= MON_to_mon) MON_to_mon_f.
 Next Obligation.
