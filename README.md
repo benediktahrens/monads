@@ -35,6 +35,6 @@ Each branch below, printed in **boldface**, corresponds to an article, printed i
 * [**MSCS**](https://github.com/benediktahrens/monads/tree/MSCS): [_Modules over relative monads for syntax and semantics_](http://dx.doi.org/10.1017/S0960129514000103)
 * [**REDUCTION_RULES**](https://github.com/benediktahrens/monads/tree/REDUCTION_RULES): [_Initial Semantics for Reduction Rules_](http://arxiv.org/abs/1212.5668)
 
-All the articles are also available from my [webpage](http://benedikt-ahrens.org/publications).
+All the articles are also available from my [webpage](http://benedikt-ahrens.de/publications).
 
 
